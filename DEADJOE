@@ -1,0 +1,116 @@
+
+*** These modified files were found in JOE when it aborted on Tue May  1 11:06:14 2012
+*** JOE was aborted because the terminal closed
+
+*** File '.git/COMMIT_EDITMSG'
+yup
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+# On branch master
+# Changes to be committed:
+#   (use "git reset HEAD <file>..." to unstage)
+#
+#	new file:   GroupC.tar
+#	new file:   Makefile
+#	new file:   agent.adb
+#	new file:   agent.ads
+#	new file:   agent.ali
+#	new file:   agent.o
+#	new file:   board.cpp
+#	new file:   board.h
+#	new file:   board.o
+#	new file:   client
+#	new file:   client.cpp
+#	new file:   client.o
+#	new file:   comms.cpp
+#	new file:   comms.h
+#	new file:   comms.o
+#	new file:   example.sh
+#	new file:   main
+#	new file:   server
+#	new file:   server.cpp
+#	new file:   server.o
+#	new file:   tictactoe.adb
+#	new file:   tictactoe.ali
+#	new file:   trialrun/Makefile
+#	new file:   trialrun/agent.adb
+#	new file:   trialrun/agent.ads
+#	new file:   trialrun/agent.ali
+#	new file:   trialrun/agent.o
+#	new file:   trialrun/board.cpp
+#	new file:   trialrun/board.h
+#	new file:   trialrun/board.o
+#	new file:   trialrun/client
+#	new file:   trialrun/client.cpp
+#	new file:   trialrun/client.o
+#	new file:   trialrun/comms.cpp
+#	new file:   trialrun/comms.h
+#	new file:   trialrun/comms.o
+#
+# Untracked files:
+#   (use "git add <file>..." to include in what will be committed)
+#
+#	.nfs00000000029e1cb0000001b0
+
+*** File '(Unnamed)'
+:x
+
+*** File '(Unnamed)'
+.git/COMMIT_EDITMSG
+.git/COMMIT_EDITMSG
+
+*** These modified files were found in JOE when it aborted on Tue May  1 11:07:44 2012
+*** JOE was aborted because the terminal closed
+
+*** File '.git/COMMIT_EDITMSG'
+
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+# On branch master
+# Changes to be committed:
+#   (use "git reset HEAD <file>..." to unstage)
+#
+#	new file:   .nfs00000000029e1cb0000001b0
+#	new file:   DEADJOE
+do stuff
+#	new file:   GroupC.tar
+#	new file:   Makefile
+#	new file:   agent.adb
+#	new file:   agent.ads
+#	new file:   agent.ali
+#	new file:   agent.o
+#	new file:   board.cpp
+#	new file:   board.h
+#	new file:   board.o
+#	new file:   client
+#	new file:   client.cpp
+#	new file:   client.o
+#	new file:   comms.cpp
+#	new file:   comms.h
+#	new file:   comms.o
+#	new file:   example.sh
+#	new file:   main
+#	new file:   server
+#	new file:   server.cpp
+#	new file:   server.o
+#	new file:   tictactoe.adb
+#	new file:   tictactoe.ali
+#	new file:   trialrun/Makefile
+#	new file:   trialrun/agent.adb
+#	new file:   trialrun/agent.ads
+#	new file:   trialrun/agent.ali
+#	new file:   trialrun/agent.o
+#	new file:   trialrun/board.cpp
+#	new file:   trialrun/board.h
+#	new file:   trialrun/board.o
+#	new file:   trialrun/client
+#	new file:   trialrun/client.cpp
+#	new file:   trialrun/client.o
+#	new file:   trialrun/comms.cpp
+#	new file:   trialrun/comms.h
+#	new file:   trialrun/comms.o
+#
+
+*** File '(Unnamed)'
+.git/COMMIT_EDITMSG
+.git/COMMIT_EDITMSG
