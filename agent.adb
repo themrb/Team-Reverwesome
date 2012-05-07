@@ -1,5 +1,8 @@
 with Ada.Text_IO;
 use Ada.Text_IO;
+with Boards; use Boards;
+with Players; use Players;
+with Configure; use Configure;
 
 package body Agent is
 	
@@ -43,8 +46,8 @@ package body Agent is
 				if (piecestaken > 0) then
 					if (piecestaken > bestpiecestaken) then
 						bestpiecestaken := piecestaken;
-						cnextmovey := Integer(I)-1;
-						cnextmovex := Integer(J)-1;
+						cnextmovey := Integer(I);
+						cnextmovex := Integer(J);
 						Put_Line("Seen move " & I'Img &J'Img);
 						--PrintBoard(currentstate);
 					end if;
@@ -55,15 +58,7 @@ package body Agent is
 		
 	end Ada_Subroutine;
 
-	function OtherPlayer(player : BoardPoint) return BoardPoint is
-	begin
-		if (player = White) then
-			return Black;
-		elsif (player = Black) then
-			return White;
-		end if;
-		return Empty;
-	end OtherPlayer;
+
 
 	procedure GreedyMove(board : in BoardState; xmove : out Dimension; ymove : out Dimension) is
 	begin
