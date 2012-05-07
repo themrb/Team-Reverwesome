@@ -8,10 +8,7 @@ FILES_OBJ = $(FILES_CPP:.cpp=.o)
 
 CCC = g++
 
-all: client server
-
-server: ${FILES_OBJ} server.o
-	${CCC} -g -o server server.o ${FILES_OBJ}
+all: client
 
 client: ${FILES_OBJ} client.o
 	$ gnatgcc -c agent.adb
