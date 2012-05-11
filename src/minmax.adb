@@ -21,27 +21,13 @@ package body MinMax is
       -- Mainly to avoid exploring large portions of the game tree if the
       -- next move is already fixed.
 
-      for i in 1.. (64-state.state.turns) loop
-         move := successors(Children_Range(i));
-
-         if(move.state.turns /= state.state.turns + 1) then
-            Put_Line(move.state.turns'img & state.state.turns'Img);
-         end if;
-         if(Terminal(move.state)) then
-            outValue :=  -1;
-            best := move;
-            return;
-         end if;
-      end loop;
-
       if (depth = 0) then
-         outValue := 0;
-         best := move;
+         outValue := Token
          return;
       end if;
 
       -- Didn't find any terminal states above, so we continue MinMax-ing
-      for i in 1.. (64-state.state.turns) loop
+      for i in 1.. (sucessors.branching) loop
          move := successors(Children_Range(i));
          declare
             maxValue : BoardValue;

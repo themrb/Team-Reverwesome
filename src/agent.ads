@@ -6,7 +6,6 @@ package Agent is
 	type BoardState is array (Dimension,Dimension) of BoardPoint;
 
 	procedure Ada_Subroutine;
-	function ValidMove(player : BoardPoint; board : in BoardState; movex : in Dimension; movey : in Dimension) return Natural;
 	procedure PrintBoard(board : in BoardState);
 	pragma export(CPP, Ada_Subroutine );
 
