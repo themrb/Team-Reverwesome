@@ -9,14 +9,13 @@ package Boards is
    pragma Pack (Board_Type);
 
    type Coordinate is (x, y);
-
    type Place is array(Coordinate) of Dimension;
 
-   subtype TurnsNo is Natural range 0 .. 99;
+   subtype TurnsNo is Natural range 0 .. 92;
 
    -- Information on the game state
    type State_Type is record
-      justWent : Cell;
+      justWent : BoardPoint;
       spot : Place;
       turns : TurnsNo;
       current_stateBlack : Board_Type;
