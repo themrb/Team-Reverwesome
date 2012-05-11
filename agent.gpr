@@ -1,0 +1,7 @@
+project Agent is
+
+   for Source_Dirs use ("src/**");
+   for Object_Dir use "build";
+   for Main use ("agent.adb");
+
+end Agent;

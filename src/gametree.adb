@@ -1,71 +1,62 @@
-with Ada.Text_IO;
-use Ada.Text_IO;
 with Boards; use Boards;
-with Players; use Players;
+with Ada.Text_IO; use Ada.Text_IO;
+with Ada.Unchecked_Deallocation;
 with Configure; use Configure;
 
-package body Agent is
-	
-	ccurrentstate : CBoardState;
-	cplayercolour : Integer;
-	cnextmovey : Integer;
-	cnextmovex : Integer;
-	pragma import(cpp, ccurrentstate, "currentcstate");
-	pragma import(cpp, cplayercolour, "playercolour");
-	pragma import(cpp, cnextmovey, "nextmovey");
-	pragma import(cpp, cnextmovex, "nextmovex");
+package body GameTree is
 
-	procedure Ada_Subroutine is
-		currentstate : BoardState;
-		player : BoardPoint;
-		piecestaken : Natural;
-		bestpiecestaken : Natural := 0;
-	begin
-		Put("Ada_Subroutine has been invoked from C++.");
-		Ada.Text_IO.Put_Line("");
+   --Expand a game tree node's state and return its successor states
+   function Expand(state : in GameTree_Type) return ExpandedChildren is
+      temp : aliased GameTree_Type;
+      Children : ExpandedChildren;\
+   begin
 
-		if (cplayercolour = 1) then
-			player := White;
-		elsif (cplayercolour = 2) then
-			player := Black;
-		end if;
+      for i in Dimension'Range loop
+         for j in Dimension'Range loop
+            for k in Dimension'Range loop
+               -- if we don't already have something sitting there
+               if(not state.state.current_stateX(i,j,k) and not state.state.current_stateO(i,j,k)) then
+                  temp := state;
+                  temp.state.justWent := NextPlayer(state.state.justWent);
 
-		for I in Dimension'Range loop
-			for J in Dimension'Range loop
-				currentstate(I,J) := BoardPoint'Val(ccurrentstate(I,J));
-			end loop;
-			--Ada.Text_IO.Put_Line("");
-		end loop;
-		
-		--PrintBoard(currentstate);
-		
-		Move_Loop:
-		for I in Dimension range Dimension'Range loop
-			for J in Dimension range Dimension'Range loop
-				piecestaken := ValidMove(player, currentstate, I, J);
-				if (piecestaken > 0) then
-					if (piecestaken > bestpiecestaken) then
-						bestpiecestaken := piecestaken;
-						cnextmovey := Integer(I);
-						cnextmovex := Integer(J);
-						Put_Line("Seen move " & I'Img &J'Img);
-						--PrintBoard(currentstate);
-					end if;
-				end if;
-			end loop;
-		end loop Move_Loop;
-		
-		
-	end Ada_Subroutine;
+                  if (temp.state.justWent = X) then
+                     temp.state.current_stateX(i,j,k) := True;
+                  elsif (temp.state.justWent = O) then
+                     temp.state.current_stateO(i,j,k) := True;
+                  end if;
 
+                  temp.state.spot := (i,j,k);
+                  temp.state.turns := state.state.turns + 1;
 
+                  if((temp.state.turns) /= state.state.turns + 1) then
+                     Put_Line(temp.state.turns'Img & state.state.turns'Img);
+                  end if;
 
-	procedure GreedyMove(board : in BoardState; xmove : out Dimension; ymove : out Dimension) is
-	begin
-		null;
-	end GreedyMove;
+                  -- Check if corner or inner nodes, and if so, add to front of
+                  -- queue
+                  if(((i = 0 or i = 3) and (j = 0 or j = 3) and (k = 0 or k = 3)) or
+                    ((i = 1 or i = 2) and (j = 1 or j = 2) and (k = 1 or k = 2))) then
+                     Children(frontCounter) := temp;
+                     Configure.count := Configure.count + 1;
+                     if(frontCounter < Children_Range'Last) then
+                        frontCounter := frontCounter + 1;
+                     end if;
+                  else -- Otherwise, back of the line!
+                     Children(backCounter) := temp;
+                     Configure.count := Configure.count + 1;
+                     if(backCounter > Children_Range'First) then
+                        backCounter := backCounter - 1;
+                     end if;
+                  end if;
+               end if;
+            end loop;
+         end loop;
+      end loop;
 
-	function ValidMove(player : BoardPoint; board : in BoardState; movex : in Dimension; movey : in Dimension) return Natural is
+      return Children;
+   end Expand;
+
+   function ValidMove(player : BoardPoint; board : in BoardState; movex : in Dimension; movey : in Dimension) return Natural is
 		HitOpponent : Boolean;
 		Opponent : BoardPoint := OtherPlayer(player);
 		x : Dimension;
@@ -192,7 +183,7 @@ package body Agent is
 			moveroom := xroom;
 		else
 			moveroom := yroom;
-		end if;			
+		end if;
 		for epoint in Dimension range 1 .. moveroom loop
 			y := movey + epoint;
 			x := movex + epoint;
@@ -220,7 +211,7 @@ package body Agent is
 				moveroom := xroom;
 			else
 				moveroom := yroom;
-			end if;	
+			end if;
 			HitOpponent := False;
 			pieces := 0;
 			for epoint in Dimension range 1 .. moveroom loop
@@ -250,7 +241,7 @@ package body Agent is
 			moveroom := xroom;
 		else
 			moveroom := yroom;
-		end if;	
+		end if;
 		HitOpponent := False;
 		pieces := 0;
 		for epoint in Dimension range 1 .. moveroom loop
@@ -280,7 +271,7 @@ package body Agent is
 			moveroom := xroom;
 		else
 			moveroom := yroom;
-		end if;	
+		end if;
 		HitOpponent := False;
 		pieces := 0;
 		for epoint in Dimension range 1 .. moveroom loop
@@ -304,26 +295,5 @@ package body Agent is
 		end if;
 		return totalpieces;
 	end ValidMove;
-	
-	procedure PrintBoard(board : in BoardState) is
-	begin
-		for J in Dimension'Range loop
-			for I in Dimension'Range loop
-				case board(I,J) is
-					  when Empty =>
-						 Put(" .");
-					  when White =>
-						 Put(" w");
-					  when Black =>
-						 Put(" b");
-					  when Blocked =>
-						 Put(" *");
-					  when others =>
-						 Put_Line ("+F+");
-				end case;
-			end loop;
-			Ada.Text_IO.Put_Line("");
-	end loop;
-	end PrintBoard;
 
-end Agent;
+end GameTree;
