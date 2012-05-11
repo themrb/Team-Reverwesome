@@ -10,6 +10,7 @@ package Players is
    task type Player (name : Cell) is
       -- Gets the move that just happened.
       entry Next_Move(previous : in State_Type);
+
       -- Gives the player's choice of move.
       entry Choose_Move(next : out Place);
       entry Shutdown;
@@ -22,10 +23,13 @@ package Players is
    protected type BeingExplored is
       -- Allows explorer task to get the next node to be explored.
       entry Next(node, parent : out GameTree_Type; a, b : out BoardValue);
+
       -- Allows player task to retrieve the result of exploring the game-tree.
       entry GetResult(node : out GameTree_Type);
+
       -- Allows explorer tasks to report what they found.
       procedure Report(board, parent : in GameTree_Type; bValue : in BoardValue);
+
       -- Initialise the set to explore. Note that we do this for every turn.
       procedure Initialise (parent : in GameTree_Type);
    private
