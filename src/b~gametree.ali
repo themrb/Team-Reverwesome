@@ -3,15 +3,15 @@ A -mtune=generic
 P ZX
 R nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnvvnnnnnnnnnnnnnnnnnn
 
-U ada_main%b		b~gametree.adb		768f311e NE OO PK IL
+U ada_main%b		b~gametree.adb		d0d9f662 NE OO PK IL
 W system%s		system.ads		system.ali
 W system.restrictions%s	s-restri.adb		s-restri.ali
 
-U ada_main%s		b~gametree.ads		ecf49bb9 EE NE OO PK IL
+U ada_main%s		b~gametree.ads		4aa25cc5 EE NE OO PK IL
 W system%s		system.ads		system.ali
 
-D b~gametree.ads	20120512131243 33a1ab96
-D b~gametree.adb	20120512131243 a85cf183
+D b~gametree.ads	20120512131906 95f76cea
+D b~gametree.adb	20120512131906 a85cf183
 D system.ads		20100127090222 df55302f
 D s-restri.ads		20090409232307 ed726b0b
 D s-rident.ads		20090409232307 e38f8060
