@@ -4,9 +4,12 @@ package Boards is
    type FinalValue is new Integer range -1..1;
    type Dimension is new Natural range 0 .. 9;
 
-   type BoardPoint is (Empty, White, Black, Blocked);
+   type CBoardState is array (Dimension,Dimension) of Integer;
 
-   type Board_Type is array(Dimension, Dimension) of BoardPoint;
+   type BoardPoint is (Empty, White, Black, Blocked);
+   for BoardPoint use (Empty => 0, White => 1, Black => 2, Blocked => 3);
+
+   type GameBoard is array(Dimension, Dimension) of BoardPoint;
 
    type Coordinate is (x, y);
    type Place is array(Coordinate) of Dimension;
@@ -16,26 +19,26 @@ package Boards is
    -- Information on the game state
    type State_Type is record
       justWent : BoardPoint;
-      TokensTaken : TurnsNo;
+      TokensTaken : TurnsNo := 0;
       spot : Place;
-      turns : TurnsNo;
-      current_state : Board_Type;
+      turns : TurnsNo := 0;
+      current_state : GameBoard;
    end record;
 
-   Empty_Board : constant State_Type := (Empty, (1,1,1), 0, (others => (others => (others => False))), (others => (others => (others => False))));
+   procedure EndBoardValue(Player : BoardPoint; State : GameBoard; Score : out BoardValue);
 
-   function NextPlayer(prev : BoardPoint) return BoardPoint;
+   function NextPlayer(player : BoardPoint) return BoardPoint;
 
-   function AdvanceMove(state : State_Type; move : Place) return State_Type;
+   procedure TokenCount(State : GameBoard; WhiteTokens : out TurnsNo; BlackTokens : out TurnsNo);
 
-   function ValidMove(player : BoardPoint; board : in BoardState; movex : in Dimension; movey : in Dimension) return Natural;
+--   function AdvanceMove(state : State_Type; move : Place) return State_Type;
 
-   function Terminal(state : in State_Type) return Boolean;
+   function ValidMove(player : BoardPoint; board : in GameBoard; movex : in Dimension; movey : in Dimension) return Natural;
 
    function Image(state : State_Type) return String;
 
    function Image(spot : Place) return String;
 
-   function Image(board : Board_Type) return String;
+   function Image(board : GameBoard) return String;
 
 end Boards;

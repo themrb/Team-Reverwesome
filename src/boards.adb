@@ -5,7 +5,7 @@ with Ada.Text_IO; use Ada.Text_IO;
 package body Boards is
 
    -- Passes the move onto the next player
-   function NextPlayer(prev : BoardPoint) return BoardPoint is
+   function NextPlayer(player : BoardPoint) return BoardPoint is
    begin
       if (player = White) then
          return Black;
@@ -13,15 +13,28 @@ package body Boards is
          return White;
       end if;
       return Empty;
-   end OtherPlayer;
+   end NextPlayer;
 
-   procedure TokenCount(State : BoardState, WhiteTokens : out TurnsNo; BlackTokens : out TurnsNo) is
+   procedure EndBoardValue(Player : BoardPoint; State : GameBoard; Score : out BoardValue) is
+      WhiteTokens : TurnsNo;
+      BlackTokens : TurnsNo;
+   begin
+      TokenCount(State,WhiteTokens,BlackTokens);
+      if Player = White then
+         Score := BoardValue(WhiteTokens - BlackTokens);
+      else
+         Score := BoardValue(BlackTokens - WhiteTokens);
+      end if;
+   end EndBoardValue;
+         
+
+   procedure TokenCount(State : GameBoard; WhiteTokens : out TurnsNo; BlackTokens : out TurnsNo) is
    begin
       BlackTokens := 0;
       WhiteTokens := 0;
         for I in Dimension'Range loop
          for J in Dimension'Range loop
-            case state.current_state(I,J) is
+            case State(I,J) is
             when White =>
                WhiteTokens := WhiteTokens + 1;
             when Black =>
@@ -30,27 +43,28 @@ package body Boards is
                null;
             end case;
          end loop;
+end loop;
    end TokenCount;
 
    -- Advances a game state, given a move, returning the resulting state
-   function AdvanceMove(state : State_Type; move : Place) return State_Type is
-      placedPiece : Cell := NextPlayer(state.justWent);
-      newState : State_Type := state;
-   begin
-      if (placedPiece = X) then
-         newState.current_stateX(move(x), move(y), move(z)) := True;
-      elsif (placedPiece = O) then
-         newState.current_stateO(move(x), move(y), move(z)) := True;
-      end if;
-      newState.turns := newState.turns + 1;
-      newState.justWent := placedPiece;
-      newState.spot := move;
-      return newState;
-   end AdvanceMove;
+--    function AdvanceMove(state : State_Type; move : Place) return State_Type is
+--       placedPiece : BoardPoint := NextPlayer(state.justWent);
+--       newState : State_Type := state;
+--    begin
+--       if (placedPiece = X) then
+--          newState.current_stateX(move(x), move(y), move(z)) := True;
+--       elsif (placedPiece = O) then
+--          newState.current_stateO(move(x), move(y), move(z)) := True;
+--       end if;
+--       newState.turns := newState.turns + 1;
+--       newState.justWent := placedPiece;
+--       newState.spot := move;
+--       return newState;
+--    end AdvanceMove;
 
-function ValidMove(player : BoardPoint; board : in BoardState; movex : in Dimension; movey : in Dimension) return Natural is
+function ValidMove(player : BoardPoint; board : in GameBoard; movex : in Dimension; movey : in Dimension) return Natural is
 		HitOpponent : Boolean;
-		Opponent : BoardPoint := OtherPlayer(player);
+		Opponent : BoardPoint := NextPlayer(player);
 		x : Dimension;
 		y : Dimension;
 		moveroom : Dimension;
@@ -292,7 +306,7 @@ function ValidMove(player : BoardPoint; board : in BoardState; movex : in Dimens
    function Image(state : State_Type) return String is
       temp : Unbounded_String;
    begin
-      temp := "[" & Cell'Image(state.justWent) & "," & Image(state.spot)
+      temp := temp & "[" & BoardPoint'Image(state.justWent) & "," & Image(state.spot)
         & "," & Natural'Image(state.turns) & "]";
       for I in Dimension'Range loop
          for J in Dimension'Range loop
@@ -309,25 +323,24 @@ function ValidMove(player : BoardPoint; board : in BoardState; movex : in Dimens
                temp := temp & "+F+";
             end case;
          end loop;
+end loop;
          return To_String(temp);
-      end;
+        end Image;
 
       -- Print function
       function Image(spot : Place) return String is
       begin
          return "(" & Dimension'Image(spot(x)) & "," & Dimension'Image(spot(y))
-           & "," & Dimension'Image(spot(z)) & ")";
+           & "," & ")";
       end;
 
       -- Print function
-      function Image(board : Board_Type) return String is
+      function Image(board : GameBoard) return String is
       temp : Unbounded_String;
    begin
-      temp := "[" & Cell'Image(state.justWent) & "," & Image(state.spot)
-        & "," & Natural'Image(state.turns) & "]";
       for I in Dimension'Range loop
          for J in Dimension'Range loop
-            case state.currentstate(I,J) is
+            case board(I,J) is
             when Empty =>
                temp := temp & " .";
             when White =>
@@ -340,102 +353,9 @@ function ValidMove(player : BoardPoint; board : in BoardState; movex : in Dimens
                temp := temp & "+F+";
             end case;
          end loop;
+end loop;
 
          return To_String(temp);
       end;
-
-      -- Checks if a given game state is terminal (the last player to move has won)
-      function Terminal(state : in State_Type) return Boolean is
-         currentstate : Board_Type;
-      begin
-         -- There cannot be a win in less than 4 moves
-         if(state.turns < 4) then
-            return False;
-         end if;
-
-         -- Decide which player state to check
-         if (state.justWent = X) then
-            currentstate := state.current_stateX;
-         elsif (state.justWent = O) then
-            currentstate := state.current_stateO;
-         end if;
-
-         -- Check for straight line wins in each of the planes
-         for i in Dimension'Range loop
-            xrow := xrow and currentstate(i,state.spot(y), state.spot(z)) = True;
-            yrow := yrow and currentstate(state.spot(x),i, state.spot(z)) = True;
-            zrow := zrow and currentstate(state.spot(x),state.spot(y), i) = True;
-         end loop;
-         if (xrow or yrow or zrow) then
-            return True;
-         end if;
-
-         -- The following 3 blocks check for diagonals in each of the planes.
-
-         if state.spot(x) = state.spot(y) then
-            for i in Dimension'Range loop
-               zdiag := zdiag and currentstate(i,i,state.spot(z)) = True;
-            end loop;
-         elsif state.spot(x) + state.spot(y) = 3 then
-            for i in Dimension'Range loop
-               zdiag := zdiag and currentstate(i,3-i,state.spot(z)) = True;
-            end loop;
-         else
-            zdiag := False;
-         end if;
-
-         if(zdiag) then return True; end if;
-
-         if state.spot(y) = state.spot(z) then
-            for i in Dimension'Range loop
-               xdiag := xdiag and currentstate(state.spot(x),i,i) = True;
-            end loop;
-         elsif state.spot(z) + state.spot(y) = 3 then
-            for i in Dimension'Range loop
-               xdiag := xdiag and currentstate(state.spot(x),i,3-i) = True;
-            end loop;
-         else
-            xdiag := False;
-         end if;
-
-         if(xdiag) then return True; end if;
-
-         if state.spot(x) = state.spot(z) then
-            for i in Dimension'Range loop
-               ydiag := ydiag and currentstate(i,state.spot(y),i) = True;
-            end loop;
-         elsif state.spot(x) + state.spot(z) = 3 then
-            for i in Dimension'Range loop
-               ydiag := ydiag and currentstate(i,state.spot(y),3-i) = True;
-            end loop;
-         else
-            ydiag := False;
-         end if;
-
-         if(ydiag) then return True; end if;
-
-         --Check all crosscorner diagonals
-
-         if(state.spot(x) = state.spot(y) and state.spot(x) = state.spot(z)) then
-            for i in Dimension'Range loop
-               corner := corner and currentstate(i,i,i) = True;
-            end loop;
-         elsif(state.spot(x) = (3-state.spot(y)) and state.spot(x) = state.spot(z)) then
-            for i in Dimension'Range loop
-               corner := corner and currentstate(i,3-i,i) = True;
-            end loop;
-         elsif(state.spot(x) = state.spot(y) and state.spot(x) = (3-state.spot(z))) then
-            for i in Dimension'Range loop
-               corner := corner and currentstate(i,i,3-i) = True;
-            end loop;
-         else
-            for i in Dimension'Range loop
-               corner := corner and currentstate(3-i,i,i) = True;
-            end loop;
-         end if;
-
-         return corner;
-
-      end Terminal;
 
    end Boards;

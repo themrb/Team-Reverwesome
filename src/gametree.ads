@@ -13,7 +13,7 @@ package GameTree is
       expanded : Boolean := False;
    end record;
 
-   type ChildrenArray is array(Children_Range) of GameTree_Type;
+   type ChildrenArray is array(TurnsNo) of GameTree_Type;
    
    -- Information on the game state
    type ExpandedChildren is record
@@ -22,5 +22,7 @@ package GameTree is
    end record;
 
    function Expand(state : in GameTree_Type) return ExpandedChildren;
+
+   function Terminal(board : in GameBoard) return Boolean;
 
 end GameTree;

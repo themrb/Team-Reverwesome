@@ -1,8 +1,9 @@
 with Ada.Text_IO;
 use Ada.Text_IO;
 with Boards; use Boards;
-with Players; use Players;
+with GameTree; use GameTree;
 with Configure; use Configure;
+with Exceptions; use Exceptions;
 
 package body Agent is
 
@@ -16,10 +17,12 @@ package body Agent is
 	pragma import(cpp, cnextmovex, "nextmovex");
 
 	procedure Ada_Subroutine is
-		currentstate : BoardState;
+		currentstate : GameBoard;
 		player : BoardPoint;
 		piecestaken : Natural;
 		bestpiecestaken : Natural := 0;
+      treeroot : GameTree_Type;
+      move : Place;
 	begin
 		Put("Ada_Subroutine has been invoked from C++.");
 		Ada.Text_IO.Put_Line("");
@@ -37,7 +40,8 @@ package body Agent is
 			--Ada.Text_IO.Put_Line("");
 		end loop;
 
-		--PrintBoard(currentstate);
+      treeroot.state.justWent := NextPlayer(player);
+      treeroot.state.current_state := currentstate;
 
 		Move_Loop:
 		for I in Dimension range Dimension'Range loop
@@ -54,38 +58,11 @@ package body Agent is
 				end if;
 			end loop;
 		end loop Move_Loop;
-
-
 	end Ada_Subroutine;
 
-
-
-	procedure GreedyMove(board : in BoardState; xmove : out Dimension; ymove : out Dimension) is
+	procedure GreedyMove(board : in GameBoard; xmove : out Dimension; ymove : out Dimension) is
 	begin
 		null;
 	end GreedyMove;
-
-
-
-	procedure PrintBoard(board : in BoardState) is
-	begin
-		for J in Dimension'Range loop
-			for I in Dimension'Range loop
-				case board(I,J) is
-					  when Empty =>
-						 Put(" .");
-					  when White =>
-						 Put(" w");
-					  when Black =>
-						 Put(" b");
-					  when Blocked =>
-						 Put(" *");
-					  when others =>
-						 Put_Line ("+F+");
-				end case;
-			end loop;
-			Ada.Text_IO.Put_Line("");
-	end loop;
-	end PrintBoard;
 
 end Agent;

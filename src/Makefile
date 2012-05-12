@@ -12,8 +12,22 @@ all: client
 
 client: ${FILES_OBJ} client.o
 	$ gnatgcc -c agent.adb
+	$ gnatgcc -c boards.adb
+	$ gnatgcc -c gametree.adb
+	$ gnatgcc -c minmax.adb
+	$ gnatgcc -c configure.ads
+	$ gnatgcc -c exceptions.adb
 	$ gnatbind -n agent
+	$ gnatbind -n boards
+	$ gnatbind -n gametree
+	$ gnatbind -n minmax
+	$ gnatbind -n configure
+	$ gnatbind -n exceptions
 	$ gnatgcc -c b~agent.adb
+	$ gnatgcc -c b~boards.adb
+	$ gnatgcc -c b~gametree.adb
+	$ gnatgcc -c b~minmax.adb
+	$ gnatgcc -c b~exceptions.adb
 	$ gnatlink -L/usr/lib/gcc/x86_64-linux-gnu/4.4.3 -lstdc++ -o client client.o ${FILES_OBJ} agent.ali --link=c++
 
 %.o : %.cpp

@@ -1,0 +1,112 @@
+V "GNAT Lib v4.4"
+A -mtune=generic
+P SS ZX
+R nnnnnnnnnnnnnnnnnnnnnnvnnnnnnnnnnnnnnnvnnnnnnnnnnnnnnnnvnvnnnnnnnnnnnnnnnnnnn
+
+U agent%b		agent.adb		0f9d3af8 NE OO PK
+W ada%s			ada.ads			ada.ali
+W ada.text_io%s		a-textio.adb		a-textio.ali
+W boards%s		boards.adb		boards.ali
+W configure%s		configure.ads		configure.ali
+W exceptions%s		exceptions.adb		exceptions.ali
+W gametree%s		gametree.adb		gametree.ali
+W system.img_int%s	s-imgint.adb		s-imgint.ali
+W system.secondary_stack%s  s-secsta.adb	s-secsta.ali
+W system.string_ops_concat_3%s  s-sopco3.adb	s-sopco3.ali
+
+U agent%s		agent.ads		eb1b9747 EE NE OO PK
+
+D ada.ads		20070406091342 9c7dd3ea
+D a-contai.ads		20070406091342 7b35f559
+D a-cdlili.ads		20090409232307 8b4f9777
+D a-except.ads		20090409232307 b54b55de
+D a-finali.ads		20090409232307 9eaacebd
+D a-filico.ads		20090409232307 9299732a
+D a-ioexce.ads		20070406091342 be0900a0
+D a-stream.ads		20090409232307 34aca5be
+D a-tags.ads		20090409232307 bfa07446
+D a-textio.ads		20090409232307 fe8af46e
+D a-unccon.ads		20070406091342 51e09df2
+D a-uncdea.ads		20070406091342 dc667e6d
+D agent.ads		20120512061903 eb1b9747
+D agent.adb		20120512073012 160408c9
+D boards.ads		20120512070418 1eee3e1a
+D configure.ads		20120507072842 3a7380ac
+D exceptions.ads	20120512055722 4c1c7aef
+D gametree.ads		20120512064348 64899541
+D interfac.ads		20090409232307 a69cad5c
+D i-cstrea.ads		20090409232307 e1e064a9
+D system.ads		20100127090222 df55302f
+D s-crtl.ads		20090409232307 997234a1
+D s-exctab.ads		20090409232307 5c1c61ae
+D s-ficobl.ads		20090409232307 8bb681e5
+D s-finimp.ads		20090409232307 9449f4cb
+D s-finroo.ads		20090409232307 1408f9d1
+D s-imgint.ads		20090409232307 f77d133c
+D s-parame.ads		20090409232307 f32e56e9
+D s-secsta.ads		20090409232307 7bae3621
+D s-soflin.ads		20090409232307 0c6fd39d
+D s-stache.ads		20090409232307 257b3be8
+D s-stalib.ads		20090409232307 52b793d5
+D s-stoele.ads		20090409232307 ed966df3
+D s-stoele.adb		20090409232307 e9998c78
+D s-stratt.ads		20090409232307 fef7c1da
+D s-strops.ads		20090409232307 845f72d2
+D s-sopco3.ads		20090409232307 72ce1063
+D s-sopco4.ads		20090409232307 bc112723
+D s-sopco5.ads		20090409232307 191315e8
+D s-traent.ads		20090409232307 bd5f2753
+D s-unstyp.ads		20090409232307 c0f9fae5
+D s-wchcon.ads		20090409232307 ab028799
+X 1 ada.ads
+16K9*Ada 19e8 14|1r6 2r5 28r17
+X 10 a-textio.ads
+48K13*Text_IO 506e16 14|1w10 2r9 28r21
+242U14*Put 14|27r17
+263U14*Put_Line 14|28r29 55r49
+X 13 agent.ads
+1K9*Agent 6l5 6e10 14|8b14 68l5 68t10
+3U19*Ada_Subroutine 4r28 14|19b19 61l13 61t27
+X 14 agent.adb
+10a9 ccurrentstate{15|7A9} 14m28 38r69
+11i9 cplayercolour{integer} 15m28 30r21 32r24
+12i9 cnextmovey{integer} 16m28 53m49
+13i9 cnextmovex{integer} 17m28 54m49
+20a17 currentstate{15|12A9} 38m33 44r39 49r66
+21e17 player{15|9E9} 31m25 33m25 43r45 49r58
+22i17 piecestaken{natural} 49m33 50r37 51r45 52r68
+23i17 bestpiecestaken{natural} 51r59 52m49
+24r7 treeroot{18|11R9} 43m7 44m7
+25a7 move{15|15A9}
+36i21 I{15|5I9} 38r46 38r83
+37i29 J{15|5I9} 38r48 38r85
+46l17 Move_Loop 60l26 60e35
+47i21 I<integer> 49r80 53r71 55r73
+48i29 J<integer> 49r83 54r71 55r80
+63U19 GreedyMove 63b19 63>30 63<52 63<75 66l13 66t23
+63a30 board{15|12A9}
+63i52 xmove{15|5I9}
+63i75 ymove{15|5I9}
+X 15 boards.ads
+1K9*Boards 14|3w6 3r18 15|44e11
+5I9*Dimension<integer> 14|36r26 37r34 47r26 47r42 48r34 48r50 63r64 63r87
+7A9*CBoardState(integer)<5I9><5I9> 14|10r25
+9E9*BoardPoint 14|21r26 38r54 15|9e53
+9n31*White{9E9} 14|31r35
+9n38*Black{9E9} 14|33r35
+12A9*GameBoard(9E9)<5I9><5I9> 14|20r32 63r41
+15A9*Place(5I9)<14E9> 14|25r14
+21e7*justWent{9E9} 14|43m22
+25a7*current_state{12A9} 14|44m22
+30V13*NextPlayer{9E9} 14|43r34
+36V13*ValidMove{natural} 14|49r48
+X 16 configure.ads
+3K9*Configure 14|5w6 5r21 16|10e14
+X 17 exceptions.ads
+17K10*Exceptions 14|6w6 6r22 17|22e15
+X 18 gametree.ads
+5K9*GameTree 14|4w6 4r20 18|28e13
+7R9*GameTree_Type 14|24r18 18|14e14
+11R9*GameTree_Type
+12r7*state{15|20R9} 14|43m16 44m16
+
