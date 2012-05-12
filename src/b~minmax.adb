@@ -19,8 +19,8 @@ package body ada_main is
       E024 : Boolean; pragma Import (Ada, E024, "system__exception_table_E");
       E071 : Boolean; pragma Import (Ada, E071, "ada__io_exceptions_E");
       E085 : Boolean; pragma Import (Ada, E085, "ada__strings_E");
-      E049 : Boolean; pragma Import (Ada, E049, "ada__tags_E");
-      E047 : Boolean; pragma Import (Ada, E047, "ada__streams_E");
+      E007 : Boolean; pragma Import (Ada, E007, "ada__tags_E");
+      E055 : Boolean; pragma Import (Ada, E055, "ada__streams_E");
       E073 : Boolean; pragma Import (Ada, E073, "interfaces__c_E");
       E064 : Boolean; pragma Import (Ada, E064, "system__finalization_root_E");
       E075 : Boolean; pragma Import (Ada, E075, "system__os_lib_E");
@@ -31,7 +31,7 @@ package body ada_main is
       E087 : Boolean; pragma Import (Ada, E087, "ada__strings__unbounded_E");
       E078 : Boolean; pragma Import (Ada, E078, "system__file_control_block_E");
       E060 : Boolean; pragma Import (Ada, E060, "system__file_io_E");
-      E007 : Boolean; pragma Import (Ada, E007, "ada__text_io_E");
+      E054 : Boolean; pragma Import (Ada, E054, "ada__text_io_E");
       E082 : Boolean; pragma Import (Ada, E082, "boards_E");
       E109 : Boolean; pragma Import (Ada, E109, "gametree_E");
       E002 : Boolean; pragma Import (Ada, E002, "minmax_E");
@@ -138,12 +138,12 @@ package body ada_main is
          Ada.Strings'Elab_Spec;
          E085 := True;
       end if;
-      if not E049 then
+      if not E007 then
          Ada.Tags'Elab_Spec;
       end if;
-      if not E047 then
+      if not E055 then
          Ada.Streams'Elab_Spec;
-         E047 := True;
+         E055 := True;
       end if;
       if not E073 then
          Interfaces.C'Elab_Spec;
@@ -188,16 +188,16 @@ package body ada_main is
          System.File_Io'Elab_Body;
          E060 := True;
       end if;
-      if not E049 then
-         Ada.Tags'Elab_Body;
-         E049 := True;
-      end if;
       if not E007 then
+         Ada.Tags'Elab_Body;
+         E007 := True;
+      end if;
+      if not E054 then
          Ada.Text_Io'Elab_Spec;
       end if;
-      if not E007 then
+      if not E054 then
          Ada.Text_Io'Elab_Body;
-         E007 := True;
+         E054 := True;
       end if;
       E082 := True;
       E109 := True;

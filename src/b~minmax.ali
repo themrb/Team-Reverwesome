@@ -3,15 +3,15 @@ A -mtune=generic
 P ZX
 R nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnvvnnnnnnnnnnnnnnnnnn
 
-U ada_main%b		b~minmax.adb		97541694 NE OO PK IL
+U ada_main%b		b~minmax.adb		8695e608 NE OO PK IL
 W system%s		system.ads		system.ali
 W system.restrictions%s	s-restri.adb		s-restri.ali
 
-U ada_main%s		b~minmax.ads		91b5959b EE NE OO PK IL
+U ada_main%s		b~minmax.ads		bba79be6 EE NE OO PK IL
 W system%s		system.ads		system.ali
 
-D b~minmax.ads		20120512113930 4ee0a5b4
-D b~minmax.adb		20120512113930 34c6d82b
+D b~minmax.ads		20120512131243 64f2abc9
+D b~minmax.adb		20120512131243 0f1526ca
 D system.ads		20100127090222 df55302f
 D s-restri.ads		20090409232307 ed726b0b
 D s-rident.ads		20090409232307 e38f8060
@@ -151,8 +151,8 @@ X 2 b~minmax.adb
 19b7*E024{boolean} 19m43 129r14 131m10
 20b7*E071{boolean} 20m43 133r14 135m10
 21b7*E085{boolean} 21m43 137r14 139m10
-22b7*E049{boolean} 22m43 141r14 191r14 193m10
-23b7*E047{boolean} 23m43 144r14 146m10
+22b7*E007{boolean} 22m43 141r14 191r14 193m10
+23b7*E055{boolean} 23m43 144r14 146m10
 24b7*E073{boolean} 24m43 148r14 151m7
 25b7*E064{boolean} 25m43 152r14 155m7
 26b7*E075{boolean} 26m43 156r14 158m10
@@ -163,7 +163,7 @@ X 2 b~minmax.adb
 31b7*E087{boolean} 31m43 179r14 182m7
 32b7*E078{boolean} 32m43 183r14 185m10
 33b7*E060{boolean} 33m43 187r14 189m10
-34b7*E007{boolean} 34m43 195r14 198r14 200m10
+34b7*E054{boolean} 34m43 195r14 198r14 200m10
 35b7*E082{boolean} 35m43 202m7
 36b7*E109{boolean} 36m43 203m7
 37b7*E002{boolean} 37m43 204m7

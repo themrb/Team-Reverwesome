@@ -45,14 +45,14 @@ package body Agent is
       treeroot.state.justWent := NextPlayer(player);
       treeroot.state.current_state := currentstate;
 
-      Max(player, treeroot, 5, value, BoardValue'First, BoardValue'Last, move);
+      Put_Line("No storage error yet");
+      Max(player, treeroot, 6, value, BoardValue'First, BoardValue'Last, move);
 
       declare
          temppieces : Natural := ValidMove(player, currentstate, move(x), move(y));
       begin
-         Put(TurnsNo'Image(temppieces));
+         Put_Line("We'll get " & TurnsNo'Image(temppieces) & "for moving at" & Dimension'Image(move(x)) & "," & Dimension'Image(move(y)));
       end;
-
       cnextmovey := Integer(move(x));
       cnextmovex := Integer(move(y));
 
