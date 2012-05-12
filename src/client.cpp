@@ -126,7 +126,7 @@ int main(int argc, char *argv[])
         } else if (messageIn.status == GIVE_MOVE) {
             // pretend to think about the move
             if (messageIn.timeRemaining > 1.0) {
-                sleep(1);
+                //sleep(1);
             }
 			//talk to Ada
 			
