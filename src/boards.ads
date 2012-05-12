@@ -18,7 +18,7 @@ package Boards is
 
    -- Information on the game state
    type State_Type is record
-      justWent : BoardPoint;
+      justWent : BoardPoint := Blocked;
       TokensTaken : TurnsNo := 0;
       spot : Place;
       turns : TurnsNo := 0;
@@ -34,6 +34,8 @@ package Boards is
 --   function AdvanceMove(state : State_Type; move : Place) return State_Type;
 
    function ValidMove(player : BoardPoint; board : in GameBoard; movex : in Dimension; movey : in Dimension) return Natural;
+
+   procedure AdvanceMove(player : BoardPoint; board : in out GameBoard; movex : Dimension; movey : Dimension);
 
    function Image(state : State_Type) return String;
 

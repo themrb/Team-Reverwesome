@@ -18,6 +18,7 @@ package GameTree is
    -- Information on the game state
    type ExpandedChildren is record
       branching : TurnsNo;
+      nomove : Boolean := False;
       children : ChildrenArray;
    end record;
 
