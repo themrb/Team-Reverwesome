@@ -36,3 +36,5 @@ client: ${FILES_OBJ} client.o
 clean:
 	rm -f client server
 	rm -f *.o
+	rm -f *.ali
+	rm -f b~*
