@@ -103,6 +103,7 @@ function ValidMove(player : BoardPoint; board : in GameBoard; movex : in Dimensi
       HitOpponent := False;
       pieces := 0;
       for xpoint in Dimension range 1 .. (movex-1) loop
+         --Put_Line("xpoint at " & Dimension'Image(xpoint) & " for " & player'Img & " at " & Dimension'Image(movex) & Dimension'Image(movey));
          y := movey;
          x := movex - xpoint;
          if board(x,y) = Empty then
@@ -144,7 +145,7 @@ function ValidMove(player : BoardPoint; board : in GameBoard; movex : in Dimensi
       --straight down
       HitOpponent := False;
       pieces := 0;
-      for ypoint in Dimension range 1 .. (movey-1) loop
+      for ypoint in Dimension range 1 .. (movey) loop
          y := movey - ypoint;
          x := movex;
          if board(x,y) = Empty then
@@ -198,7 +199,7 @@ function ValidMove(player : BoardPoint; board : in GameBoard; movex : in Dimensi
       --straight NW
       if (not(movex = Dimension'First or movey = Dimension'Last)) then
          yroom := Dimension'Last - movey;
-         xroom := movex-1;
+         xroom := movex;
          if (yroom > xroom) then
             moveroom := xroom;
          else
@@ -227,8 +228,8 @@ function ValidMove(player : BoardPoint; board : in GameBoard; movex : in Dimensi
       end if;
       --straight SW
       if (not(movex = Dimension'First or movey = Dimension'First)) then
-      yroom := movey-1;
-      xroom := movex-1;
+      yroom := movey;
+      xroom := movex;
       if (yroom > xroom) then
          moveroom := xroom;
       else
@@ -257,7 +258,7 @@ function ValidMove(player : BoardPoint; board : in GameBoard; movex : in Dimensi
       end if;
       --straight SE
       if (not(movey = Dimension'First or movex = Dimension'Last)) then
-      yroom := movey-1;
+      yroom := movey;
       xroom := Dimension'Last - movex;
       if (yroom > xroom) then
          moveroom := xroom;

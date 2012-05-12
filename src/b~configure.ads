@@ -13,7 +13,7 @@ package ada_main is
    u00001 : constant Version_32 := 16#feeeeae6#;
    u00002 : constant Version_32 := 16#4b33036a#;
    u00003 : constant Version_32 := 16#03570e27#;
-   u00004 : constant Version_32 := 16#911c6e60#;
+   u00004 : constant Version_32 := 16#51ef557c#;
    u00005 : constant Version_32 := 16#c49d6a4a#;
    u00006 : constant Version_32 := 16#9c7dd3ea#;
    u00007 : constant Version_32 := 16#cc1134cf#;

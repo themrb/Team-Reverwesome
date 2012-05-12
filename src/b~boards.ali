@@ -3,15 +3,15 @@ A -mtune=generic
 P ZX
 R nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnvvnnnnnnnnnnnnnnnnnn
 
-U ada_main%b		b~boards.adb		83694fa4 NE OO PK IL
+U ada_main%b		b~boards.adb		b998d39b NE OO PK IL
 W system%s		system.ads		system.ali
 W system.restrictions%s	s-restri.adb		s-restri.ali
 
-U ada_main%s		b~boards.ads		31881017 EE NE OO PK IL
+U ada_main%s		b~boards.ads		0b798c28 EE NE OO PK IL
 W system%s		system.ads		system.ali
 
-D b~boards.ads		20120512113929 eedd2038
-D b~boards.adb		20120512113929 80c60497
+D b~boards.ads		20120512131243 d42cbc07
+D b~boards.adb		20120512131243 80c60497
 D system.ads		20100127090222 df55302f
 D s-restri.ads		20090409232307 ed726b0b
 D s-rident.ads		20090409232307 e38f8060

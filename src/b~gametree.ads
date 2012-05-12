@@ -10,7 +10,7 @@ package ada_main is
    pragma Export (C, adainit, "adainit");
 
    type Version_32 is mod 2 ** 32;
-   u00001 : constant Version_32 := 16#3f65c41e#;
+   u00001 : constant Version_32 := 16#25544c14#;
    u00002 : constant Version_32 := 16#eea2a6c3#;
    u00003 : constant Version_32 := 16#4b33036a#;
    u00004 : constant Version_32 := 16#03570e27#;
@@ -90,7 +90,7 @@ package ada_main is
    u00078 : constant Version_32 := 16#18dd447c#;
    u00079 : constant Version_32 := 16#923573c8#;
    u00080 : constant Version_32 := 16#183b4446#;
-   u00081 : constant Version_32 := 16#911c6e60#;
+   u00081 : constant Version_32 := 16#51ef557c#;
    u00082 : constant Version_32 := 16#c49d6a4a#;
    u00083 : constant Version_32 := 16#cc1134cf#;
    u00084 : constant Version_32 := 16#b9828a2f#;
