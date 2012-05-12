@@ -23,7 +23,7 @@ package body MinMax is
 
       if (depth = 0 or Terminal(state.state.current_state)) then
          --Put_Line(Image(state.state.current_state));
-         EndBoardValue(Player,state.state.current_state,outValue);
+         EndBoardValue(Player,state.state.current_state, successors.branching, outValue);
          return;
       end if;
 
@@ -81,8 +81,8 @@ package body MinMax is
 
       if (depth = 0 or Terminal(state.state.current_state)) then
          --Put_Line(TurnsNo'Image(successors.branching));
-         --Put_Line(Image(state.state.current_state));     
-         EndBoardValue(Player,state.state.current_state,outValue);
+         --Put_Line(Image(state.state.current_state));
+         EndBoardValue(Player,state.state.current_state, successors.branching, outValue);
          return;
       end if;
 
