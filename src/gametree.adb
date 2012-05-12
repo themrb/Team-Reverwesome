@@ -21,21 +21,23 @@ package body GameTree is
 
                   temp := state;
                   temp.state.justWent := NextPlayer(state.state.justWent);
-                  temp.state.current_state(i,j) := toPlay;
+                  AdvanceMove(toPlay, temp.state.current_state, i, j);
                   temp.state.spot := (i,j);
                   temp.state.turns := state.state.turns + 1;
                   temp.state.TokensTaken := temptokens;
 
                   Children.children(Counter) := temp;
-                     Configure.count := Configure.count + 1;
-                     if(Counter < TurnsNo'Last) then
-                        Counter := Counter + 1;
-                     end if;
+                  Configure.count := Configure.count + 1;
+                  Counter := Counter + 1;
                end if;
          end loop;
       end loop;
 
       Children.branching := Counter;
+
+      if (Counter = 0) then
+         Children.nomove := True; 
+      end if;
       return Children;
    end Expand;
 

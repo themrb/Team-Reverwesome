@@ -3,7 +3,7 @@ A -mtune=generic
 P SS ZX
 R nnnnnnnvnnnnnnnnnnnnnnvnnnvnnnnnnnnnnnnnnvnnnnnnnnnnvnnvnnnnnnnnnnnnnnnnnnnnn
 
-U gametree%b		gametree.adb		5954c3f7 NE OO PK
+U gametree%b		gametree.adb		3f65c41e NE OO PK
 W ada%s			ada.ads			ada.ali
 W ada.tags%s		a-tags.adb		a-tags.ali
 W ada.text_io%s		a-textio.adb		a-textio.ali
@@ -11,7 +11,7 @@ W ada.unchecked_deallocation%s
 W boards%s		boards.adb		boards.ali
 W configure%s		configure.ads		configure.ali
 
-U gametree%s		gametree.ads		2d4e4241 EE NE OO PK
+U gametree%s		gametree.ads		eea2a6c3 EE NE OO PK
 W ada%s			ada.ads			ada.ali
 W ada.containers%s	a-contai.ads		a-contai.ali
 W ada.containers.doubly_linked_lists%s
@@ -30,10 +30,10 @@ D a-tags.ads		20090409232307 bfa07446
 D a-textio.ads		20090409232307 fe8af46e
 D a-unccon.ads		20070406091342 51e09df2
 D a-uncdea.ads		20070406091342 dc667e6d
-D boards.ads		20120512070418 1eee3e1a
+D boards.ads		20120512092101 c49d6a4a
 D configure.ads		20120507072842 3a7380ac
-D gametree.ads		20120512064348 64899541
-D gametree.adb		20120512064322 3bac6203
+D gametree.ads		20120512113102 7d162593
+D gametree.adb		20120512113830 9e718168
 D interfac.ads		20090409232307 a69cad5c
 D i-cstrea.ads		20090409232307 e1e064a9
 D system.ads		20100127090222 df55302f
@@ -64,48 +64,50 @@ X 10 a-textio.ads
 X 12 a-uncdea.ads
 20u15*Unchecked_Deallocation 15|3w10 16|3w10
 X 13 boards.ads
-1K9*Boards 44e11 15|1w6 1r18 16|1w6 1r18
-5I9*Dimension<integer> 16|17r16 18r19 44r16 45r19
+1K9*Boards 46e11 15|1w6 1r18 16|1w6 1r18
+5I9*Dimension<integer> 16|17r16 18r19 46r16 47r19
 9E9*BoardPoint 9e53 16|13r16
-9n31*White{9E9} 16|46r30
-9n38*Black{9E9} 16|46r65
-12A9*GameBoard(9E9)<5I9><5I9> 15|26r33 16|42r33
+9n31*White{9E9} 16|48r30
+9n38*Black{9E9} 16|48r65
+12A9*GameBoard(9E9)<5I9><5I9> 15|27r33 16|44r33
 15A9*Place(5I9)<14E9>
-17I12*TurnsNo{natural} 15|16r32 20r19 16|12r17 14r20 31r35
+17I12*TurnsNo{natural} 15|16r32 20r19 16|12r17 14r20
 20R9*State_Type 26e14 15|12r15
 21e7*justWent{9E9} 16|13r53 23m30 23r65
 22i7*TokensTaken{17I12} 16|27m30
 23a7*spot{15A9} 16|25m30
 24i7*turns{17I12} 16|26m30 26r51
-25a7*current_state{12A9} 16|19r59 24m30
+25a7*current_state{12A9} 16|19r59 24m50
 30V13*NextPlayer{9E9} 16|13r30 23r42
-36V13*ValidMove{natural} 16|19r30 46r20 46r55
+36V13*ValidMove{natural} 16|19r30 48r20 48r55
+38U14*AdvanceMove 16|24r19
 X 14 configure.ads
-3K9*Configure 10e14 16|4w6 4r21 30r22 30r41
-9i4*count{natural} 16|30m32 30r51
+3K9*Configure 10e14 16|4w6 4r21 30r19 30r38
+9i4*count{natural} 16|30m29 30r48
 X 15 gametree.ads
-5K9*GameTree 28l5 28e13 16|6b14 53l5 53t13
-7R9*GameTree_Type 8r39 11c9 14e14 16r44 24r31 16|9r31 10r22
+5K9*GameTree 29l5 29e13 16|6b14 55l5 55t13
+7R9*GameTree_Type 8r39 11c9 14e14 16r44 25r31 16|9r31 10r22
 8P9*GameTree_Access(7R9)
 11R9*GameTree_Type
-12r7*state{13|20R9} 16|13m47 19m53 23m24 23m59 24m24 25m24 26m24 26m45 27m24
+12r7*state{13|20R9} 16|13m47 19m53 23m24 23m59 24m44 25m24 26m24 26m45 27m24
 13b7*expanded{boolean}
-16A9*ChildrenArray(11R9)<integer> 21r18
-19R9*ExpandedChildren 22e14 24r53 16|9r53 11r18
-20i7*branching{13|17I12} 16|38m16
-21a7*children{16A9} 16|29m28
-24V13*Expand{19R9} 24>20 16|9b13 40l8 40t14
-24r20 state{11R9} 16|9b20 13r41 19r47 22r27 23r53 26r39
-26V13*Terminal{boolean} 26>22 16|42b13 52l8 52t16
-26a22 board{13|12A9} 16|42b22 46r36 46r71
+16A9*ChildrenArray(11R9)<integer> 22r18
+19R9*ExpandedChildren 23e14 25r53 16|9r53 11r18
+20i7*branching{13|17I12} 16|36m16
+21b7*nomove{boolean} 16|39m19
+22a7*children{16A9} 16|29m28
+25V13*Expand{19R9} 25>20 16|9b13 42l8 42t14
+25r20 state{11R9} 16|9b20 13r41 19r47 22r27 23r53 26r39
+27V13*Terminal{boolean} 27>22 16|44b13 54l8 54t16
+27a22 board{13|12A9} 16|44b22 48r36 48r71
 X 16 gametree.adb
-10r7 temp{15|11R9} 22m19 23m19 24m19 25m19 26m19 27m19 29r49
-11r7 Children{15|19R9} 29m19 38m7 39r14
-12i7 Counter{13|17I12} 29r37 31r25 32m25 32r36 38r29
-13e7 toPlay{13|9E9} 19r40 24r52
+10r7 temp{15|11R9} 22m19 23m19 24m39 25m19 26m19 27m19 29r49
+11r7 Children{15|19R9} 29m19 36m7 39m10 41r14
+12i7 Counter{13|17I12} 29r37 31m19 31r30 36r29 38r11
+13e7 toPlay{13|9E9} 19r40 24r31
 14i7 temptokens{13|17I12} 19m16 20r20 27r45
-17i11 i{13|5I9} 19r74 24r44 25r39
-18i14 j{13|5I9} 19r76 24r46 25r41
-44i11 i{13|5I9} 46r43 46r78
-45i14 j{13|5I9} 46r45 46r80
+17i11 i{13|5I9} 19r74 24r65 25r39
+18i14 j{13|5I9} 19r76 24r68 25r41
+46i11 i{13|5I9} 48r43 48r78
+47i14 j{13|5I9} 48r45 48r80
 

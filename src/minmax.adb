@@ -11,18 +11,31 @@ package body MinMax is
       value : BoardValue;
       best : Place;
    begin
+--Put_Line( player'Img);
+      if (Player = Blocked or state.state.justWent = Blocked) then
+         Put_Line("BAD");
+      end if;
       a := alpha;
       b := beta;
       value := BoardValue'Last;  -- Set to maximum board-value;
       bestMove := successors.children(1).state.spot;
 
-      if (depth = 0) then         
+
+      if (depth = 0 or Terminal(state.state.current_state)) then
+         --Put_Line(Image(state.state.current_state));
          EndBoardValue(Player,state.state.current_state,outValue);
          return;
       end if;
 
+      --if we don't get a move
+      if (successors.nomove = False) then
+         state.state.justWent := NextPlayer(state.state.justWent);
+         Max(Player,state,depth-1,outValue,a,b,best);
+         return;
+      end if;
+
       -- Haven't reached the bottom yet, so continue minmaxing
-      for i in 1.. (successors.branching) loop
+      for i in 1.. (successors.branching-1) loop
          move := successors.children(TurnsNo(i));
          declare
             maxValue : BoardValue;
@@ -61,19 +74,32 @@ package body MinMax is
       b := beta;
       value := BoardValue'First;  -- Set to minimum board-value;
       bestMove := successors.children(1).state.spot;
+--Put_Line( player'Img);
+      if (Player = Blocked or state.state.justWent = Blocked) then
+         Put_Line("BAD");
+      end if;
 
-      if (depth = 0) then         
+      if (depth = 0 or Terminal(state.state.current_state)) then
+         --Put_Line(TurnsNo'Image(successors.branching));
+         --Put_Line(Image(state.state.current_state));     
          EndBoardValue(Player,state.state.current_state,outValue);
          return;
       end if;
 
+      --if we don't get a move
+      if (successors.nomove = False) then
+         state.state.justWent := NextPlayer(state.state.justWent);
+         Min(Player,state,depth-1,outValue,a,b,best);
+         return;
+      end if;
+
       -- Haven't reached the bottom yet, so continue minmaxing
-      for i in 1.. (successors.branching) loop
+      for i in 1.. (successors.branching-1) loop
          move := successors.children(TurnsNo(i));
          declare
             maxValue : BoardValue;
          begin
-            Max(Player,move, depth-1, maxValue, a, b,best);
+            Min(Player,move, depth-1, maxValue, a, b,best);
             if(maxValue < value) then
                value := maxValue;
                bestMove := move.state.spot;

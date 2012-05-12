@@ -3,14 +3,14 @@ A -mtune=generic
 P ZX
 R nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn
 
-U configure%s		configure.ads		249dbeb6 NE OO PK
+U configure%s		configure.ads		feeeeae6 NE OO PK
 W boards%s		boards.adb		boards.ali
 
-D boards.ads		20120512070418 1eee3e1a
+D boards.ads		20120512092101 c49d6a4a
 D configure.ads		20120507072842 3a7380ac
 D system.ads		20100127090222 df55302f
 X 1 boards.ads
-1K9*Boards 44e11 2|1w6 1r18
+1K9*Boards 46e11 2|1w6 1r18
 17I12*TurnsNo{natural} 2|5r12
 X 2 configure.ads
 3K9*Configure 10l5 10e14

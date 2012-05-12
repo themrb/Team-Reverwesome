@@ -2,6 +2,7 @@ with Ada.Text_IO;
 use Ada.Text_IO;
 with Boards; use Boards;
 with GameTree; use GameTree;
+with MinMax; use MinMax;
 with Configure; use Configure;
 with Exceptions; use Exceptions;
 
@@ -23,6 +24,7 @@ package body Agent is
 		bestpiecestaken : Natural := 0;
       treeroot : GameTree_Type;
       move : Place;
+      value : BoardValue;
 	begin
 		Put("Ada_Subroutine has been invoked from C++.");
 		Ada.Text_IO.Put_Line("");
@@ -43,21 +45,32 @@ package body Agent is
       treeroot.state.justWent := NextPlayer(player);
       treeroot.state.current_state := currentstate;
 
-		Move_Loop:
-		for I in Dimension range Dimension'Range loop
-			for J in Dimension range Dimension'Range loop
-				piecestaken := ValidMove(player, currentstate, I, J);
-				if (piecestaken > 0) then
-					if (piecestaken > bestpiecestaken) then
-						bestpiecestaken := piecestaken;
-						cnextmovey := Integer(I);
-						cnextmovex := Integer(J);
-						Put_Line("Seen move " & I'Img &J'Img);
-						--PrintBoard(currentstate);
-					end if;
-				end if;
-			end loop;
-		end loop Move_Loop;
+      Max(player, treeroot, 5, value, BoardValue'First, BoardValue'Last, move);
+
+      declare
+         temppieces : Natural := ValidMove(player, currentstate, move(x), move(y));
+      begin
+         Put(TurnsNo'Image(temppieces));
+      end;
+
+      cnextmovey := Integer(move(x));
+      cnextmovex := Integer(move(y));
+
+-- 		Move_Loop:
+-- 		for I in Dimension range Dimension'Range loop
+-- 			for J in Dimension range Dimension'Range loop
+-- 				piecestaken := ValidMove(player, currentstate, I, J);
+-- 				if (piecestaken > 0) then
+-- 					if (piecestaken > bestpiecestaken) then
+-- 						bestpiecestaken := piecestaken;
+-- 						cnextmovey := Integer(I);
+-- 						cnextmovex := Integer(J);
+-- 						Put_Line("Seen move " & I'Img &J'Img);
+-- 						--PrintBoard(currentstate);
+-- 					end if;
+-- 				end if;
+-- 			end loop;
+-- 		end loop Move_Loop;
 	end Ada_Subroutine;
 
 	procedure GreedyMove(board : in GameBoard; xmove : out Dimension; ymove : out Dimension) is
