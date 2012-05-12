@@ -17,38 +17,31 @@ package body Boards is
       return Empty;
    end NextPlayer;
 
-   procedure EndBoardValue(Player : BoardPoint; State : GameBoard; Score : out BoardValue) is
-      WhiteTokens : TurnsNo;
-      BlackTokens : TurnsNo;
+   procedure EndBoardValue(Player : BoardPoint; State : GameBoard;
+                           NumMoves : Natural; Score : out BoardValue) is
    begin
-      TokenCount(State,WhiteTokens,BlackTokens);
-      if Player = White then
-         Score := BoardValue(WhiteTokens - BlackTokens);
-      else
-         Score := BoardValue(BlackTokens - WhiteTokens);
-      end if;
+      Score := 0;
+      TokenScore(State, Player, defaultWeights, Score);
+      -- Weighting on the number of available moves
+      Score := Score + (FeatureWeight(NumMoves) * defaultMobility);
    end EndBoardValue;
-         
 
-   procedure TokenCount(State : GameBoard; WhiteTokens : out TurnsNo; BlackTokens : out TurnsNo) is
+
+   procedure TokenScore(State : GameBoard; Player: in BoardPoint;
+                        Weights: in BoardPositionWeights; Score: in out BoardValue) is
    begin
-      BlackTokens := 0;
-      WhiteTokens := 0;
-        for I in Dimension'Range loop
+      for I in Dimension'Range loop
          for J in Dimension'Range loop
-            case State(I,J) is
-            when White =>
-               WhiteTokens := WhiteTokens + 1;
-            when Black =>
-               BlackTokens := BlackTokens + 1;
-            when others =>
-               null;
-            end case;
+            if State(I,J) = Player then
+               Score := Score + Weights(I,J);
+            elsif State(I,J) = NextPlayer(Player) then
+               Score := Score - Weights(I,J);
+            end if;
          end loop;
-end loop;
-   end TokenCount;
+      end loop;
+   end TokenScore;
 
-function ValidMove(player : BoardPoint; board : in GameBoard; movex : in Dimension; movey : in Dimension) return Natural is
+   function ValidMove(player : BoardPoint; board : in GameBoard; movex : in Dimension; movey : in Dimension) return Natural is
       HitOpponent : Boolean;
       Opponent : BoardPoint := NextPlayer(player);
       x : Dimension;
@@ -288,7 +281,7 @@ function ValidMove(player : BoardPoint; board : in GameBoard; movex : in Dimensi
       return totalpieces;
    end ValidMove;
 
-procedure AdvanceMove(player : BoardPoint; board : in out GameBoard; movex : Dimension; movey : Dimension) is
+   procedure AdvanceMove(player : BoardPoint; board : in out GameBoard; movex : Dimension; movey : Dimension) is
       HitOpponent : Boolean;
       Opponent : BoardPoint := NextPlayer(player);
       x : Dimension;
@@ -592,20 +585,20 @@ procedure AdvanceMove(player : BoardPoint; board : in out GameBoard; movex : Dim
                temp := temp & "+F+";
             end case;
          end loop;
-               temp := temp & "\n";
-end loop;
-         return To_String(temp);
-        end Image;
+         temp := temp & "\n";
+      end loop;
+      return To_String(temp);
+   end Image;
 
       -- Print function
-      function Image(spot : Place) return String is
-      begin
-         return "(" & Dimension'Image(spot(x)) & "," & Dimension'Image(spot(y))
-           & "," & ")";
-      end;
+   function Image(spot : Place) return String is
+   begin
+      return "(" & Dimension'Image(spot(x)) & "," & Dimension'Image(spot(y))
+        & "," & ")";
+   end;
 
-      -- Print function
-      function Image(board : GameBoard) return String is
+   -- Print function
+   function Image(board : GameBoard) return String is
       temp : Unbounded_String;
    begin
       for I in Dimension'Range loop
@@ -624,10 +617,10 @@ end loop;
                temp := temp & "+F+";
             end case;
          end loop;
-               temp := temp & Ada.Characters.Latin_1.LF;
-end loop;
+         temp := temp & Ada.Characters.Latin_1.LF;
+      end loop;
 
-         return To_String(temp);
-      end;
+      return To_String(temp);
+   end;
 
-   end Boards;
+end Boards;
