@@ -39,7 +39,10 @@ package body GameTree is
 
       if (Counter = 0) then
          --Put_Line("We don't have any moves :(");
-         Children.nomove := True; 
+         temp := state;
+         temp.state.justWent := NextPlayer(state.state.justWent);
+         Children := Expand(temp);
+         Children.nomove := True;
       end if;
       return Children;
    end Expand;
