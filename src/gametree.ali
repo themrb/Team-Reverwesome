@@ -1,0 +1,115 @@
+V "GNAT Lib v4.4"
+A -mtune=generic
+P SS ZX
+R nnnnnnnvnnnnnnnnnnnnnnvnnnvnnnnnnnvnnnnnnvnnnnnnnnnnvnnvnnnnnnnnnnnnnnnnnnnnn
+
+U gametree%b		gametree.adb		b33c2d41 NE OO PK
+W ada%s			ada.ads			ada.ali
+W ada.tags%s		a-tags.adb		a-tags.ali
+W ada.text_io%s		a-textio.adb		a-textio.ali
+W ada.unchecked_deallocation%s
+W boards%s		boards.adb		boards.ali
+W configure%s		configure.ads		configure.ali
+
+U gametree%s		gametree.ads		3d487bf5 EE NE OO PK
+W ada%s			ada.ads			ada.ali
+W ada.containers%s	a-contai.ads		a-contai.ali
+W ada.containers.doubly_linked_lists%s
+W ada.unchecked_deallocation%s
+W boards%s		boards.adb		boards.ali
+
+D ada.ads		20070406091342 9c7dd3ea
+D a-contai.ads		20070406091342 7b35f559
+D a-cdlili.ads		20090409232307 8b4f9777
+D a-except.ads		20090409232307 b54b55de
+D a-finali.ads		20090409232307 9eaacebd
+D a-filico.ads		20090409232307 9299732a
+D a-ioexce.ads		20070406091342 be0900a0
+D a-stream.ads		20090409232307 34aca5be
+D a-tags.ads		20090409232307 bfa07446
+D a-textio.ads		20090409232307 fe8af46e
+D a-unccon.ads		20070406091342 51e09df2
+D a-uncdea.ads		20070406091342 dc667e6d
+D boards.ads		20120514135756 1777b77c
+D configure.ads		20120507072842 3a7380ac
+D gametree.ads		20120512113102 7d162593
+D gametree.adb		20120514134636 c1c2b501
+D interfac.ads		20090409232307 a69cad5c
+D i-cstrea.ads		20090409232307 e1e064a9
+D system.ads		20100127090222 df55302f
+D s-crtl.ads		20090409232307 997234a1
+D s-exctab.ads		20090409232307 5c1c61ae
+D s-ficobl.ads		20090409232307 8bb681e5
+D s-finimp.ads		20090409232307 9449f4cb
+D s-finroo.ads		20090409232307 1408f9d1
+D s-parame.ads		20090409232307 f32e56e9
+D s-secsta.ads		20090409232307 7bae3621
+D s-soflin.ads		20090409232307 0c6fd39d
+D s-stache.ads		20090409232307 257b3be8
+D s-stalib.ads		20090409232307 52b793d5
+D s-stoele.ads		20090409232307 ed966df3
+D s-stoele.adb		20090409232307 e9998c78
+D s-stratt.ads		20090409232307 fef7c1da
+D s-traent.ads		20090409232307 bd5f2753
+D s-unstyp.ads		20090409232307 c0f9fae5
+D s-wchcon.ads		20090409232307 ab028799
+X 1 ada.ads
+16K9*Ada 19e8 15|2r6 3r6 16|2r6 2r23 3r6
+X 2 a-contai.ads
+16K13*Containers 22e19 15|2r10
+X 3 a-cdlili.ads
+43k24*Doubly_Linked_Lists 276e39 15|2w21
+X 10 a-textio.ads
+48K13*Text_IO 506e16 16|2w10 2r27
+X 12 a-uncdea.ads
+20u15*Unchecked_Deallocation 15|3w10 16|3w10
+X 13 boards.ads
+1K9*Boards 63e11 15|1w6 1r18 16|1w6 1r18
+5I9*Dimension<integer> 16|17r16 18r19 52r16 53r19
+22E9*BoardPoint 22e53 16|13r16
+22n31*White{22E9} 16|54r30
+22n38*Black{22E9} 16|54r65
+25A9*GameBoard(22E9)<5I9><5I9> 15|27r33 16|50r33
+28A9*Place(5I9)<27E9>
+30I12*TurnsNo{natural} 15|16r32 20r19 16|12r17 14r20
+33R9*State_Type 39e14 15|12r15
+34e7*justWent{22E9} 16|13r53 25m30 25r65 43m21 43r56
+35i7*TokensTaken{30I12} 16|29m30
+36a7*spot{28A9} 16|27m30
+37i7*turnsleft{30I12} 16|28m30 28r55
+38a7*current_state{25A9} 16|20r59 26m50
+44V13*NextPlayer{22E9} 16|13r30 25r42 43r33
+53V13*ValidMove{natural} 16|20r30 54r20 54r55
+55U14*AdvanceMove 16|26r19
+X 14 configure.ads
+3K9*Configure 10e14 16|4w6 4r21 32r19 32r38
+9i4*count{natural} 16|32m29 32r48
+X 15 gametree.ads
+5K9*GameTree 29l5 29e13 16|6b14 62l5 62t13
+7R9*GameTree_Type 8r39 11c9 14e14 16r44 25r31 16|9r31 10r22
+8P9*GameTree_Access(7R9)
+11R9*GameTree_Type
+12r7*state{13|33R9} 16|13m47 20m53 25m24 25m59 26m44 27m24 28m24 28m49 29m24
+. 43m15 43m50
+13b7*expanded{boolean}
+16A9*ChildrenArray(11R9)<integer> 22r18
+19R9*ExpandedChildren 23e14 25r53 16|9r53 11r18
+20i7*branching{13|30I12} 16|38m16
+21b7*nomove{boolean} 16|45m19
+22a7*children{16A9} 16|31m28
+25V13*Expand{19R9} 25>20 16|9b13 44r22 48l8 48t14
+25r20 state{11R9} 16|9b20 13r41 20r47 24r27 25r53 28r43 42r18 43r44
+27V13*Terminal{boolean} 27>22 16|50b13 61l8 61t16
+27a22 board{13|25A9} 16|50b22 54r36 54r71
+X 16 gametree.adb
+10r7 temp{15|11R9} 24m19 25m19 26m39 27m19 28m19 29m19 31r49 42m10 43m10
+. 44r29
+11r7 Children{15|19R9} 31m19 38m7 44m10 45m10 47r14
+12i7 Counter{13|30I12} 31r37 33m19 33r30 38r29 40r11
+13e7 toPlay{13|22E9} 20r40 26r31
+14i7 temptokens{13|30I12} 20m16 21r20 29r45
+17i11 i{13|5I9} 20r74 26r65 27r39
+18i14 j{13|5I9} 20r76 26r68 27r41
+52i11 i{13|5I9} 54r43 54r78
+53i14 j{13|5I9} 54r45 54r80
+

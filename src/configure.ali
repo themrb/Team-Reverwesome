@@ -1,0 +1,20 @@
+V "GNAT Lib v4.4"
+A -mtune=generic
+P ZX
+R nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn
+
+U configure%s		configure.ads		2d0437d0 NE OO PK
+W boards%s		boards.adb		boards.ali
+
+D boards.ads		20120514135756 1777b77c
+D configure.ads		20120507072842 3a7380ac
+D system.ads		20100127090222 df55302f
+X 1 boards.ads
+1K9*Boards 63e11 2|1w6 1r18
+30I12*TurnsNo{natural} 2|5r12
+X 2 configure.ads
+3K9*Configure 10l5 10e14
+5i4*depth{1|30I12}
+7i4*workerTasks{natural}
+9i4*count{natural}
+

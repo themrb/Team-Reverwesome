@@ -94,7 +94,7 @@ int main(int argc, char *argv[])
 
     // send connect message to server
     ConnectMessage message(player, player == WHITE ?
-        "Team Rocket White Player" : "Team Rocket Black Player");
+        "404 Player Not Found" : "404 Player Not Found");
     if (!message.send(client_socket)) {
         cerr << "CLIENT: could not connect to server" << endl;
         exit(-1);

@@ -27,14 +27,14 @@ package Boards is
    type Coordinate is (x, y);
    type Place is array(Coordinate) of Dimension;
 
-   subtype TurnsNo is Natural range 0 .. 92;
+   subtype TurnsNo is Natural range 0 .. 96;
 
    -- Information on the game state
    type State_Type is record
       justWent : BoardPoint := Blocked;
       TokensTaken : TurnsNo := 0;
       spot : Place;
-      turns : TurnsNo := 0;
+      turnsleft : TurnsNo := 0;
       current_state : GameBoard;
    end record;
 

@@ -601,7 +601,7 @@ package body Boards is
       temp : Unbounded_String;
    begin
       temp := temp & "[" & BoardPoint'Image(state.justWent) & "," & Image(state.spot)
-        & "," & Natural'Image(state.turns) & "]";
+        & "," & Natural'Image(state.turnsleft) & "]";
       for I in Dimension'Range loop
          for J in Dimension'Range loop
             case state.current_state(I,J) is
