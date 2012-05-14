@@ -25,7 +25,7 @@ package body GameTree is
                   temp.state.justWent := NextPlayer(state.state.justWent);
                   AdvanceMove(toPlay, temp.state.current_state, i, j);
                   temp.state.spot := (i,j);
-                  temp.state.turns := state.state.turns + 1;
+                  temp.state.turnsleft := state.state.turnsleft - 1;
                   temp.state.TokensTaken := temptokens;
 
                   Children.children(Counter) := temp;

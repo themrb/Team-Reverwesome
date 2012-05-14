@@ -23,6 +23,7 @@ package body Agent is
       treeroot : GameTree_Type;
       move : Place;
       value : BoardValue;
+      turnsleft : TurnsNo := 0;
 	begin
 		Put("Ada_Subroutine has been invoked from C++.");
 		Ada.Text_IO.Put_Line("");
@@ -36,18 +37,60 @@ package body Agent is
 		for I in Dimension'Range loop
 			for J in Dimension'Range loop
 				currentstate(I,J) := BoardPoint'Val(ccurrentstate(I,J));
+            if (currentstate(I,J) = Empty) then
+               turnsleft := turnsleft + 1;
+            end if;
 			end loop;
 			--Ada.Text_IO.Put_Line("");
 		end loop;
 
+      if (ValidMove(player,currentstate,0,0) > 0) then
+         cnextmovey := 0;
+         cnextmovex := 0;
+         return;
+      elsif (ValidMove(player,currentstate,0,9) > 0) then
+         cnextmovey := 0;
+         cnextmovex := 9;
+         return;
+      elsif (ValidMove(player,currentstate,9,9) > 0) then
+         cnextmovey := 9;
+         cnextmovex := 9;
+         return;
+      elsif (ValidMove(player,currentstate,9,0) > 0) then
+         cnextmovey := 9;
+         cnextmovex := 0;
+         return;
+      end if;
+         
+
       treeroot.state.justWent := NextPlayer(player);
       treeroot.state.current_state := currentstate;
+      treeroot.state.turnsleft := turnsleft;
 
       --Put_Line("No storage error yet");
-      Max(player, treeroot, 5, value, BoardValue'First, BoardValue'Last, move);
+      if (turnsleft < 17) then
+         Max(player, treeroot, 15, value, BoardValue'First, BoardValue'Last, move);
+      else
+         declare
+            tempprob : Probability;
+            bestprob : Probability := 0.0;
+            bestmove : Place;
+            children : ExpandedChildren := Expand(treeroot);
+         begin
+            for I in 0 .. children.branching-1 loop
+               tempprob := MonteCarlo(player,children.children(I),200);
+               if (tempprob >= bestprob) then
+                  bestmove := children.children(I).state.spot;
+                  bestprob := tempprob;
+               end if;
+            end loop;
+            Put_Line("Probability of winning : " & Long_Float'Image(bestprob));
+            move := bestmove;
+         end;
+      end if;
 
       --Put_Line("No storage error after max");
-      Put_Line("testing monte carlo " & Long_Float'Image(MonteCarlo(player,treeroot,100)));
+      --Put_Line("testing monte carlo " & Long_Float'Image(MonteCarlo(player,treeroot,100)));
       declare
          temppieces : Natural := ValidMove(player, currentstate, move(x), move(y));
       begin

@@ -1,0 +1,170 @@
+V "GNAT Lib v4.4"
+A -mtune=generic
+P SS ZX
+R nnnnnnnvnnnnnnnnnnvnvvvnnnnnvnnnnnnnnnnnnvnnnnnnnnvnnnnvnvvnnnnnnnnnnnnnnnnnn
+
+U minmax%b		minmax.adb		0878760b NE OO PK
+W ada%s			ada.ads			ada.ali
+W ada.calendar%s	a-calend.adb		a-calend.ali
+W ada.numerics%s	a-numeri.ads		a-numeri.ali
+W ada.numerics.discrete_random%s
+W ada.tags%s		a-tags.adb		a-tags.ali
+W ada.text_io%s		a-textio.adb		a-textio.ali
+W boards%s		boards.adb		boards.ali
+W gametree%s		gametree.adb		gametree.ali
+W interfaces%s		interfac.ads		interfac.ali
+W system.arith_64%s	s-arit64.adb		s-arit64.ali
+W system.img_int%s	s-imgint.adb		s-imgint.ali
+W system.string_ops_concat_5%s  s-sopco5.adb	s-sopco5.ali
+W system.val_int%s	s-valint.adb		s-valint.ali
+
+U minmax%s		minmax.ads		18f48d6b EE NE OO PK
+W boards%s		boards.adb		boards.ali
+W gametree%s		gametree.adb		gametree.ali
+
+D ada.ads		20070406091342 9c7dd3ea
+D a-calend.ads		20090409232307 19486c30
+D a-contai.ads		20070406091342 7b35f559
+D a-cdlili.ads		20090409232307 8b4f9777
+D a-except.ads		20090409232307 b54b55de
+D a-finali.ads		20090409232307 9eaacebd
+D a-filico.ads		20090409232307 9299732a
+D a-ioexce.ads		20070406091342 be0900a0
+D a-numeri.ads		20080324174807 1cf3e608
+D a-nudira.ads		20090409232307 56734efa
+D a-nudira.adb		20090409232307 cb202240
+D a-stream.ads		20090409232307 34aca5be
+D a-tags.ads		20090409232307 bfa07446
+D a-textio.ads		20090409232307 fe8af46e
+D a-unccon.ads		20070406091342 51e09df2
+D a-uncdea.ads		20070406091342 dc667e6d
+D boards.ads		20120514135756 1777b77c
+D gametree.ads		20120512113102 7d162593
+D interfac.ads		20090409232307 a69cad5c
+D i-cstrea.ads		20090409232307 e1e064a9
+D minmax.ads		20120514081210 72951f84
+D minmax.adb		20120514134907 a486a7fc
+D system.ads		20100127090222 df55302f
+D s-arit64.ads		20090409232307 ded5f422
+D s-crtl.ads		20090409232307 997234a1
+D s-exctab.ads		20090409232307 5c1c61ae
+D s-ficobl.ads		20090409232307 8bb681e5
+D s-finimp.ads		20090409232307 9449f4cb
+D s-finroo.ads		20090409232307 1408f9d1
+D s-imgint.ads		20090409232307 f77d133c
+D s-parame.ads		20090409232307 f32e56e9
+D s-secsta.ads		20090409232307 7bae3621
+D s-soflin.ads		20090409232307 0c6fd39d
+D s-stache.ads		20090409232307 257b3be8
+D s-stalib.ads		20090409232307 52b793d5
+D s-stoele.ads		20090409232307 ed966df3
+D s-stoele.adb		20090409232307 e9998c78
+D s-stratt.ads		20090409232307 fef7c1da
+D s-strops.ads		20090409232307 845f72d2
+D s-sopco3.ads		20090409232307 72ce1063
+D s-sopco4.ads		20090409232307 bc112723
+D s-sopco5.ads		20090409232307 191315e8
+D s-traent.ads		20090409232307 bd5f2753
+D s-unstyp.ads		20090409232307 c0f9fae5
+D s-valint.ads		20090409232307 d23209d2
+D s-wchcon.ads		20090409232307 ab028799
+X 1 ada.ads
+16K9*Ada 19e8 22|3r6 3r23 4r6 5r6 146r31 153r37
+X 9 a-numeri.ads
+16K13*Numerics 32e17 22|4w10 5r10 146r35 153r41
+X 10 a-nudira.ads
+50k22*Discrete_Random 114e33 22|5w19 146r44 153r50
+63R9 Generator 22|147r23[146] 154r29[153]
+65V13 Random{22|152I18} 22|157r56[153] 175r60[146]
+67U14 Reset 22|156r22[153] 174r22[146]
+X 14 a-textio.ads
+48K13*Text_IO 506e16 22|3w10 3r27
+263U14*Put_Line 22|18r10 86r10
+X 17 boards.ads
+1K9*Boards 63e11 21|2w6 2r18 22|2w6 2r18
+3I9*BoardValue<integer> 21|6r106 7r36 8r107 9r36 22|9r105 9r134 12r14 13r15
+. 22r16 45r24 71r105 72r38 75r14 76r15 81r16 109r24
+5I9*Dimension<integer>
+22E9*BoardPoint 22e53 21|6r27 8r28 13r34 22|9r28 71r28 136r34 142r20
+22n31*White{22E9} 22|164r36 180r20
+22n38*Black{22E9} 22|166r39 182r23
+22n45*Blocked{22E9} 22|17r20 17r54 85r20 85r54
+25A9*GameBoard(22E9)<5I9><5I9>
+28A9*Place(5I9)<27E9> 21|7r64 9r64 22|9r161 14r14 72r66 77r14
+30I12*TurnsNo{natural} 21|6r82 8r83 22|9r81 43r38 71r81 107r38
+34e7*justWent{22E9} 22|17r43 36m22 36r57 85r43 100m22 100r57
+36a7*spot{28A9} 22|23r48 50r39 56r36 62r36 82r48 115r39 121r36 127r36
+38a7*current_state{25A9} 22|27r45 30r43 89r45 92r43 162r37 163r37
+41U14*EndBoardValue 22|30r10 92r10
+44V13*NextPlayer{22E9} 22|36r34 100r34
+46U14*Winner 22|163r19
+X 18 gametree.ads
+5K9*GameTree 29e13 21|1w6 1r20 22|1w6 1r20
+7R9*GameTree_Type 14e14 21|6r54 8r55 13r54 22|9r55 11r14 71r55 74r14 136r54
+. 140r14
+11R9*GameTree_Type
+12r7*state{17|33R9} 22|17m37 23m42 27m39 30m37 36m16 36m51 50m33 56m30 62m30
+. 82m42 85m37 89m39 92m37 100m16 100m51 115m33 121m30 127m30 162m31 163m31
+16A9*ChildrenArray(11R9)<integer>
+19R9*ExpandedChildren 23e14 22|10r20 73r20 141r22 143r18
+20i7*branching{17|30I12} 22|30r69 42r32 92r69 106r32 157r83 175r91
+21b7*nomove{boolean} 22|35r22 99r22
+22a7*children{16A9} 22|23m30 43m29 82m30 107m29 157m30 175m34
+25V13*Expand{19R9} 22|10r40 73r40 143r38 173r29
+27V13*Terminal{boolean} 22|27r24 89r24 162r17
+X 21 minmax.ads
+4K9*MinMax 15l5 15e11 22|7b14 188l5 188t11
+6U14*Min 6>19 6=39 6>70 6<91 7>19 7>26 7<49 22|9b14 69l8 69t11 101r10 111r13
+6e19 Player{17|22E9} 22|9b19 17r11 30r24 37r14 47r17
+6r39 state{18|11R9} 22|9b40 10r47 17r31 27r33 30r31 36m10 36r45 37m21
+6i70 depth{17|30I12} 22|9b70 27r11 37r27 47r30
+6i91 outValue{17|3I9} 22|9b90 30m80 37m35 55m13 66m7
+7i19 alpha{17|3I9} 22|9b117 20r12
+7i26 beta{17|3I9} 22|9b124 21r12
+7a49 bestMove{17|28A9} 22|9b146 23m7 29m10 50m16 56m13 62m13
+8U14*Max 8>19 8=40 8>71 8<92 9>19 9>26 9<49 22|37r10 47r13 71b14 134l8 134t11
+8e19 Player{17|22E9} 22|71b19 85r11 92r24 101r14 111r17
+8r40 state{18|11R9} 22|71b40 73r47 85r31 89r33 92r31 100m10 100r45 101m21
+8i71 depth{17|30I12} 22|71b70 89r11 101r27 111r30
+8i92 outValue{17|3I9} 22|71b90 92m80 101m35 120m13 131m7
+9i19 alpha{17|3I9} 22|72b21 79r12
+9i26 beta{17|3I9} 22|72b28 80r12
+9a49 bestMove{17|28A9} 22|72b51 82m7 90m10 115m16 121m13 127m13
+11F12*Probability{long_float} 13r99 22|136r99
+13V13*MonteCarlo{11F12} 13>25 13>46 13>69 22|136b13 186l8 186t18
+13e25 Player{17|22E9} 22|136b25 180r11 182r14
+13r46 state{18|11R9} 22|136b46 143r45
+13i69 iterations{positive} 22|136b69 149r19
+X 22 minmax.adb
+10r7 successors{18|19R9} 23r19 30r58 35r11 42r21 43r18
+11r7 move{18|11R9} 43m10 47m24 50r28 56r25 62r25
+12i7 a{17|3I9} 20m7 37r44 47r49 54r22
+12i10 b{17|3I9} 21m7 37r46 47r52 60r22 61m13
+13i7 value{17|3I9} 22m7 48r27 49m16 54r13 55r25 60r14 61r18 66r19
+14a7 best{17|28A9} 37m48 47m54
+42i11 i{integer} 43r46
+45i13 maxValue{17|3I9} 47m39 48r16 49r25
+73r7 successors{18|19R9} 82r19 92r58 99r11 106r21 107r18
+74r7 move{18|11R9} 107m10 111m24 115r28 121r25 127r25
+75i7 a{17|3I9} 79m7 101r44 111r49 125r22 126m13
+75i10 b{17|3I9} 80m7 101r46 111r52 119r22
+76i7 value{17|3I9} 81m7 113r27 114m16 119r13 120r25 125r14 126r18 131r19
+77a7 best{17|28A9} 101m48 111m54
+106i11 i{integer} 107r46
+109i13 minValue{17|3I9} 111m39 113r16 114r25
+137i7 Whitewins{natural} 165m22 165r35 181r28 181r52 183r52
+138i7 Blackwins{natural} 167m22 167r35 181r62 183r28 183r62
+139i7 Ties{natural} 168m24 168r32
+140r7 temp{18|11R9} 157m13 162r26 163r26 173r36 175m13
+141r7 tempChildren{18|19R9} 173m13 175r21 175r78
+142e7 tempWinner{17|22E9} 163m51 164r23 166r26
+143r7 Children{18|19R9} 157r21 157r74
+145I12 Rand_Range<short_short_integer> 146r60
+146K15 Rand_Int[10|50] 147r14 174r13 175r51
+147r7 seed{10|63R9[146]} 174r28 175r67
+149i11 I{integer}
+152I18 Rand_Range<short_short_integer> 153r66
+153K21 Rand_Int[10|50] 154r20 156r13 157r47
+154r13 seed{10|63R9[153]} 156r28 157r63
+160l10 Single_Iteration 170r21 177l19 177e35
+

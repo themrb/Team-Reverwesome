@@ -141,6 +141,10 @@ package body MinMax is
       tempChildren : ExpandedChildren;
       tempWinner : BoardPoint;
       Children : ExpandedChildren := Expand(state);
+      --random imports
+      type Rand_Range is range 0..91;
+      package Rand_Int is new Ada.Numerics.Discrete_Random(Rand_Range);
+      seed : Rand_Int.Generator;
    begin
       for I in 1..iterations loop
          
@@ -167,14 +171,8 @@ package body MinMax is
             end if;
             
             tempChildren := Expand(temp);
-            declare
-               type Rand_Range is range 0..91;
-               package Rand_Int is new Ada.Numerics.Discrete_Random(Rand_Range);
-               seed : Rand_Int.Generator;
-            begin
-               Rand_Int.Reset(seed);
-               temp := tempChildren.children(Integer(Rand_Int.Random(seed)) mod tempChildren.branching);
-            end;
+            Rand_Int.Reset(seed);
+            temp := tempChildren.children(Integer(Rand_Int.Random(seed)) mod tempChildren.branching);
 
          end loop Single_Iteration;
       end loop;
