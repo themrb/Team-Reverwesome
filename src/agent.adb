@@ -43,11 +43,11 @@ package body Agent is
       treeroot.state.justWent := NextPlayer(player);
       treeroot.state.current_state := currentstate;
 
-      Put_Line("No storage error yet");
+      --Put_Line("No storage error yet");
       Max(player, treeroot, 5, value, BoardValue'First, BoardValue'Last, move);
 
-      Put_Line("No storage error after max");
-      Put_Line("testing monte carlo " & Long_Float'Image(MonteCarlo(player,treeroot,20)));
+      --Put_Line("No storage error after max");
+      Put_Line("testing monte carlo " & Long_Float'Image(MonteCarlo(player,treeroot,100)));
       declare
          temppieces : Natural := ValidMove(player, currentstate, move(x), move(y));
       begin
