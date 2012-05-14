@@ -1,6 +1,8 @@
 with GameTree; use GameTree;
 with Boards; use Boards;
 with Ada.Text_IO; use Ada.Text_IO;
+with Ada.Numerics;
+with Ada.Numerics.Discrete_Random;
 
 package body MinMax is
 
@@ -129,8 +131,57 @@ package body MinMax is
 
    end Max;
 
-      function MonteCarlo (state : GameTree_Type; iterations : Positive) return Probability is
+   function MonteCarlo (Player : BoardPoint; state : GameTree_Type; iterations : Positive) return Probability is
+      Whitewins : Natural := 0;
+      Blackwins : Natural := 0;
+      Ties : Natural := 0;
+      temp : GameTree_Type;
+      tempChildren : ExpandedChildren;
+      tempWinner : BoardPoint;
+      Children : ExpandedChildren := Expand(state);
    begin
+      for I in 1..iterations loop
+         
+         declare
+            type Rand_Range is range 0..91;
+            package Rand_Int is new Ada.Numerics.Discrete_Random(Rand_Range);
+            seed : Rand_Int.Generator;
+         begin
+            Rand_Int.Reset(seed);
+            temp := Children.children(Integer(Rand_Int.Random(seed)) mod Children.branching);
+         end;
+
+         Single_Iteration:
+         loop
+            if (Terminal(temp.state.current_state)) then
+                  Winner(temp.state.current_state,tempWinner);
+                  if (tempWinner = White) then
+                     Whitewins := Whitewins + 1;
+                  elsif (tempWinner = Black) then
+                     Blackwins := Blackwins + 1;
+                  else Ties := Ties + 1;
+                  end if;
+               exit Single_Iteration;
+            end if;
+            
+            tempChildren := Expand(temp);
+            declare
+               type Rand_Range is range 0..91;
+               package Rand_Int is new Ada.Numerics.Discrete_Random(Rand_Range);
+               seed : Rand_Int.Generator;
+            begin
+               Rand_Int.Reset(seed);
+               temp := tempChildren.children(Integer(Rand_Int.Random(seed)) mod tempChildren.branching);
+            end;
+
+         end loop Single_Iteration;
+      end loop;
+
+      if (Player = White) then
+         return Long_Float(Whitewins) / Long_Float(Whitewins+Blackwins);
+      elsif (Player = Black) then
+         return Long_Float(Blackwins) / Long_Float(Whitewins+Blackwins);
+      end if;
       return 0.0;
    end MonteCarlo;
 

@@ -41,6 +41,37 @@ package body Boards is
       end loop;
    end TokenScore;
 
+   procedure Winner(State : GameBoard; Winner : out BoardPoint) is
+      BlackTokens : TurnsNo;
+      WhiteTokens : TurnsNo;
+   begin
+      TokenCount(State,WhiteTokens,BlackTokens);
+      if (WhiteTokens > BlackTokens) then
+         Winner := White;
+      elsif (WhiteTokens < BlackTokens) then
+         Winner := Black;
+      else Winner := Empty;
+      end if;
+   end Winner;
+
+   procedure TokenCount(State : GameBoard; WhiteTokens : out TurnsNo; BlackTokens : out TurnsNo) is
+   begin
+      BlackTokens := 0;
+      WhiteTokens := 0;
+        for I in Dimension'Range loop
+         for J in Dimension'Range loop
+            case State(I,J) is
+            when White =>
+               WhiteTokens := WhiteTokens + 1;
+            when Black =>
+               BlackTokens := BlackTokens + 1;
+            when others =>
+               null;
+            end case;
+         end loop;
+   end loop;
+   end TokenCount;
+
    function ValidMove(player : BoardPoint; board : in GameBoard; movex : in Dimension; movey : in Dimension) return Natural is
       HitOpponent : Boolean;
       Opponent : BoardPoint := NextPlayer(player);
