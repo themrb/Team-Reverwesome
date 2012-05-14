@@ -20,8 +20,6 @@ package body Agent is
 	procedure Ada_Subroutine is
 		currentstate : GameBoard;
 		player : BoardPoint;
-		piecestaken : Natural;
-		bestpiecestaken : Natural := 0;
       treeroot : GameTree_Type;
       move : Place;
       value : BoardValue;
@@ -48,6 +46,7 @@ package body Agent is
       Put_Line("No storage error yet");
       Max(player, treeroot, 6, value, BoardValue'First, BoardValue'Last, move);
 
+      Put_Line("No storage error after max");
       declare
          temppieces : Natural := ValidMove(player, currentstate, move(x), move(y));
       begin

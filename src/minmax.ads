@@ -8,8 +8,8 @@ package MinMax is
    procedure Max (Player : BoardPoint; state : in out GameTree_Type;  depth : in  TurnsNo; outValue : out BoardValue;
                   alpha, beta : in BoardValue;  bestMove : out Place);
 
-   type Probability is Double range 0 .. 1;
+   subtype Probability is Long_Float range 0.0 .. 1.0;
 
-   function MonteCarlo (state : GameTree_Type; iterations : Positive) returns Probability;
+   function MonteCarlo (state : GameTree_Type; iterations : Positive) return Probability;
 
 end MinMax;
