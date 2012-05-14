@@ -43,10 +43,12 @@ package Boards is
 
    function NextPlayer(player : BoardPoint) return BoardPoint;
 
+   procedure Winner(State : GameBoard; Winner : out BoardPoint);
+
    procedure TokenScore(State : GameBoard; Player: in BoardPoint;
                         Weights: in BoardPositionWeights; Score: in out BoardValue);
 
---   function AdvanceMove(state : State_Type; move : Place) return State_Type;
+   procedure TokenCount(State : GameBoard; WhiteTokens : out TurnsNo; BlackTokens : out TurnsNo);
 
    function ValidMove(player : BoardPoint; board : in GameBoard; movex : in Dimension; movey : in Dimension) return Natural;
 

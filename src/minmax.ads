@@ -10,6 +10,6 @@ package MinMax is
 
    subtype Probability is Long_Float range 0.0 .. 1.0;
 
-   function MonteCarlo (state : GameTree_Type; iterations : Positive) return Probability;
+   function MonteCarlo (Player : BoardPoint; state : GameTree_Type; iterations : Positive) return Probability;
 
 end MinMax;
