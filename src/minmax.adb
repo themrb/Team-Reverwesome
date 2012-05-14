@@ -25,7 +25,7 @@ package body MinMax is
       if (depth = 0 or Terminal(state.state.current_state)) then
          --Put_Line("Terminal found in min");
          bestMove := (0,0);
-         EndBoardValue(Player,state.state.current_state, successors.branching, outValue);
+         EndBoardValue(Player,state.state.current_state,outValue);
          return;
       end if;
 
@@ -86,7 +86,7 @@ package body MinMax is
 
       if (depth = 0 or Terminal(state.state.current_state)) then
          bestMove := (0,0);
-         EndBoardValue(Player,state.state.current_state, successors.branching, outValue);
+         EndBoardValue(Player,state.state.current_state,outValue);
          --Put_Line("Terminal found in max, depth " & TurnsNo'Image(depth) & "value" & BoardValue'Image(outValue));
          return;
       end if;
@@ -128,5 +128,10 @@ package body MinMax is
       --Put_Line("Max reports " & Dimension'Image(bestMove(x)) & "," & Dimension'Image(bestMove(y)));
 
    end Max;
+
+      function MonteCarlo (state : GameTree_Type; iterations : Positive) returns Probability is
+   begin
+      return 0.0;
+   end MonteCarlo;
 
 end MinMax;
