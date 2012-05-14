@@ -88,8 +88,10 @@ package body MinMax is
 
       if (depth = 0 or Terminal(state.state.current_state)) then
          bestMove := (0,0);
+         --Put_Line("Clean before board value");
          EndBoardValue(Player,state.state.current_state, successors.branching, outValue);
          --Put_Line("Terminal found in max, depth " & TurnsNo'Image(depth) & "value" & BoardValue'Image(outValue));
+         --Put_Line("Clean after board value");
          return;
       end if;
 
