@@ -2,6 +2,8 @@ with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with Ada.Characters.Latin_1; use Ada.Characters.Latin_1;
 with Ada.Text_IO; use Ada.Text_IO;
 
+with TemporalDifference; use TemporalDifference;
+
 package body Boards is
 
    -- Passes the move onto the next player
@@ -17,30 +19,6 @@ package body Boards is
       return Empty;
    end NextPlayer;
 
-   procedure EndBoardValue(Player : BoardPoint; State : GameBoard;
-                           NumMoves : Natural; Score : out BoardValue) is
-   begin
-      Score := 0;
-      TokenScore(State, Player, defaultWeights, Score);
-      -- Weighting on the number of available moves
-      Score := Score + (FeatureWeight(NumMoves) * defaultMobility);
-   end EndBoardValue;
-
-
-   procedure TokenScore(State : GameBoard; Player: in BoardPoint;
-                        Weights: in BoardPositionWeights; Score: in out BoardValue) is
-   begin
-      for I in Dimension'Range loop
-         for J in Dimension'Range loop
-            if State(I,J) = Player then
-               Score := Score + Weights(I,J);
-            elsif State(I,J) = NextPlayer(Player) then
-               Score := Score - Weights(I,J);
-            end if;
-         end loop;
-      end loop;
-   end TokenScore;
-
    procedure Winner(State : GameBoard; Winner : out BoardPoint) is
       BlackTokens : TurnsNo;
       WhiteTokens : TurnsNo;
@@ -53,24 +31,6 @@ package body Boards is
       else Winner := Empty;
       end if;
    end Winner;
-
-   procedure TokenCount(State : GameBoard; WhiteTokens : out TurnsNo; BlackTokens : out TurnsNo) is
-   begin
-      BlackTokens := 0;
-      WhiteTokens := 0;
-        for I in Dimension'Range loop
-         for J in Dimension'Range loop
-            case State(I,J) is
-            when White =>
-               WhiteTokens := WhiteTokens + 1;
-            when Black =>
-               BlackTokens := BlackTokens + 1;
-            when others =>
-               null;
-            end case;
-         end loop;
-   end loop;
-   end TokenCount;
 
    function ValidMove(player : BoardPoint; board : in GameBoard; movex : in Dimension; movey : in Dimension) return Natural is
       HitOpponent : Boolean;

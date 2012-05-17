@@ -1,21 +1,8 @@
 package Boards is
 
-   type BoardValue is new Integer;
+   subtype BoardValue is Float;
    type FinalValue is new Integer range -1..1;
-   type Dimension is new Natural range 0 .. 9;
-
-   subtype FeatureWeight is BoardValue'Base;
-   type BoardPositionWeights is array(Dimension, Dimension) of FeatureWeight;
-   defaultCorner : constant FeatureWeight := 846; -- ~(92^2)/10
-   defaultWeights : constant BoardPositionWeights := (0 => (0 => defaultCorner,
-                                                            9=> defaultCorner,
-                                                            others => 1),
-                                                      9 => (0 => defaultCorner,
-                                                            9=> defaultCorner,
-                                                            others => 1),
-                                                      others => (others => 1)
-                                                     );
-   defaultMobility : constant FeatureWeight := 92;
+   subtype Dimension is Natural range 0 .. 9;
 
    type CBoardState is array (Dimension,Dimension) of Integer;
 
@@ -38,17 +25,10 @@ package Boards is
       current_state : GameBoard;
    end record;
 
-   procedure EndBoardValue(Player : BoardPoint; State : GameBoard;
-                           NumMoves : Natural; Score : out BoardValue);
-
    function NextPlayer(player : BoardPoint) return BoardPoint;
 
    procedure Winner(State : GameBoard; Winner : out BoardPoint);
 
-   procedure TokenScore(State : GameBoard; Player: in BoardPoint;
-                        Weights: in BoardPositionWeights; Score: in out BoardValue);
-
-   procedure TokenCount(State : GameBoard; WhiteTokens : out TurnsNo; BlackTokens : out TurnsNo);
 
    function ValidMove(player : BoardPoint; board : in GameBoard; movex : in Dimension; movey : in Dimension) return Natural;
 

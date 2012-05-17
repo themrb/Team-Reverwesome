@@ -13,25 +13,21 @@ package body GameTree is
       toPlay : BoardPoint := NextPlayer(state.state.justWent);
       temptokens : TurnsNo;
    begin
-
       for i in Dimension'Range loop
          for j in Dimension'Range loop
-               --Put_Line("Checking " & Dimension'Image(i) & " " & Dimension'Image(j) & "and " & toPlay'Img & " to move");
-               temptokens := ValidMove(toPlay,state.state.current_state, i,j);
-               if (temptokens > 0) then
-                  --Put_Line("Found at " & Dimension'Image(i) & " " & Dimension'Image(j));
+            temptokens := ValidMove(toPlay,state.state.current_state, i,j);
+            if (temptokens > 0) then
+               temp := state;
+               temp.state.justWent := NextPlayer(state.state.justWent);
+               AdvanceMove(toPlay, temp.state.current_state, i, j);
+               temp.state.spot := (i,j);
+               temp.state.turnsleft := state.state.turnsleft - 1;
+               temp.state.TokensTaken := temptokens;
 
-                  temp := state;
-                  temp.state.justWent := NextPlayer(state.state.justWent);
-                  AdvanceMove(toPlay, temp.state.current_state, i, j);
-                  temp.state.spot := (i,j);
-                  temp.state.turnsleft := state.state.turnsleft - 1;
-                  temp.state.TokensTaken := temptokens;
-
-                  Children.children(Counter) := temp;
-                  Configure.count := Configure.count + 1;
-                  Counter := Counter + 1;
-               end if;
+               Children.children(Counter) := temp;
+               Configure.count := Configure.count + 1;
+               Counter := Counter + 1;
+            end if;
          end loop;
       end loop;
 
