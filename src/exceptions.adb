@@ -9,7 +9,6 @@ package body Exceptions is
 
    procedure Show_Exception (Exception_Identifier : Exception_Occurrence;
                              Optional_Message    : String := "") is
-
    begin
       Put_Line (Current_Error,
                 "Task " & Image (Current_Task) & " reports: ");
