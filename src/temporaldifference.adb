@@ -1,4 +1,5 @@
 with Ada.Text_IO; use Ada.Text_IO;
+with Ada.Text_IO.Unbounded_IO;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with GNAT.String_Split; use GNAT.String_Split;
 with Boards;
@@ -127,7 +128,8 @@ package body TemporalDifference is
                Sub : String := Slice(Subs, i);
             begin
                if(Line_No < 5) then
-                  pieceWeights(Line_No, Dimension(i)-1) := Float'Value(Sub);
+                  Put_Line(Sub);
+                  pieceWeights(Line_No, Dimension(i)-1) := Float'Value(Sub (Sub'First .. Sub'First + 11));
                elsif (Line_No = 5 and i = 1) then
                   mobilityWeight := Float'Value(Sub);
                end if;
@@ -144,6 +146,31 @@ package body TemporalDifference is
          end loop;
       end loop;
    end LoadWeights;
+
+   procedure StoreWeights is
+      CSV_File : File_Type;
+      Filename : constant String := "data.csv";
+      Line_No : Natural := 0;
+      Subs : Slice_Set;
+      Next_Line : Unbounded_String;
+   begin
+      Create(CSV_File, Out_File, Filename);
+
+      --Line for each pieceweight line
+      for i in reverse Dimension range 0.. (Dimension'Last/2) loop
+         Next_Line := To_Unbounded_String("");
+         for j in reverse Dimension range 0..(Dimension'Last/2-i) loop
+            Next_Line := Next_Line & To_Unbounded_String(Float'Image(pieceWeights(i,j)) & ",");
+         end loop;
+          Unbounded_IO.Put_Line(CSV_File, Next_Line);
+      end loop;
+
+      --Line for mobility weight
+      Next_Line := To_Unbounded_String(Float'Image(mobilityWeight));
+      Unbounded_IO.Put_Line(CSV_File, Next_Line);
+      Close(CSV_File);
+
+   end StoreWeights;
 
    function WeightMapping(i : Dimension) return Dimension is
    begin

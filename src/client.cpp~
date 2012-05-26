@@ -58,7 +58,7 @@ int main(int argc, char *argv[])
         cerr << "CLIENT: unknown player \"" << argv[1] << "\"" << endl;
 	}
 	
-	//tell Ada which colour we are
+	//talk to Ada
 	playercolour = player == WHITE ? 1 : 2;
 	// Boot up Ada, since we now know which player we are
 	adainit();
