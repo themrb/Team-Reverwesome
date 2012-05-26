@@ -28,10 +28,10 @@ package TemporalDifference is
 
    function WeightMapping(i : Dimension) return Dimension;
 
-   pieceWeights : BoardPositionWeights := (others => (others => 1.0));
+   pieceWeights : BoardPositionWeights := (others => (others => 0.0));
    mobilityWeight : FeatureWeight := 1.0;
 
    epsilon : Float := 0.1;
-   alpha : Float := 0.1;
+   alpha : Float := 0.01;
 
 end TemporalDifference;

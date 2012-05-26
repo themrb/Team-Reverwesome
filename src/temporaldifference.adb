@@ -47,16 +47,18 @@ package body TemporalDifference is
       declare
          curVal, nextVal : BoardValue;
          nMoves, nNewMoves : TurnsNo;
+         newW : FeatureWeight;
       begin
          nMoves := NumMoves(State, Player);
-         nNewMoves := NumMoves(NewState, NextPlayer(Player));
+         nNewMoves := NumMoves(NewState, Player);
          curVal := EndBoardValue(Player, State, nMoves);
-         nextVal := EndBoardValue(NextPlayer(Player), NewState, nNewMoves);
+         nextVal := EndBoardValue(Player, NewState, nNewMoves);
 
          for i in Dimension'Range loop
             for j in Dimension'Range loop
-               pieceWeights(i,j) := pieceWeights(i,j) + alpha *
-                 (nextVal - curVal + pieceReward(i,j));
+               newW := pieceWeights(i,j) + alpha * (nextVal - curVal + pieceReward(i,j));
+--                 Put_Line(i'Img &','& j'Img &','& pieceWeights(i,j)'Img &','& newW'Img);
+               pieceWeights(i,j) := newW;
             end loop;
          end loop;
 
@@ -141,8 +143,13 @@ package body TemporalDifference is
 
       for i in Dimension'Range loop
          for j in Dimension'Range loop
-            pieceWeights(i,j)
-              := pieceWeights(WeightMapping(i),WeightMapping(j));
+            if pieceWeights(WeightMapping(i), WeightMapping(j) = 0.0) then
+               pieceWeights(i,j)
+                 := pieceWeights(WeightMapping(j),WeightMapping(i));
+               Put_Line("Missed Something");
+            else
+               pieceWeights(i,j)
+                  := pieceWeights(WeightMapping(i),WeightMapping(j));
          end loop;
       end loop;
    end LoadWeights;
