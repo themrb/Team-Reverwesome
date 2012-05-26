@@ -70,6 +70,7 @@ package body TemporalDifference is
                Sub : String := Slice(Subs, i);
             begin
                if(Line_No < 5) then
+                  Put_Line(Sub);
                   pieceWeights(Line_No, Dimension(i)-1) := Float'Value(Sub);
                elsif (Line_No = 5 and i = 1) then
                   mobilityWeight := Float'Value(Sub);
@@ -90,7 +91,7 @@ package body TemporalDifference is
 
    procedure StoreWeights is
       CSV_File : File_Type;
-      Filename : constant String := "data2.csv";
+      Filename : constant String := "data.csv";
       Line_No : Natural := 0;
       Subs : Slice_Set;
       Next_Line : Unbounded_String;

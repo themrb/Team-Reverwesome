@@ -14,7 +14,8 @@ package body Boards is
       elsif (player = Black) then
          return White;
       else
-         Put_Line("Dude, the previous player was " & player'Img);
+         null;
+         --Put_Line("Dude, the previous player was " & player'Img);
       end if;
       return Empty;
    end NextPlayer;

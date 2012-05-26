@@ -23,7 +23,9 @@ extern "C" {
   void adainit(void);
   void adafinal(void);
   
+  void startup( void );
   void ada_subroutine( void );
+  void gameend( void );
 }
 
 using namespace std;
@@ -35,6 +37,7 @@ int playercolour;
 
 int main(int argc, char *argv[])
 {
+	
     BoardState player;
     string host = DEFAULT_HOST;
     uint16_t port = DEFAULT_PORT;
@@ -53,7 +56,11 @@ int main(int argc, char *argv[])
         cerr << "CLIENT: player is BLACK" << endl;
     } else {
         cerr << "CLIENT: unknown player \"" << argv[1] << "\"" << endl;
-    }
+	}
+	
+	// Boot up Ada, since we now know which player we are
+	adainit();
+	startup();
 
     if (argc == 3) {
         string hostString(argv[2]);
@@ -94,7 +101,7 @@ int main(int argc, char *argv[])
 
     // send connect message to server
     ConnectMessage message(player, player == WHITE ?
-        "404 Player Not Found" : "404 Player Not Found");
+        "404 Player Not Found" : "Team Adawesome: Reverwesome's Vengence");
     if (!message.send(client_socket)) {
         cerr << "CLIENT: could not connect to server" << endl;
         exit(-1);
@@ -103,8 +110,6 @@ int main(int argc, char *argv[])
     // play game
     ServerMessage messageIn;
     ClientMessage messageOut;
-	
-	adainit();
 	
     while (1) {
         if (!messageIn.receive(client_socket)) {
@@ -169,6 +174,9 @@ int main(int argc, char *argv[])
             exit(-1);
         }
     }
+    gameend();
+    
+	cerr << "asking ada to terminate";
 	adafinal();
 
     return 0;
