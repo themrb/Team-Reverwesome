@@ -24,9 +24,8 @@ package body Agent is
 
    begin
       accept Initialise  do
-         Put_Line("is it weights?");
+         --Put_Line("is it weights?");
          LoadWeights;
-         Put_Line("not weights?");
 
          if (cplayercolour = 1) then
             player := White;
@@ -34,6 +33,7 @@ package body Agent is
             player := Black;
          end if;
 
+         --Put_Line("not weights or players");
          -- spawn explorer tasks as required
          -- this is basically our set up to be ready to play the game.
          -- the clock hasn't started yet - free time
@@ -43,7 +43,7 @@ package body Agent is
       loop
          select
             accept NewMove  do
-
+               --Put("no storage error at start");
                declare
                   currentstate : GameBoard;
                   treeroot : GameTree_Type;
@@ -65,6 +65,7 @@ package body Agent is
                   treeroot.state.justWent := NextPlayer(player);
                   treeroot.state.current_state := currentstate;
                   treeroot.state.turnsleft := turnsleft;
+                  --Put("no storage error after initialising tree");
 
                   if (turnsleft < 16) then
                      NegaMax(player, treeroot, 15, value, BoardValue'First, BoardValue'Last, move);
@@ -133,7 +134,7 @@ package body Agent is
 
    procedure Ada_Subroutine is
    begin
-
+      Put("asking main for a move");
       MainTask.NewMove;
 
    exception

@@ -71,7 +71,7 @@ package body TemporalDifference is
             begin
                if(Line_No < 5) then
                   Put_Line(Sub);
-                  pieceWeights(Line_No, Dimension(i)-1) := Float'Value(Sub);
+                  pieceWeights(Line_No, Dimension(i)-1) := Float'Value(Sub (Sub'First .. Sub'First + 11));
                elsif (Line_No = 5 and i = 1) then
                   mobilityWeight := Float'Value(Sub);
                end if;
