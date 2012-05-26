@@ -28,9 +28,9 @@ package body Agent is
          LoadWeights;
 
          if (cplayercolour = 1) then
-            player := White;
+            my_player := White;
          elsif (cplayercolour = 2) then
-            player := Black;
+            my_player := Black;
          end if;
 
          --Put_Line("not weights or players");
@@ -62,15 +62,15 @@ package body Agent is
                   end loop;
 
                   -- Initialise game tree
-                  treeroot.state.justWent := NextPlayer(player);
+                  treeroot.state.justWent := NextPlayer(my_player);
                   treeroot.state.current_state := currentstate;
                   treeroot.state.turnsleft := turnsleft;
                   --Put("no storage error after initialising tree");
 
                   if (turnsleft < 16) then
-                     NegaMax(player, treeroot, 15, value, BoardValue'First, BoardValue'Last, move);
+                     NegaMax(my_player, treeroot, 15, value, BoardValue'First, BoardValue'Last, move);
                   else
-                     NegaMax(player, treeroot, 7, value, BoardValue'First, BoardValue'Last, move);
+                     NegaMax(my_player, treeroot, 7, value, BoardValue'First, BoardValue'Last, move);
                      --           declare
                      --              tempprob : Probability;
                      --              bestprob : Probability := 0.0;
@@ -92,7 +92,7 @@ package body Agent is
                   --Put_Line("No storage error after max");
                   --Put_Line("testing monte carlo " & Long_Float'Image(MonteCarlo(player,treeroot,100)));
                   declare
-                     temppieces : Natural := ValidMove(player, currentstate, move(x), move(y));
+                     temppieces : Natural := ValidMove(my_player, currentstate, move(x), move(y));
                   begin
                      Put_Line("We'll get " & TurnsNo'Image(temppieces) & "for moving at" & Dimension'Image(move(x)) & "," & Dimension'Image(move(y)));
                   end;

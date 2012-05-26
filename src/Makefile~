@@ -32,3 +32,16 @@ clean:
 	rm -f *.o
 	rm -f *.ali
 	rm -f b~*
+	${FILES_OBJ} client.o
+	$ gnatgcc -c agent.adb
+	$ gnatgcc -c boards.adb
+	$ gnatgcc -c gametree.adb
+	$ gnatgcc -c minmax.adb
+	$ gnatgcc -c configure.ads
+	$ gnatgcc -c exceptions.adb
+	$ gnatgcc -c temporaldifference.adb
+	$ gnatgcc -c features.adb
+	$ gnatbind -n agent
+	$ gnatgcc -c b~agent.adb
+	$ gnatlink -L/usr/lib/gcc/x86_64-linux-gnu/4.4.3 -lstdc++ -o client client.o ${FILES_OBJ} agent.ali --LINK=c++
+	$ rm -f b~*
