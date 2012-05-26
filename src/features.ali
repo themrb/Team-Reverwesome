@@ -1,0 +1,129 @@
+V "GNAT Lib v4.6"
+A -mtune=generic
+A -march=x86-64
+P SS ZX
+R nnnnnnnnnnvnnnnnnnnnnnnnnvnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn
+
+U features%b		features.adb		f0462793 NE OO PK
+W ada%s			ada.ads			ada.ali
+W ada.characters%s	a-charac.ads		a-charac.ali
+W ada.characters.latin_1%s  a-chlat1.ads	a-chlat1.ali
+W ada.strings%s		a-string.ads		a-string.ali
+W ada.strings.unbounded%s  a-strunb.adb		a-strunb.ali
+W ada.text_io%s		a-textio.adb		a-textio.ali
+W boards%s		boards.adb		boards.ali
+W temporaldifference%s	temporaldifference.adb	temporaldifference.ali
+
+U features%s		features.ads		2a4f1594 EE NE OO PK
+W boards%s		boards.adb		boards.ali
+
+D ada.ads		20070406091342 3ffc8e18
+D a-charac.ads		20070912115821 2d3ec45b
+D a-chlat1.ads		20070912115821 2825df20
+D a-except.ads		20090727140100 0c711ac9
+D a-finali.ads		20090409150019 e5e85fa4
+D a-filico.ads		20090409150019 872dc219
+D a-ioexce.ads		20091130110856 8b9de6cd
+D a-stream.ads		20090409150019 2ca4ee37
+D a-string.ads		20070406091342 90ac6797
+D a-strmap.ads		20090409150019 9cb836fb
+D a-strunb.ads		20101220072657 e684739b
+D a-tags.ads		20101021101406 c7695348
+D a-textio.ads		20091028140912 386df5d4
+D a-unccon.ads		20070406091342 f9eb8f06
+D boards.ads		20120526045417 353bfd4f
+D features.ads		20120526114221 1f74e8db
+D features.adb		20120526130633 367ae204
+D interfac.ads		20090409150019 f77d8799
+D i-cstrea.ads		20100622165701 1bd72c32
+D system.ads		20120503154647 23e1f70b
+D s-crtl.ads		20100617122610 ac77b159
+D s-exctab.ads		20090417131547 66e51330
+D s-ficobl.ads		20100909103250 443b9d66
+D s-finimp.ads		20090409150019 46853fe8
+D s-finroo.ads		20090409150019 dbb860c9
+D s-parame.ads		20091130110856 9c5d83fa
+D s-secsta.ads		20090707124243 eea35a36
+D s-soflin.ads		20090729085153 9414c974
+D s-stache.ads		20090417130712 596fc1b4
+D s-stalib.ads		20101021102512 c4241c00
+D s-stoele.ads		20090417130712 facd7d98
+D s-stoele.adb		20100617152355 afc5dc80
+D s-stratt.ads		20100909123135 aedef97e
+D s-traent.ads		20090417130712 5221ee41
+D s-unstyp.ads		20090409150019 6ae15c76
+D s-wchcon.ads		20090417130712 bfeb2e3d
+D temporaldifference.ads  20120526063158 1abf896c
+X 1 ada.ads
+16K9*Ada 19e8 17|1r6 1r33 2r6 2r34 3r6 3r23
+X 2 a-charac.ads
+16K13*Characters 18e19 17|2r10 2r38
+X 3 a-chlat1.ads
+20K24*Latin_1 298e27 17|2w21 2r49
+X 9 a-string.ads
+16K13*Strings 35e16 17|1r10 1r37
+X 11 a-strunb.ads
+77K21*Unbounded 490e26 17|1w18 1r45
+X 13 a-textio.ads
+49K13*Text_IO 472e16 17|3w10 3r27
+X 15 boards.ads
+1K9*Boards 43e11 16|1w6 1r18 17|4w6 4r18
+5I12*Dimension{natural} 17|22r18 23r15 24r15 25r15 26r15 27r11 28r11 31r19
+. 31r45 40r24 40r46 54r27 70r21 70r43 84r24 97r23 97r49 98r19 99r19 107r24
+. 122r26 122r53 131r27 147r23 147r50 148r19 156r24 171r26 171r53 173r22 180r27
+9n24*Empty{9E9} 17|42r29 56r32 72r26 86r29 110r29 134r32 159r29 183r32
+9n45*Blocked{9E9} 17|45r32 59r35 75r29 89r32 113r32 137r35 162r32 186r35
+12A9*GameBoard(9E9)<integer><integer> 16|5r50 17|10r50
+14n24*x{14E9} 17|26r34
+14n27*y{14E9} 17|25r34
+15A9*Place(5I12)<14E9> 16|5r35 17|10r35
+X 16 features.ads
+3K9*Features 7l5 7e13 17|8b14 202l5 202t13
+5V13*CheckStability{boolean} 5>28 5>42 17|10b13 200l8 200t22
+5a28 move{15|15A9} 17|10b28 25r29 26r29
+5a42 board{15|12A9} 17|10b42 42r16 45r19 56r19 59r22 72r13 75r16 86r16 89r19
+. 110r16 113r19 134r19 137r22 159r16 162r19 183r19 186r22
+X 17 features.adb
+12b7 columnfull{boolean} 73m13 81r10 87m16 194r10
+13b7 rowfull{boolean} 43m16 51r13 57m19
+14b7 NWSEfull{boolean} 160m16 169r10 184m19
+15b7 SWNEfull{boolean} 111m16 120r10 135m19
+17b7 columnstable{boolean} 195m10
+18b7 rowstable{boolean} 33m10
+19b7 NWSEstable{boolean}
+20b7 SWNEstable{boolean}
+22i7 moveroom{15|5I12} 101m13 103m13 107r45 126m16 128m16 131r48 151m13 153m13
+. 156r45 175m16 177m16 180r48
+23i7 yroom{15|5I12} 98m10 100r14 103r25 123m13 125r17 128r28 148m10 150r14
+. 153r25 172m13 174r17 177r28
+24i7 xroom{15|5I12} 99m10 100r22 101r25 124m13 125r25 126r28 149m10 150r22
+. 151r25 173m13 174r25 175r28
+25i7 movey{15|5I12} 36r15 70r60 71r15 84r46 85r18 97r41 98r36 108r18 122r45
+. 123r22 132r21 147r42 148r36 157r18 171r18 172r22 181r21
+26i7 movex{15|5I12} 31r11 31r37 40r63 41r18 54r49 55r21 68r12 97r15 99r36
+. 109r18 122r18 124r22 133r21 147r15 149r19 158r18 171r45 173r39 182r21
+27i7 x{15|5I12} 41m13 42r22 45r25 55m16 56r25 59r28 68m7 72r19 75r22 86r22
+. 89r25 109m13 110r22 113r25 133m16 134r25 137r28 158m13 159r22 162r25 182m16
+. 183r25 186r28
+28i7 y{15|5I12} 36m10 42r24 45r27 56r27 59r30 71m10 72r21 75r24 85m13 86r24
+. 89r27 108m13 110r24 113r27 132m16 134r27 137r30 157m13 159r24 162r27 181m16
+. 183r27 186r30
+39l10 Right_Loop 44r21 47r21 49l19 49e29
+40i14 xpoint{integer} 41r26
+53l13 Left_Loop 58r24 61r24 63l22 63e31
+54i17 xpoint{integer} 55r29
+69l7 Up_Loop 74r18 77r18 79l16 79e23
+70i11 ypoint{integer} 71r21
+83l10 Down_Loop 88r21 91r21 93l19 93e28
+84i14 ypoint{integer} 85r26
+106l10 NE_Loop 112r21 115r21 117l19 117e26
+107i14 epoint{integer} 108r26 109r26
+130l13 SW_Loop 136r24 139r24 141l22 141e29
+131i17 epoint{integer} 132r29 133r29
+155l10 NW_Loop 161r21 164r21 166l19 166e26
+156i14 epoint{integer} 157r26 158r26
+179l13 SE_Loop 185r24 188r24 190l22 190e29
+180i17 epoint{integer} 181r29 182r29
+X 37 temporaldifference.ads
+3K9*TemporalDifference 17|6w6 6r30 37|35e23
+

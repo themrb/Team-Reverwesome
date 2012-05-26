@@ -1,0 +1,179 @@
+V "GNAT Lib v4.6"
+A -mtune=generic
+A -march=x86-64
+P SS ZX
+R nnnvnnnnnnnnnnnnnnvvnvnnvvnnvnnvnnnnnnnnnnvnvnnvnvnvnnnnnnvnnnnvnnnnnv2nv3nv1+nnnnnn
+
+U agent%b		agent.adb		5c767e00 OO PK
+W ada%s			ada.ads			ada.ali
+W ada.exceptions%s	a-except.adb		a-except.ali
+W ada.tags%s		a-tags.adb		a-tags.ali
+W ada.text_io%s		a-textio.adb		a-textio.ali
+W boards%s		boards.adb		boards.ali
+W configure%s		configure.ads		configure.ali
+W exceptions%s		exceptions.adb		exceptions.ali
+W gametree%s		gametree.adb		gametree.ali
+W gnat%s		gnat.ads		gnat.ali
+W gnat.traceback%s	g-traceb.adb		g-traceb.ali
+W gnat.traceback.symbolic%s  g-trasym.adb	g-trasym.ali
+W minmax%s		minmax.adb		minmax.ali
+W system%s		system.ads		system.ali
+W system.concat_6%s	s-conca6.adb		s-conca6.ali
+W system.img_int%s	s-imgint.adb		s-imgint.ali
+W system.soft_links%s	s-soflin.adb		s-soflin.ali
+W system.tasking%s	s-taskin.adb		s-taskin.ali
+W system.tasking.rendezvous%s  s-tasren.adb	s-tasren.ali
+W system.tasking.stages%s  s-tassta.adb		s-tassta.ali
+W temporaldifference%s	temporaldifference.adb	temporaldifference.ali
+
+U agent%s		agent.ads		a00166a8 EE OO PK
+W ada.real_time%s	a-reatim.adb		a-reatim.ali
+W ada.tags%s		a-tags.adb		a-tags.ali
+W boards%s		boards.adb		boards.ali
+W system%s		system.ads		system.ali
+W system.parameters%s	s-parame.adb		s-parame.ali
+W system.soft_links%s	s-soflin.adb		s-soflin.ali
+W system.task_info%s	s-tasinf.adb		s-tasinf.ali
+W system.tasking%s	s-taskin.adb		s-taskin.ali
+W system.tasking.stages%s  s-tassta.adb		s-tassta.ali
+
+D ada.ads		20070406091342 3ffc8e18
+D a-contai.ads		20101025135029 61e5e089
+D a-cdlili.ads		20090409150019 8288c973
+D a-except.ads		20090727140100 0c711ac9
+D a-exctra.ads		20090409150019 fab909d9
+D a-finali.ads		20090409150019 e5e85fa4
+D a-filico.ads		20090409150019 872dc219
+D a-ioexce.ads		20091130110856 8b9de6cd
+D a-reatim.ads		20090409150019 63f07669
+D a-stream.ads		20090409150019 2ca4ee37
+D a-tags.ads		20101021101406 c7695348
+D a-textio.ads		20091028140912 386df5d4
+D a-unccon.ads		20070406091342 f9eb8f06
+D a-uncdea.ads		20070406091342 f15a5ed1
+D agent.ads		20120526113608 953a9be7
+D agent.adb		20120526113647 71c79b64
+D boards.ads		20120526045417 353bfd4f
+D configure.ads		20120526045417 79fdfda6
+D exceptions.ads	20120526045417 93f8a807
+D gametree.ads		20120526045417 46d3c3a1
+D gnat.ads		20050905075125 fd2ad2f1
+D g-traceb.ads		20080820135520 dee80ba3
+D g-trasym.ads		20090416125228 d90b540f
+D interfac.ads		20090409150019 f77d8799
+D i-c.ads		20101007125900 809c38c4
+D i-cstrea.ads		20100622165701 1bd72c32
+D minmax.ads		20120526045417 045736d8
+D system.ads		20120503154647 23e1f70b
+D s-atacco.ads		20090409150019 1dc856ad
+D s-conca6.ads		20090420091404 c7caf514
+D s-crtl.ads		20100617122610 ac77b159
+D s-exctab.ads		20090417131547 66e51330
+D s-ficobl.ads		20100909103250 443b9d66
+D s-finimp.ads		20090409150019 46853fe8
+D s-finroo.ads		20090409150019 dbb860c9
+D s-imgint.ads		20090409150019 02dbe0c2
+D s-linux.ads		20090730092306 47911ab1
+D s-multip.ads		20101011073009 38ac9f73
+D s-osinte.ads		20101127183452 6e2d2e09
+D s-parame.ads		20091130110856 9c5d83fa
+D s-secsta.ads		20090707124243 eea35a36
+D s-soflin.ads		20090729085153 9414c974
+D s-stache.ads		20090417130712 596fc1b4
+D s-stausa.ads		20101018101807 bba781f7
+D s-stalib.ads		20101021102512 c4241c00
+D s-stoele.ads		20090417130712 facd7d98
+D s-stoele.adb		20100617152355 afc5dc80
+D s-stratt.ads		20100909123135 aedef97e
+D s-tasinf.ads		20090409150019 21316953
+D s-taspri.ads		20080408071349 af44aca8
+D s-taprop.ads		20090409150019 07f79e46
+D s-taskin.ads		20101021101406 b2eaee08
+D s-taprob.ads		20090409150019 502249e3
+D s-tpoben.ads		20090409150019 e8374469
+D s-tasren.ads		20090409150019 86fa7427
+D s-tassta.ads		20101018103456 e88ef99e
+D s-traent.ads		20090417130712 5221ee41
+D s-unstyp.ads		20090409150019 6ae15c76
+D s-wchcon.ads		20090417130712 bfeb2e3d
+D temporaldifference.ads  20120526063158 1abf896c
+X 1 ada.ads
+16K9*Ada 19e8 16|1r6 2r5
+X 12 a-textio.ads
+49K13*Text_IO 472e16 16|1w10 2r9
+243U14*Put 16|137s7
+264U14*Put_Line 16|97s22
+X 15 agent.ads
+3K9*Agent 23l5 23e10 16|12b14 155l5 155t10
+5T14*Main 9l8 9e12 11r34 16|23b14 127l8 127t12 131r23
+6Y13 Initialise 16|26b14 40l11 40t21 132s16
+7Y13 NewMove 16|45b20 118l17 118t24 138s16
+8Y13 GameEnd 16|120b20 123l17 123t24 147s16
+11P9*MainAccess(5T14) 12r15
+12p4*MainTask{11P9} 16|131m7 132r7 138r7 147r7
+14U14*StartUp 17r23 16|129b14 133l8 133t15
+15U14*Ada_Subroutine 18r23 16|135b14 143l8 143t22
+16U14*GameEnd 19r23 16|145b14 148l8 148t15
+21e4*my_player{17|9E9} 16|31m13 33m13 65r57 71r30 73r30 95r56
+X 16 agent.adb
+14a4 ccurrentstate{17|7A9} 18m23 57r61
+15i4 cplayercolour{integer} 19m23 30r14 32r17
+16i4 cnextmovey{integer} 20m23 99m19
+17i4 cnextmovex{integer} 21m23 100m19
+42l7 Main_Loop 124r18 126l16 126e25
+48a19 currentstate{17|12A9} 57m25 58r29 66r51 95r67
+49r19 treeroot{20|11R9} 65m19 66m19 67m19 71m41 73m41
+50a19 move{17|15A9} 71m97 73m96 95r81 95r90 97r108 97r141 99r41 100r41
+51f19 value{17|3F12} 71m55 73m54
+52i19 turnsleft{17|17I12} 59m28 59r41 67r47 70r23
+55i23 I{17|5I12} 57r38 57r75 58r42
+56i26 J{17|5I12} 57r40 57r77 58r44
+95i22 temppieces{natural} 97r60
+141r12 E{4|68R9} 142r26
+150U14 GreedyMove 150b14 150>25 150<47 150<70 153l8 153t18
+150a25 board{17|12A9}
+150i47 xmove{17|5I12}
+150i70 ymove{17|5I12}
+X 17 boards.ads
+1K9*Boards 15|1w6 1r18 16|3w6 3r18 17|43e11
+3F12*BoardValue{float} 16|51r27 71r62 71r80 73r61 73r79
+5I12*Dimension{natural} 16|55r28 56r31 97r92 97r125 150r59 150r82
+7A9*CBoardState(integer)<integer><integer> 16|14r20
+9E9*BoardPoint 15|21r16 16|57r46 17|9e53
+9n24*Empty{9E9} 16|58r49
+9n31*White{9E9} 16|31r26
+9n38*Black{9E9} 16|33r26
+12A9*GameBoard(9E9)<integer><integer> 16|48r34 150r36
+14n24*x{14E9} 16|95r86 97r113 99r46
+14n27*y{14E9} 16|95r95 97r146 100r46
+15A9*Place(5I12)<14E9> 16|50r26
+17I12*TurnsNo{natural} 16|52r31 97r46
+21e7*justWent{9E9} 16|65m34
+24i7*turnsleft{17I12} 16|67m34
+25a7*current_state{12A9} 16|66m34
+28V13*NextPlayer{9E9} 16|65s46
+33V13*ValidMove{natural} 16|95s46
+X 18 configure.ads
+3K9*Configure 16|6w6 6r21 18|10e14
+X 19 exceptions.ads
+17K10*Exceptions 16|7w6 7r22 19|22e15
+19U14*Show_Exception 16|142s10
+X 20 gametree.ads
+5K9*GameTree 16|4w6 4r20 20|29e13
+7R9*GameTree_Type 16|49r30 20|14e14
+11R9*GameTree_Type
+12r7*state{17|20R9} 16|65m28 66m28 67m28
+X 21 gnat.ads
+36K9*GNAT 16|9r6 9r36 10r6 10r36 21|39e9
+X 22 g-traceb.ads
+82K14*Traceback 16|9w11 9r41 10r11 10r41 22|103e19
+X 23 g-trasym.ads
+84K24*Symbolic 16|10w21 10r51 23|96e28
+X 27 minmax.ads
+4K9*MinMax 16|5w6 5r18 27|12e11
+5U14*NegaMax 16|71s22 73s22
+X 60 temporaldifference.ads
+3K9*TemporalDifference 16|8w6 8r30 60|35e23
+27U14*LoadWeights 16|28s10
+28U14*StoreWeights 16|121s16
+
