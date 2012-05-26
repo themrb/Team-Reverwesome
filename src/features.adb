@@ -7,17 +7,15 @@ with TemporalDifference; use TemporalDifference;
 
 package body Features is
 
-   function CheckStability(move : Place; board : GameBoard) return Boolean is
+   function CheckStability(move : Place; player : BoardPoint; board : GameBoard) return Boolean is
+
+      Opponent : BoardPoint := NextPlayer(player);
 
       columnfull : Boolean := True;
       rowfull : Boolean := True;
       NWSEfull : Boolean := True;
       SWNEfull : Boolean := True;
-
-      columnstable : Boolean := False;
-      rowstable : Boolean := False;
-      NWSEstable : Boolean := False;
-      SWNEstable : Boolean := False;
+      allfriendly : Boolean := True;
 
       moveroom : Dimension;
       yroom : Dimension;
@@ -41,59 +39,86 @@ package body Features is
             x := movex + xpoint;
             if board(x,y) = Empty then
                rowfull := False;
+               allfriendly := False;
                exit Right_Loop;
             elsif board(x,y) = Blocked then
                --direction is full, we hit blocked first
                exit Right_Loop;
+            elsif board(x,y) = Opponent then
+               allfriendly := False;
             end if;
          end loop Right_Loop;
 
-         if rowfull then
+         if rowfull and not allfriendly then
+            allfriendly := True;
             --straight left, only if required
             Left_Loop :
             for xpoint in Dimension range 1 .. (movex-1) loop
                x := movex - xpoint;
                if board(x,y) = Empty then
                   rowfull := False;
+                  allfriendly := False;
                   exit Left_Loop;
                elsif board(x,y) = Blocked then
                   --direction is full, we hit blocked first
                   exit Left_Loop;
+               elsif board(x,y) = Opponent then
+                  allfriendly := False;
                end if;
             end loop Left_Loop;
          end if;
+
+         --on at least one line, everything we saw was friendly
+         if allfriendly then
+            rowfull := True;
+         end if;
       end if;
 
-      --straight up
-      x := movex;
-      Up_Loop :
-      for ypoint in Dimension range 1 .. (Dimension'Last - movey)       loop
-         y := movey+ypoint;
-         if board(x,y) = Empty then
-            columnfull := False;
-            exit Up_Loop;
-         elsif board(x,y) = Blocked then
-            --direction is full, we hit blocked first
-            exit Up_Loop;
-         end if;
-      end loop Up_Loop;
+      if (movey = Dimension'Last or movey = Dimension'First) then
+         -- left or right is edge, we're stable
+         columnstable := True;
+      else
+         --straight up
+         x := movex;
+         Up_Loop :
+         for ypoint in Dimension range 1 .. (Dimension'Last - movey)       loop
+            y := movey+ypoint;
+               if board(x,y) = Empty then
+                  columnfull := False;
+                  allfriendly := False;
+                  exit Left_Loop;
+               elsif board(x,y) = Blocked then
+                  --direction is full, we hit blocked first
+                  exit Left_Loop;
+               elsif board(x,y) = Opponent then
+                  allfriendly := False;
+               end if;
+         end loop Up_Loop;
 
-      if columnfull then
-         --straight down if needed
-         Down_Loop :
-         for ypoint in Dimension range 1 .. (movey-1) loop
-            y := movey - ypoint;
-            if board(x,y) = Empty then
-               columnfull := False;
-               exit Down_Loop;
-            elsif board(x,y) = Blocked then
-               --direction is full, we hit blocked first
-               exit Down_Loop;
-            end if;
-         end loop Down_Loop;
+         if columnfull and not allfriendly then
+            --straight down if needed
+            allfriendly := True;
+            Down_Loop :
+            for ypoint in Dimension range 1 .. (movey-1) loop
+               y := movey - ypoint;
+               if board(x,y) = Empty then
+                  columnfull := False;
+                  exit Down_Loop;
+               elsif board(x,y) = Blocked then
+                  --direction is full, we hit blocked first
+                  exit Down_Loop;
+               end if;
+            end loop Down_Loop;
+         end if;
+
+         --on at least one line, everything we saw was friendly
+         if allfriendly then
+            columnfull := True;
+         end if;
       end if;
 
       --straight NE
+      allfriendly := True;
       if (not(movex = Dimension'Last or movey = Dimension'Last)) then
          yroom := Dimension'Last - movey;
          xroom := Dimension'Last - movex;
@@ -117,7 +142,8 @@ package body Features is
          end loop NE_Loop;
       end if;
 
-      if SWNEfull then
+      if SWNEfull and not allfriendly then
+         allfriendly := True;
          --straight SW
          if (not(movex = Dimension'First or movey = Dimension'First)) then
             yroom := movey;
@@ -140,6 +166,11 @@ package body Features is
                end if;
             end loop SW_Loop;
          end if;
+      end if;
+
+      --on at least one line, everything we saw was friendly
+      if allfriendly then
+         SWNEfull := True;
       end if;
 
 
@@ -166,7 +197,7 @@ package body Features is
          end loop NW_Loop;
       end if;
 
-      if NWSEfull then
+      if NWSEfull and not allfriendly then
          --straight SE
          if (not(movey = Dimension'First or movex = Dimension'Last)) then
             yroom := movey;
@@ -191,9 +222,10 @@ package body Features is
          end if;
       end if;
 
-      if columnfull then
-         columnstable := True;
-      end if;
+          --on at least one line, everything we saw was friendly
+         if allfriendly then
+            NWSEfull := True;
+         end if;
 
 
       return True;
