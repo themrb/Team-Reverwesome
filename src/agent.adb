@@ -65,32 +65,13 @@ package body Agent is
                   treeroot.state.justWent := NextPlayer(player);
                   treeroot.state.current_state := currentstate;
                   treeroot.state.turnsleft := turnsleft;
-                  --Put("no storage error after initialising tree");
 
                   if (turnsleft < 16) then
                      NegaMax(player, treeroot, 15, value, BoardValue'First, BoardValue'Last, move);
                   else
-                     NegaMax(player, treeroot, 7, value, BoardValue'First, BoardValue'Last, move);
-                     --           declare
-                     --              tempprob : Probability;
-                     --              bestprob : Probability := 0.0;
-                     --              bestmove : Place;
-                     --              children : ExpandedChildren := Expand(treeroot);
-                     --           begin
-                     --              for I in 0 .. children.branching-1 loop
-                     --                 tempprob := MonteCarlo(player,children.children(I),200);
-                     --                 if (tempprob >= bestprob) then
-                     --                    bestmove := children.children(I).state.spot;
-                     --                    bestprob := tempprob;
-                     --                 end if;
-                     --              end loop;
-                     --              Put_Line("Probability of winning : " & Long_Float'Image(bestprob));
-                     --              move := bestmove;
-                     --           end;
+                     NegaMax(player, treeroot, 5, value, BoardValue'First, BoardValue'Last, move);
                   end if;
 
-                  --Put_Line("No storage error after max");
-                  --Put_Line("testing monte carlo " & Long_Float'Image(MonteCarlo(player,treeroot,100)));
                   declare
                      temppieces : Natural := ValidMove(player, currentstate, move(x), move(y));
                   begin
@@ -99,21 +80,12 @@ package body Agent is
                   cnextmovey := Integer(move(x));
                   cnextmovex := Integer(move(y));
 
-                  -- 		Move_Loop:
-                  -- 		for I in Dimension range Dimension'Range loop
-                  -- 			for J in Dimension range Dimension'Range loop
-                  -- 				piecestaken := ValidMove(player, currentstate, I, J);
-                  -- 				if (piecestaken > 0) then
-                  -- 					if (piecestaken > bestpiecestaken) then
-                  -- 						bestpiecestaken := piecestaken;
-                  -- 						cnextmovey := Integer(I);
-                  -- 						cnextmovex := Integer(J);
-                  -- 						Put_Line("Seen move " & I'Img &J'Img);
-                  -- 						--PrintBoard(currentstate);
-                  -- 					end if;
-                  -- 				end if;
-                  -- 			end loop;
-                  -- 		end loop Move_Loop;
+                  declare
+                     newState : GameBoard := currentstate;
+                  begin
+                     AdvanceMove(player, newState, move(x), move(y));
+                     TD(currentstate, newState, player);
+                  end;
                end;
             end NewMove;
          or
