@@ -58,6 +58,8 @@ int main(int argc, char *argv[])
         cerr << "CLIENT: unknown player \"" << argv[1] << "\"" << endl;
 	}
 	
+	//tell Ada which colour we are
+	playercolour = player == WHITE ? 1 : 2;
 	// Boot up Ada, since we now know which player we are
 	adainit();
 	startup();
@@ -133,9 +135,6 @@ int main(int argc, char *argv[])
             if (messageIn.timeRemaining > 1.0) {
                 //sleep(1);
             }
-			//talk to Ada
-			
-			playercolour = player == WHITE ? 1 : 2;
 			
 			int x;
 			int y;
@@ -148,18 +147,10 @@ int main(int argc, char *argv[])
 				//cerr<<"\n";
 			}
 
+			//Ask ada for move
 			  ada_subroutine();
 			
-            // make a random move
-            const set<pair<int, int> > moves = messageIn.board.legalMoves(player);
-            assert(!moves.empty());
-            int randomIndex = (int)(drand48() * moves.size());
-            set<pair<int, int> >::const_iterator it = moves.begin();
-            while (randomIndex-- > 0) {
-                ++it;
-            }
-            //messageOut.x = it->first;
-            //messageOut.y = it->second;
+			//Use Ada's move
             messageOut.x = nextmovex;
             messageOut.y = nextmovey;
             cerr << "CLIENT: making move (" << messageOut.x << ", " << messageOut.y << ")" << endl;
