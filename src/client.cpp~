@@ -24,6 +24,7 @@ extern "C" {
   void adafinal(void);
   
   void ada_subroutine( void );
+  void StoreWeights( void );
 }
 
 using namespace std;
@@ -169,6 +170,7 @@ int main(int argc, char *argv[])
             exit(-1);
         }
     }
+    StoreWeights();
 	adafinal();
 
     return 0;

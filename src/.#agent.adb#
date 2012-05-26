@@ -11,6 +11,8 @@ with GNAT.Traceback.Symbolic;  use GNAT.Traceback.Symbolic;
 
 package body Agent is
 
+
+
    ccurrentstate : CBoardState;
    cplayercolour : Integer;
    cnextmovey : Integer;
