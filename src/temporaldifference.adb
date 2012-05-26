@@ -95,14 +95,16 @@ package body TemporalDifference is
       Line_No : Natural := 0;
       Subs : Slice_Set;
       Next_Line : Unbounded_String;
+      weightaverage : Float;
    begin
       Create(CSV_File, Out_File, Filename);
 
       --Line for each pieceweight line
-      for i in reverse Dimension range 0.. (Dimension'Last/2) loop
+      for i in Dimension range 0.. (Dimension'Last/2) loop
          Next_Line := To_Unbounded_String("");
-         for j in reverse Dimension range 0..(Dimension'Last/2-i) loop
-            Next_Line := Next_Line & To_Unbounded_String(Float'Image(pieceWeights(i,j)) & ",");
+         for j in Dimension range 0..i loop
+            weightaverage := (pieceWeights(i,j)+pieceWeights(Dimension'Last-i,j)+pieceWeights(Dimension'Last-i,Dimension'Last-j)+pieceWeights(i,Dimension'Last-j))/(4.0);
+            Next_Line := Next_Line & To_Unbounded_String(Float'Image(weightaverage) & ",");
          end loop;
           Unbounded_IO.Put_Line(CSV_File, Next_Line);
       end loop;

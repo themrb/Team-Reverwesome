@@ -19,16 +19,16 @@ package body Features is
       NWSEstable : Boolean := False;
       SWNEstable : Boolean := False;
 
-      x : Dimension;
-      y : Dimension;
       moveroom : Dimension;
       yroom : Dimension;
       xroom : Dimension;
-      movey : Dimension := move(y);
-      movex : Dimension := move(x);
+      movey : Dimension := (move(y));
+      movex : Dimension := (move(x));
+      x : Dimension;
+      y : Dimension;
    begin
 
-      if (x = Dimension'Last or x = Dimension'First) then
+      if (movex = Dimension'Last or movex = Dimension'First) then
          -- left or right is edge, we're stable
          rowstable := True;
       else
@@ -193,7 +193,7 @@ package body Features is
 
       if columnfull then
          columnstable := True;
-      else
+      end if;
 
 
       return True;
