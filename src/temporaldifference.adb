@@ -1,27 +1,84 @@
 with Ada.Text_IO; use Ada.Text_IO;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with GNAT.String_Split; use GNAT.String_Split;
+with Boards;
+with GameTree; use GameTree;
 
 package body TemporalDifference is
 
-   procedure TD(State : GameBoard; NumMoves : Natural) is
-
+   procedure TD(State, NewState : GameBoard; Player : Players) is
+      pieceReward : BoardPositionWeights := (others => (others => 0.0));
+      mobilityReward : FeatureWeight := 0.0;
    begin
-      null;
+      if(Terminal(NewState)) then
+         declare
+            BlackC, WhiteC : TurnsNo;
+            Diff : FeatureWeight;
+            Winner : Players;
+         begin
+            TokenCount(NewState, WhiteC, BlackC);
+            Diff := Float(abs(WhiteC - BlackC));
+            if(WhiteC > BlackC) then
+               Winner := White;
+            else
+               Winner := Black;
+            end if;
+            for i in Dimension'Range loop
+               for j in Dimension'Range loop
+                  if(NewState(i,j) = Winner) then
+                     pieceReward(i,j) := Diff;
+                  elsif(NewState(i,j) = NextPlayer(Winner)) then
+                     pieceReward(i,j) := -Diff;
+                  else
+                     pieceReward(i,j) := 0.0;
+                  end if;
+               end loop;
+            end loop;
+
+            if(Player = Winner) then
+               mobilityReward := mobilityReward + Diff;
+            else
+               mobilityReward := mobilityReward - Diff;
+            end if;
+         end;
+      end if;
+
+      declare
+         curVal, nextVal : BoardValue;
+         nMoves, nNewMoves : TurnsNo;
+      begin
+         nMoves := NumMoves(State, Player);
+         nNewMoves := NumMoves(NewState, NextPlayer(Player));
+         curVal := EndBoardValue(Player, State, nMoves);
+         nextVal := EndBoardValue(NextPlayer(Player), NewState, nNewMoves);
+
+         for i in Dimension'Range loop
+            for j in Dimension'Range loop
+               pieceWeights(i,j) := pieceWeights(i,j) + alpha *
+                 (nextVal - curVal + pieceReward(i,j));
+            end loop;
+         end loop;
+
+         mobilityReward := mobilityReward*FeatureWeight(nMoves - nNewMoves);
+
+         mobilityWeight := mobilityWeight + alpha *
+           (nextVal - curVal + mobilityReward);
+      end;
    end TD;
 
-   procedure EndBoardValue(Player : BoardPoint; State : GameBoard;
-                           NumMoves : Natural; Score : out BoardValue) is
+   function EndBoardValue(Player : BoardPoint; State : GameBoard;
+                          NumMoves : Natural) return BoardValue is
+      Score : BoardValue;
    begin
-      Score := 0.0;
-      TokenScore(State, Player, pieceWeights, Score);
+      Score := TokenScore(State, Player);
       -- Weighting on the number of available moves
       Score := Score + (FeatureWeight(NumMoves) * mobilityWeight);
+      return Score;
    end EndBoardValue;
 
-
-   procedure TokenScore(State : GameBoard; Player: in BoardPoint;
-                        Weights: in BoardPositionWeights; Score: in out BoardValue) is
+   function TokenScore(State : in GameBoard; Player: in BoardPoint) return BoardValue is
+      Weights : BoardPositionWeights := pieceWeights;
+      Score : BoardValue := 0.0;
    begin
       for I in Dimension'Range loop
          for J in Dimension'Range loop
@@ -32,9 +89,10 @@ package body TemporalDifference is
             end if;
          end loop;
       end loop;
+      return Score;
    end TokenScore;
 
-   procedure TokenCount(State : GameBoard; WhiteTokens : out TurnsNo; BlackTokens : out TurnsNo) is
+   procedure TokenCount(State : in GameBoard; WhiteTokens, BlackTokens : out TurnsNo) is
    begin
       BlackTokens := 0;
       WhiteTokens := 0;

@@ -14,7 +14,7 @@ package GameTree is
    end record;
 
    type ChildrenArray is array(TurnsNo) of GameTree_Type;
-   
+
    -- Information on the game state
    type ExpandedChildren is record
       branching : TurnsNo;
@@ -23,6 +23,8 @@ package GameTree is
    end record;
 
    function Expand(state : in GameTree_Type) return ExpandedChildren;
+
+   function NumMoves(Board : GameBoard; Player : Players) return Natural;
 
    function Terminal(board : in GameBoard) return Boolean;
 

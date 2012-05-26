@@ -7,7 +7,9 @@ with Ada.Numerics.Discrete_Random;
 
 package body MinMax is
 
-   procedure NegaMax (Player : BoardPoint; state : in out GameTree_Type; depth : in TurnsNo; outValue : out BoardValue; alpha, beta : in BoardValue;  bestMove : out Place) is
+   procedure NegaMax (Player : BoardPoint; state : in out GameTree_Type;
+                      depth : in TurnsNo; outValue : out BoardValue;
+                      alpha, beta : in BoardValue;  bestMove : out Place) is
       successors : ExpandedChildren;
       move : GameTree_Type;
       a, b : BoardValue;
@@ -18,9 +20,9 @@ package body MinMax is
          Put_Line("BAD");
       end if;
 
-      if (depth = 0 or Terminal(state.state.current_state)) then
+      if (Terminal(state.state.current_state)) then
          bestMove := (0,0);
-         EndBoardValue(Player,state.state.current_state, 0, outValue);
+         outValue := EndBoardValue(Player,state.state.current_state, 0);
          return;
       end if;
 
@@ -28,7 +30,14 @@ package body MinMax is
       b := beta;
       value := BoardValue'First;  -- Set to minimum board-value;
       successors := Expand(state);
+      -- This needs to occur /after/ checking if this state is Terminal!
       bestMove := successors.children(0).state.spot;
+
+      if (depth = 0) then
+         bestMove := (0,0);
+         outValue := EndBoardValue(Player,state.state.current_state, successors.branching);
+         return;
+      end if;
 
       --if we don't get a move
       if (successors.nomove) then

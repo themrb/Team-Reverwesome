@@ -43,6 +43,24 @@ package body GameTree is
       return Children;
    end Expand;
 
+   function NumMoves(Board : GameBoard; Player : Players) return Natural is
+      temp : Natural;
+      count : Natural := 0;
+   begin
+      for i in Dimension'Range loop
+         for j in Dimension'Range loop
+            temp := ValidMove(player => Player,
+                              board  => Board,
+                              movex  => i,
+                              movey  => j);
+            if(temp > 0) then
+               count := count + 1;
+            end if;
+         end loop;
+      end loop;
+      return count;
+   end NumMoves;
+
    function Terminal(board : in GameBoard) return Boolean is
    begin
       for i in Dimension'Range loop
