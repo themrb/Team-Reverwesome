@@ -18,18 +18,9 @@ client: ${FILES_OBJ} client.o
 	$ gnatgcc -c configure.ads
 	$ gnatgcc -c exceptions.adb
 	$ gnatgcc -c temporaldifference.adb
+	$ gnatgcc -c features.adb
 	$ gnatbind -n agent
-	$ gnatbind -n boards
-	$ gnatbind -n gametree
-	$ gnatbind -n minmax
-	$ gnatbind -n configure
-	$ gnatbind -n exceptions
 	$ gnatgcc -c b~agent.adb
-	$ gnatgcc -c b~boards.adb
-	$ gnatgcc -c b~gametree.adb
-	$ gnatgcc -c b~minmax.adb
-	$ gnatgcc -c b~exceptions.adb
-	$ gnatgcc -c temporaldifference.adb
 	$ gnatlink -L/usr/lib/gcc/x86_64-linux-gnu/4.4.3 -lstdc++ -o client client.o ${FILES_OBJ} agent.ali --LINK=c++
 	$ rm -f b~*
 

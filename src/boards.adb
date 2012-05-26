@@ -450,7 +450,7 @@ package body Boards is
       --straight NW---------------------------------------------------------
       if (not(movex = Dimension'First or movey = Dimension'Last)) then
          yroom := Dimension'Last - movey;
-         xroom := movex-1;
+         xroom := movex;
          if (yroom > xroom) then
             moveroom := xroom;
          else
@@ -485,8 +485,8 @@ package body Boards is
       end if;
       --straight SW
       if (not(movex = Dimension'First or movey = Dimension'First)) then
-      yroom := movey-1;
-      xroom := movex-1;
+      yroom := movey;
+      xroom := movex;
       if (yroom > xroom) then
          moveroom := xroom;
       else
@@ -521,7 +521,7 @@ package body Boards is
       end if;
       --straight SE
       if (not(movey = Dimension'First or movex = Dimension'Last)) then
-      yroom := movey-1;
+      yroom := movey;
       xroom := Dimension'Last - movex;
       if (yroom > xroom) then
          moveroom := xroom;

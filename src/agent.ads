@@ -18,6 +18,6 @@ package Agent is
    pragma export(CPP, Ada_Subroutine );
    pragma export(CPP, GameEnd );
 
-   player : BoardPoint;
+   my_player : BoardPoint;
 
 end Agent;

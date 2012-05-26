@@ -21,16 +21,17 @@ package body Agent is
    pragma import(cpp, cnextmovex, "nextmovex");
 
    task body Main is
-
+      previousState : GameTree_Type;
+      havePrevious : Boolean := False;
    begin
       accept Initialise  do
          --Put_Line("is it weights?");
          LoadWeights;
 
          if (cplayercolour = 1) then
-            player := White;
+            my_player := White;
          elsif (cplayercolour = 2) then
-            player := Black;
+            my_player := Black;
          end if;
 
          --Put_Line("not weights or players");
@@ -62,30 +63,32 @@ package body Agent is
                   end loop;
 
                   -- Initialise game tree
-                  treeroot.state.justWent := NextPlayer(player);
+                  treeroot.state.justWent := NextPlayer(my_player);
                   treeroot.state.current_state := currentstate;
                   treeroot.state.turnsleft := turnsleft;
 
-                  if (turnsleft < 16) then
-                     NegaMax(player, treeroot, 15, value, BoardValue'First, BoardValue'Last, move);
+                  if(not havePrevious) then
+                     previousState := treeroot; -- This line is purely to get rid of a compiler warning.
                   else
-                     NegaMax(player, treeroot, 5, value, BoardValue'First, BoardValue'Last, move);
+                     TD(previousState, treeroot, my_player);
+                  end if;
+
+                  if (turnsleft < 16) then
+                     NegaMax(my_player, treeroot, 15, value, BoardValue'First, BoardValue'Last, move);
+                  else
+                     NegaMax(my_player, treeroot, 5, value, BoardValue'First, BoardValue'Last, move);
                   end if;
 
                   declare
-                     temppieces : Natural := ValidMove(player, currentstate, move(x), move(y));
+                     temppieces : Natural := ValidMove(my_player, currentstate, move(x), move(y));
                   begin
                      Put_Line("We'll get " & TurnsNo'Image(temppieces) & "for moving at" & Dimension'Image(move(x)) & "," & Dimension'Image(move(y)));
                   end;
                   cnextmovey := Integer(move(x));
                   cnextmovex := Integer(move(y));
 
-                  declare
-                     newState : GameBoard := currentstate;
-                  begin
-                     AdvanceMove(player, newState, move(x), move(y));
-                     TD(currentstate, newState, player);
-                  end;
+                  previousState := treeroot;
+                  havePrevious := True;
                end;
             end NewMove;
          or
