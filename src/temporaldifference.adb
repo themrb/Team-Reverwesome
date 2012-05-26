@@ -4,17 +4,22 @@ with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with GNAT.String_Split; use GNAT.String_Split;
 with Boards;
 with GameTree; use GameTree;
+with Ada.Numerics;
+with Ada.Numerics.Discrete_Random;
 
 package body TemporalDifference is
 
-   procedure TD(State, NewState : GameBoard; Player : Players) is
+   procedure TD(Current, Next : GameTree_Type; Player : Players) is
       pieceReward : BoardPositionWeights := (others => (others => 0.0));
       mobilityReward : FeatureWeight := 0.0;
+      State, NewState : GameBoard;
+      Diff : FeatureWeight;
    begin
+      State := Current.state.current_state;
+      NewState := Next.state.current_state;
       if(Terminal(NewState)) then
          declare
             BlackC, WhiteC : TurnsNo;
-            Diff : FeatureWeight;
             Winner : Players;
          begin
             TokenCount(NewState, WhiteC, BlackC);
@@ -42,6 +47,21 @@ package body TemporalDifference is
                mobilityReward := mobilityReward - Diff;
             end if;
          end;
+      else
+         Diff := 0.5 - Float(MonteCarlo(Player, Next, 100));
+         for i in Dimension'Range loop
+            for j in Dimension'Range loop
+               if(NewState(i,j) = Player) then
+                  pieceReward(i,j) := Diff;
+               elsif(NewState(i,j) = NextPlayer(Player)) then
+                  pieceReward(i,j) := -Diff;
+               else
+                  pieceReward(i,j) := 0.0;
+               end if;
+            end loop;
+         end loop;
+
+         mobilityReward := mobilityReward + Diff;
       end if;
 
       declare
@@ -57,15 +77,29 @@ package body TemporalDifference is
          for i in Dimension'Range loop
             for j in Dimension'Range loop
                newW := pieceWeights(i,j) + alpha * (nextVal - curVal + pieceReward(i,j));
---                 Put_Line(i'Img &','& j'Img &','& pieceWeights(i,j)'Img &','& newW'Img);
+
+               if(not (newW'Valid or cease)) then
+                  Put_Line("*****************");
+                  Put_Line(i'Img & j'Img & pieceWeights(i,j)'Img & nextVal'Img
+                           & curVal'Img & pieceReward(i,j)'Img);
+                  Put_Line("*****************");
+                  cease := True;
+               end if;
+
                pieceWeights(i,j) := newW;
             end loop;
          end loop;
 
          mobilityReward := mobilityReward*FeatureWeight(nMoves - nNewMoves);
-
-         mobilityWeight := mobilityWeight + alpha *
-           (nextVal - curVal + mobilityReward);
+         newW := mobilityWeight + alpha * (nextVal - curVal + mobilityReward);
+         if(not (newW'Valid or cease)) then
+            Put_Line("*****************");
+            Put_Line("Mobility" & mobilityWeight'Img & nextVal'Img
+                     & curVal'Img & mobilityReward'Img);
+            Put_Line("*****************");
+            cease := True;
+         end if;
+         mobilityWeight := newW;
       end;
    end TD;
 
@@ -113,6 +147,60 @@ package body TemporalDifference is
    end loop;
    end TokenCount;
 
+   function MonteCarlo (Player : BoardPoint; state : GameTree_Type; iterations : Positive) return Probability is
+      Whitewins : Long_Float := 0.0;
+      Blackwins : Long_Float := 0.0;
+      Ties : Natural := 0;
+      temp : GameTree_Type;
+      tempChildren : ExpandedChildren;
+      tempWinner : BoardPoint;
+      Children : ExpandedChildren := Expand(state);
+      --random imports
+      type Rand_Range is range 0..91;
+      package Rand_Int is new Ada.Numerics.Discrete_Random(Rand_Range);
+      seed : Rand_Int.Generator;
+   begin
+      for I in 1..iterations loop
+
+         declare
+            type Rand_Range is range 0..91;
+            package Rand_Int is new Ada.Numerics.Discrete_Random(Rand_Range);
+            seed : Rand_Int.Generator;
+         begin
+            Rand_Int.Reset(seed);
+            temp := Children.children(Integer(Rand_Int.Random(seed)) mod Children.branching);
+         end;
+
+         Single_Iteration:
+         loop
+            if (Terminal(temp.state.current_state)) then
+                  Winner(temp.state.current_state,tempWinner);
+                  if (tempWinner = White) then
+                     Whitewins := Whitewins + 1.0;
+                  elsif (tempWinner = Black) then
+                     Blackwins := Blackwins + 1.0;
+                  else Ties := Ties + 1;
+                  end if;
+               exit Single_Iteration;
+            end if;
+
+            tempChildren := Expand(temp);
+            Rand_Int.Reset(seed);
+            temp := tempChildren.children(Integer(Rand_Int.Random(seed)) mod tempChildren.branching);
+
+         end loop Single_Iteration;
+      end loop;
+
+      if (Player = White) then
+         Put_Line(Blackwins'Img & ' ' & Whitewins'Img);
+         return Whitewins / (Whitewins+Blackwins);
+      elsif (Player = Black) then
+         Put_Line(Blackwins'Img & ' ' & Whitewins'Img);
+         return Blackwins / (Whitewins+Blackwins);
+      end if;
+      return 0.0;
+   end MonteCarlo;
+
    procedure LoadWeights is
       CSV_File : File_Type;
       Line : String(1..255);
@@ -143,13 +231,13 @@ package body TemporalDifference is
 
       for i in Dimension'Range loop
          for j in Dimension'Range loop
-            if pieceWeights(WeightMapping(i), WeightMapping(j) = 0.0) then
+            if (pieceWeights(WeightMapping(i), WeightMapping(j)) = 0.0) then
                pieceWeights(i,j)
                  := pieceWeights(WeightMapping(j),WeightMapping(i));
-               Put_Line("Missed Something");
             else
                pieceWeights(i,j)
-                  := pieceWeights(WeightMapping(i),WeightMapping(j));
+                 := pieceWeights(WeightMapping(i),WeightMapping(j));
+            end if;
          end loop;
       end loop;
    end LoadWeights;
@@ -160,14 +248,16 @@ package body TemporalDifference is
       Line_No : Natural := 0;
       Subs : Slice_Set;
       Next_Line : Unbounded_String;
+      weightaverage : Float;
    begin
       Create(CSV_File, Out_File, Filename);
 
       --Line for each pieceweight line
-      for i in reverse Dimension range 0.. (Dimension'Last/2) loop
+      for i in Dimension range 0.. (Dimension'Last/2) loop
          Next_Line := To_Unbounded_String("");
-         for j in reverse Dimension range 0..(Dimension'Last/2-i) loop
-            Next_Line := Next_Line & To_Unbounded_String(Float'Image(pieceWeights(i,j)) & ",");
+         for j in Dimension range 0..i loop
+            weightaverage := (pieceWeights(i,j)+pieceWeights(Dimension'Last-i,j)+pieceWeights(Dimension'Last-i,Dimension'Last-j)+pieceWeights(i,Dimension'Last-j))/(4.0);
+            Next_Line := Next_Line & To_Unbounded_String(Float'Image(weightaverage) & ",");
          end loop;
           Unbounded_IO.Put_Line(CSV_File, Next_Line);
       end loop;

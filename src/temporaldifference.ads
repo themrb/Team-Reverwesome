@@ -1,7 +1,8 @@
 with Boards; use Boards;
+with GameTree; use GameTree;
 
 package TemporalDifference is
-   procedure TD(State, NewState : GameBoard; Player : Players);
+   procedure TD(Current, Next : GameTree_Type; Player : Players);
 
    subtype FeatureWeight is BoardValue'Base;
    type BoardPositionWeights is array(Dimension, Dimension) of FeatureWeight;
@@ -28,10 +29,16 @@ package TemporalDifference is
 
    function WeightMapping(i : Dimension) return Dimension;
 
+   subtype Probability is Long_Float;
+
+   function MonteCarlo (Player : BoardPoint; state : GameTree_Type; iterations : Positive) return Probability;
+
    pieceWeights : BoardPositionWeights := (others => (others => 0.0));
    mobilityWeight : FeatureWeight := 1.0;
 
    epsilon : Float := 0.1;
-   alpha : Float := 0.01;
+   alpha : Float := 0.1;
+
+   cease : Boolean := False;
 
 end TemporalDifference;
