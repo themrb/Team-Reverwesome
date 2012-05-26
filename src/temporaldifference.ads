@@ -25,6 +25,7 @@ package TemporalDifference is
                            NumMoves : Natural; Score : out BoardValue);
 
    procedure LoadWeights;
+   procedure StoreWeights;
 
    function WeightMapping(i : Dimension) return Dimension;
 
