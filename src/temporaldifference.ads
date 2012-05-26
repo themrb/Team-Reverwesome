@@ -1,7 +1,7 @@
 with Boards; use Boards;
 
 package TemporalDifference is
-   procedure TD(State : GameBoard; NumMoves : Natural);
+   procedure TD(State, NewState : GameBoard; Player : Players);
 
    subtype FeatureWeight is BoardValue'Base;
    type BoardPositionWeights is array(Dimension, Dimension) of FeatureWeight;
@@ -16,13 +16,12 @@ package TemporalDifference is
 --                                                       );
 --     defaultMobility : constant FeatureWeight := 92;
 
-   procedure TokenScore(State : GameBoard; Player: in BoardPoint;
-                        Weights: in BoardPositionWeights; Score: in out BoardValue);
+   function TokenScore(State : in GameBoard; Player: in BoardPoint) return BoardValue;
 
-   procedure TokenCount(State : GameBoard; WhiteTokens : out TurnsNo; BlackTokens : out TurnsNo);
+   procedure TokenCount(State : in GameBoard; WhiteTokens, BlackTokens : out TurnsNo);
 
-   procedure EndBoardValue(Player : BoardPoint; State : GameBoard;
-                           NumMoves : Natural; Score : out BoardValue);
+   function EndBoardValue(Player : BoardPoint; State : GameBoard;
+                           NumMoves : Natural) return BoardValue;
 
    procedure LoadWeights;
 
@@ -30,5 +29,8 @@ package TemporalDifference is
 
    pieceWeights : BoardPositionWeights := (others => (others => 1.0));
    mobilityWeight : FeatureWeight := 1.0;
+
+   epsilon : Float := 0.1;
+   alpha : Float := 0.1;
 
 end TemporalDifference;
