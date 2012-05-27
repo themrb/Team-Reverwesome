@@ -229,8 +229,8 @@ package body TemporalDifference is
                   Sub : String := Slice(Subs, i);
                begin
                   if(Line_No < 5) then
-                     Put_Line(Sub (Sub'First .. Sub'First + 5));
-                     pieceWeights(Line_No, Dimension(i)-1) := Float'Value(Sub (Sub'First .. Sub'First + 5));
+                     Put_Line(Sub);
+                     pieceWeights(Line_No, Dimension(i)-1) := Float'Value(Sub);
                   elsif (Line_No = 5 and i = 1) then
                      mobilityWeight := Float'Value(Sub);
                   end if;
@@ -267,7 +267,8 @@ package body TemporalDifference is
       for i in Dimension range 0.. (Dimension'Last/2) loop
          Next_Line := To_Unbounded_String("");
          for j in Dimension range 0..i loop
-            weightaverage := (pieceWeights(i,j)+pieceWeights(Dimension'Last-i,j)+pieceWeights(Dimension'Last-i,Dimension'Last-j)+pieceWeights(i,Dimension'Last-j))/(4.0);
+            weightaverage := (pieceWeights(i,j)+pieceWeights(Dimension'Last-i,j)+pieceWeights(Dimension'Last-i,Dimension'Last-j)+pieceWeights(i,Dimension'Last-j)
+                             +pieceWeights(j,i)+pieceWeights(Dimension'Last-j,i)+pieceWeights(Dimension'Last-j,Dimension'Last-i)+pieceWeights(j,Dimension'Last-i))/(8.0);
             Next_Line := Next_Line & To_Unbounded_String(Float'Image(weightaverage) & ",");
          end loop;
           Unbounded_IO.Put_Line(CSV_File, Next_Line);

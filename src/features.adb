@@ -245,4 +245,9 @@ package body Features is
       return columnfull and rowfull and SWNEfull and NWSEfull;
    end CheckStability;
 
+   function CheckInternal(move : Place; player : BoardPoint; board : GameBoard) return Boolean is
+      return board(move(x)-1,move(y)) /= Empty and board(move(x)-1,move(y)-1) /= Empty and board(move(x)-1,move(y)+1) /= Empty and board(move(x),move(y)-1) /= Empty and
+        board(move(x),move(y)+1) /= Empty and board(move(x)+1,move(y)) /= Empty and board(move(x)+1,move(y)-1) /= Empty and board(move(x)+1,move(y)+1) /= Empty;
+   end CheckInternal;
+
 end Features;

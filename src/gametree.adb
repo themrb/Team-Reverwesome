@@ -24,6 +24,13 @@ package body GameTree is
                temp.state.turnsleft := state.state.turnsleft - 1;
                temp.state.TokensTaken := temptokens;
 
+               --copy and update estimated stability
+               temp.state.StableNodes := state.state.StableNodes;
+               if CheckStability((i,j), toPlay, state.state.current_state) then
+                  temp.state.StableNodes(i,j) = True;
+               end if;
+
+
                Children.children(Counter) := temp;
                Configure.count := Configure.count + 1;
                Counter := Counter + 1;
