@@ -44,7 +44,9 @@ package body Agent is
       loop
          select
             accept NewMove  do
-               --Put("no storage error at start");
+
+               LoadWeights;
+
                declare
                   currentstate : GameBoard;
                   treeroot : GameTree_Type;
@@ -71,6 +73,7 @@ package body Agent is
                      previousState := treeroot; -- This line is purely to get rid of a compiler warning.
                   else
                      TD(previousState, treeroot, my_player);
+                     StoreWeights;
                   end if;
 
                   if (turnsleft < 16) then
