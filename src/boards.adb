@@ -577,7 +577,7 @@ package body Boards is
                temp := temp & "+F+";
             end case;
          end loop;
-         temp := temp & "\n";
+         temp := temp & Ada.Characters.Latin_1.LF;
       end loop;
       return To_String(temp);
    end Image;
