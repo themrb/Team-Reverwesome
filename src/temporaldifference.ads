@@ -30,9 +30,9 @@ package TemporalDifference is
 
    procedure CloseFile;
    procedure LoadWeights;
-   procedure LoadWeightSet(Weights : out FeatureWeights);
+   procedure LoadWeightSet(Weights : out FeatureSet);
    procedure StoreWeights;
-   procedure StoreWeightSet(Weights : FeatureWeights);
+   procedure StoreWeightSet(Weights : FeatureSet);
 
    function WeightMapping(i : Dimension) return Dimension;
 
@@ -45,8 +45,8 @@ package TemporalDifference is
 
    cease : Boolean := False;
 
-   EarlyGame : FeatureWeights;
-   MidGame : FeatureWeights;
-   LateGame : FeatureWeights;
+   EarlyGame : FeatureSet;
+   MidGame : FeatureSet;
+   LateGame : FeatureSet;
 
 end TemporalDifference;

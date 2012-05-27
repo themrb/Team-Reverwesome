@@ -208,12 +208,12 @@ package body TemporalDifference is
       Close(CSV_File);
    end LoadWeights;
 
-   procedure LoadWeightSet(Weights : out FeatureWeights) is
+   procedure LoadWeightSet(Weights : out FeatureSet) is
       Subs : GNAT.String_Split.Slice_Set;
       InternalCount : Natural := 0;
    begin
       -- Grab out piece weights first
-      for xpoint in Dimension range 0..Dimension'Last/2 loop
+      for xpoint in Dimension range 0..(Dimension'Last/2) loop
          declare
             Line : String := Get_Line(CSV_File);
          begin
@@ -223,32 +223,28 @@ package body TemporalDifference is
                declare
                   Sub : String := Slice(Subs, i);
                begin
-                  Weights.pieceWeights(xpoint, Dimension(i)-1) := Float'Value(Sub);
+                  Weights.piece(xpoint, Dimension(i)-1) := Float'Value(Sub);
                end;
             end loop;
          end;
       end loop;
       -- Grab out peripheral features one by one
-      --Put_Line("no raise here");
       declare
          Line : String := Get_Line(CSV_File);
       begin
-         --Put_Line(Line);
-         Weights.mobilityWeight := Float'Value(Line);
+         Put_Line(Line);
+         Weights.mobility := Float'Value(Line);
       end;
-      --Put_Line("after");
-
-
 
       --Spread out piece weights
       for i in Dimension'Range loop
          for j in Dimension'Range loop
-            if (Weights.pieceWeights(WeightMapping(i), WeightMapping(j)) = 0.0) then
-               Weights.pieceWeights(i,j)
-                 := Weights.pieceWeights(WeightMapping(j),WeightMapping(i));
+            if (Weights.piece(WeightMapping(i), WeightMapping(j)) = 0.0) then
+               Weights.piece(i,j)
+                 := Weights.piece(WeightMapping(j),WeightMapping(i));
             else
-               Weights.pieceWeights(i,j)
-                 := Weights.pieceWeights(WeightMapping(i),WeightMapping(j));
+               Weights.piece(i,j)
+                 := Weights.piece(WeightMapping(i),WeightMapping(j));
             end if;
          end loop;
       end loop;
@@ -265,7 +261,7 @@ package body TemporalDifference is
 
    end StoreWeights;
 
-   procedure StoreWeightSet(Weights : FeatureWeights) is
+   procedure StoreWeightSet(Weights : FeatureSet) is
       Subs : Slice_Set;
       Next_Line : Unbounded_String;
       weightaverage : Float;
@@ -290,7 +286,6 @@ package body TemporalDifference is
 
       --Line for each peripheral weight
       Unbounded_IO.Put_Line(CSV_File, To_Unbounded_String(Float'Image(basicSet.mobility)));
-      Close(CSV_File);
    end StoreWeightSet;
 
    function WeightMapping(i : Dimension) return Dimension is
