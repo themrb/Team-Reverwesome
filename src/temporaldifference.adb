@@ -12,34 +12,53 @@ package body TemporalDifference is
    procedure TD(History: HistoryType; Player : Players) is
 --        deltaWeights : FeatureSet;
 --        delt : FeatureWeight;
-         ModFeatures : FeatureSet := basicSet;
+         ModEarly, ModMid, ModLate : FeatureSet;
          Step : Float := 0.0001;
-         OldSet : FeatureSet := basicSet;
+         OldSet : FeatureSet;
          StepChange : BoardValue := 0.0;
          Change : BoardValue := 0.0;
    begin
+      ModEarly := EarlyGame;
+      ModMid := MidGame;
+      ModLate := LateGame;
       -- Train Piece Weights
       for i in Dimension'Range loop
          for j in Dimension'Range loop
             for k in History.History'First .. (History.Index-1) loop
                declare
-                  NewSet : FeatureSet := OldSet;
+                  NewSet : FeatureSet;
                   State : State_Type := History.History(k).state;
                   lambdaSum : Float := 0.0;
                   derivative : Float;
                begin
+                  if(State.Current_Phase = PEarlyGame) then
+                     NewSet := EarlyGame;
+                     OldSet := EarlyGame;
+                  elsif(State.Current_Phase = PMidGame) then
+                     NewSet := MidGame;
+                     OldSet := MidGame;
+                  else
+                     NewSet := LateGame;
+                     OldSet := LateGame;
+                  end if;
+
                   NewSet.piece(i,j) := NewSet.piece(i,j) + step;
                   StepChange := ChangeInValue(Player, State.current_state, OldSet, NewSet, Step);
                   for m in (k+1) .. History.Index loop
-                     derivative := EndBoardValue(Player, History.History(m).state.current_state)
-                        - EndBoardValue(Player, State.current_state);
+                     derivative := EndBoardValue(Player, History.History(m).state.current_state, OldSet)
+                       - EndBoardValue(Player, State.current_state, OldSet);
                      lambdaSum := lambdaSum + (lambda ** (m-k)) * derivative;
                   end loop;
 
-                  Change := Change + alpha * (StepChange * lambdaSum);
+                  if(State.Current_Phase = PEarlyGame) then
+                     ModEarly.piece(i,j) := ModEarly.piece(i,j) + alpha * (StepChange * lambdaSum);
+                  elsif(State.Current_Phase = PMidGame) then
+                     ModMid.piece(i,j) := ModMid.piece(i,j) + alpha * (StepChange * lambdaSum);
+                  else
+                     ModLate.piece(i,j) := ModLate.piece(i,j) + alpha * (StepChange * lambdaSum);
+                  end if;
                end;
             end loop;
-            ModFeatures.piece(i,j) := ModFeatures.piece(i,j) + Change;
          end loop;
       end loop;
 
@@ -51,20 +70,38 @@ package body TemporalDifference is
             lambdaSum : Float := 0.0;
             derivative : Float;
          begin
+            if(State.Current_Phase = PEarlyGame) then
+               NewSet := EarlyGame;
+               OldSet := EarlyGame;
+            elsif(State.Current_Phase = PMidGame) then
+               NewSet := MidGame;
+               OldSet := MidGame;
+            else
+               NewSet := LateGame;
+               OldSet := LateGame;
+            end if;
+
             NewSet.mobility := NewSet.mobility + step;
             StepChange := ChangeInValue(Player, State.current_state, OldSet, NewSet, Step);
             for m in (k+1) .. History.Index loop
-               derivative := EndBoardValue(Player, History.History(m).state.current_state)
-                        - EndBoardValue(Player, State.current_state);
+               derivative := EndBoardValue(Player, History.History(m).state.current_state, OldSet)
+                        - EndBoardValue(Player, State.current_state, OldSet);
                lambdaSum := lambdaSum + (lambda ** (m-k)) * derivative;
             end loop;
 
-            Change := Change + alpha * (StepChange * lambdaSum);
+            if(State.Current_Phase = PEarlyGame) then
+               ModEarly.mobility := ModEarly.mobility + alpha * (StepChange * lambdaSum);
+            elsif(State.Current_Phase = PMidGame) then
+               ModMid.mobility := ModMid.mobility + alpha * (StepChange * lambdaSum);
+            else
+               ModLate.mobility := ModLate.mobility + alpha * (StepChange * lambdaSum);
+            end if;
          end;
       end loop;
 
-      ModFeatures.mobility := ModFeatures.mobility + Change;
-      basicSet := ModFeatures;
+      EarlyGame := ModEarly;
+      MidGame := ModMid;
+      LateGame := ModLate;
    end TD;
 
    function ChangeInValue(Player : Players; Board : GameBoard;
@@ -88,15 +125,10 @@ package body TemporalDifference is
       return Score;
    end EndBoardValue;
 
-   function EndBoardValue(Player : Players; State : GameBoard) return BoardValue is
+   function EndBoardValue(Player : Players; State : GameBoard; Set: FeatureSet) return BoardValue is
    begin
-      return EndBoardValue(Player, State, NumMoves(State, Player), basicSet);
+      return EndBoardValue(Player, State, NumMoves(State, Player), Set);
    end EndBoardValue;
-
-   function EndBoardValue(Player : Players; State : GameBoard; Moves : TurnsNo) return BoardValue is
-   begin
-      return EndBoardValue(Player, State, Moves, basicSet);
-   end;
 
    function TokenScore(State : in GameBoard; Player: in BoardPoint;
                         Weights : BoardPositionWeights) return BoardValue is
@@ -285,7 +317,7 @@ package body TemporalDifference is
       end loop;
 
       --Line for each peripheral weight
-      Unbounded_IO.Put_Line(CSV_File, To_Unbounded_String(Float'Image(basicSet.mobility)));
+      Unbounded_IO.Put_Line(CSV_File, To_Unbounded_String(Float'Image(Weights.mobility)));
    end StoreWeightSet;
 
    function WeightMapping(i : Dimension) return Dimension is

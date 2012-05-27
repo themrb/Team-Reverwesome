@@ -10,9 +10,10 @@ package TemporalDifference is
    type FeatureSet is record
       piece : BoardPositionWeights;
       mobility : FeatureWeight;
+      stability : FeatureWeight;
    end record;
 
-   basicSet : aliased FeatureSet := ((others => (others => 0.0)), 1.0);
+--     basicSet : FeatureSet := ((others => (others => 0.0)), 1.0);
 
    function TokenScore(State : in GameBoard; Player: in BoardPoint;
                         Weights : BoardPositionWeights) return BoardValue;
@@ -22,9 +23,7 @@ package TemporalDifference is
    function EndBoardValue(Player : Players; State : GameBoard; Moves : TurnsNo;
                           Set : FeatureSet) return BoardValue;
 
-   function EndBoardValue(Player : Players; State : GameBoard; Moves : TurnsNo) return BoardValue;
-
-   function EndBoardValue(Player : Players; State : GameBoard) return BoardValue;
+   function EndBoardValue(Player : Players; State : GameBoard; Set: FeatureSet) return BoardValue;
 
    function ChangeInValue(Player : Players; Board : GameBoard; OldSet, NewSet : FeatureSet; Step : Float) return BoardValue;
 
