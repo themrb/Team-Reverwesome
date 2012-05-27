@@ -7,22 +7,44 @@ with TemporalDifference; use TemporalDifference;
 
 package body Features is
 
-   procedure CountStability(player : Players; board : GameBoard; stabmatrix : in out InfoMatrix; StablePieces : out Integer := 0) is
+   procedure CountStability(player : Players; board : GameBoard; stabmatrix : in out InfoMatrix; StablePieces : out Integer) is
 
    begin
-      for I in Dimension'Range loop
-         for J in Dimension'Range loop
-            if stabmatrix(I,J
-
-            if (CheckStability((i,j),my_player,currentstate)) then
-               treeroot.state.StableNodes(i,j) := True;
-            end if;
-            if (CheckInternal((i,j),currentstate)) then
-               treeroot.state.InternalNodes(i,j) := True;
+      StablePieces := 0;
+      for i in Dimension'Range loop
+         for j in Dimension'Range loop
+            if board(i,j) = player then
+               if stabmatrix(i,j) then
+                  StablePieces := StablePieces + 1;
+               else
+                  if (CheckStability((i,j),player,board)) then
+                     stabmatrix(i,j) := True;
+                     StablePieces := StablePieces + 1;
+                  end if;
+               end if;
             end if;
          end loop;
       end loop;
-   end;
+   end CountStability;
+
+   procedure CountInternals(player : Players; board : GameBoard; internalmatrix : in out InfoMatrix; InternalPieces: out Integer) is
+   begin
+      InternalPieces := 0;
+      for i in Dimension'Range loop
+         for j in Dimension'Range loop
+            if board(i,j) = player then
+               if internalmatrix(i,j) then
+                  internalmatrix := internalmatrix + 1;
+               else
+                  if (CheckInternal((i,j),board)) then
+                     internalmatrix(i,j) := True;
+                     internalmatrix := internalmatrix + 1;
+                  end if;
+               end if;
+            end if;
+         end loop;
+      end loop;
+   end CountInternals;
 
    function CheckStability(move : Place; player : BoardPoint; board : GameBoard) return Boolean is
 
