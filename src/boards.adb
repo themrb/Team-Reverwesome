@@ -149,7 +149,6 @@ package body Boards is
          end if;
       end loop;
 
-
       --straight NE
       if (not(movex = Dimension'Last or movey = Dimension'Last)) then
       HitOpponent := False;

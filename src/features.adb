@@ -28,11 +28,11 @@ package body Features is
 
       if (movex = Dimension'Last or movex = Dimension'First) then
          -- left or right is edge, we're stable
-         rowstable := True;
+         null;
       else
+
          --straight right
          y := movey;
-         --Put_Line("Starting right");
 
          Right_Loop :
          for xpoint in Dimension range 1 .. (Dimension'Last - movex) loop
@@ -76,7 +76,7 @@ package body Features is
 
       if (movey = Dimension'Last or movey = Dimension'First) then
          -- left or right is edge, we're stable
-         columnstable := True;
+         null;
       else
          --straight up
          x := movex;
@@ -86,10 +86,10 @@ package body Features is
                if board(x,y) = Empty then
                   columnfull := False;
                   allfriendly := False;
-                  exit Left_Loop;
+                  exit Up_Loop;
                elsif board(x,y) = Blocked then
                   --direction is full, we hit blocked first
-                  exit Left_Loop;
+                  exit Up_Loop;
                elsif board(x,y) = Opponent then
                   allfriendly := False;
                end if;
@@ -103,10 +103,13 @@ package body Features is
                y := movey - ypoint;
                if board(x,y) = Empty then
                   columnfull := False;
+                  allfriendly := False;
                   exit Down_Loop;
                elsif board(x,y) = Blocked then
                   --direction is full, we hit blocked first
                   exit Down_Loop;
+               elsif board(x,y) = Opponent then
+                  allfriendly := False;
                end if;
             end loop Down_Loop;
          end if;
@@ -117,9 +120,13 @@ package body Features is
          end if;
       end if;
 
-      --straight NE
-      allfriendly := True;
-      if (not(movex = Dimension'Last or movey = Dimension'Last)) then
+      if (movex = Dimension'Last or movex = Dimension'First
+          or movey = Dimension'Last or movey = Dimension'First) then
+         --we're at least an edge piece, so diagonals are stable
+         null;
+      else
+         --straight NE
+         allfriendly := True;
          yroom := Dimension'Last - movey;
          xroom := Dimension'Last - movex;
          if (yroom > xroom) then
@@ -134,18 +141,19 @@ package body Features is
             x := movex + epoint;
             if board(x,y) = Empty then
                SWNEfull := False;
+               allfriendly := False;
                exit NE_Loop;
             elsif board(x,y) = Blocked then
                --direction is full, we hit blocked first
                exit NE_Loop;
+            elsif board(x,y) = Opponent then
+               allfriendly := False;
             end if;
          end loop NE_Loop;
-      end if;
 
-      if SWNEfull and not allfriendly then
-         allfriendly := True;
-         --straight SW
-         if (not(movex = Dimension'First or movey = Dimension'First)) then
+         if SWNEfull and not allfriendly then
+            allfriendly := True;
+            --straight SW
             yroom := movey;
             xroom := movex;
             if (yroom > xroom) then
@@ -159,23 +167,24 @@ package body Features is
                x := movex - epoint;
                if board(x,y) = Empty then
                   SWNEfull := False;
+                  allfriendly := False;
                   exit SW_Loop;
                elsif board(x,y) = Blocked then
                   --direction is full, we hit blocked first
                   exit SW_Loop;
+               elsif board(x,y) = Opponent then
+                  allfriendly := False;
                end if;
             end loop SW_Loop;
          end if;
-      end if;
 
-      --on at least one line, everything we saw was friendly
-      if allfriendly then
-         SWNEfull := True;
-      end if;
+         --on at least one line, everything we saw was friendly
+         if allfriendly then
+            SWNEfull := True;
+         end if;
 
-
-      --straight NW
-      if (not(movex = Dimension'First or movey = Dimension'Last)) then
+         --straight NW
+         allfriendly := True;
          yroom := Dimension'Last - movey;
          xroom := movex;
          if (yroom > xroom) then
@@ -187,19 +196,21 @@ package body Features is
          for epoint in Dimension range 1 .. moveroom loop
             y := movey + epoint;
             x := movex - epoint;
-            if board(x,y) = Empty then
-               NWSEfull := False;
-               exit NW_Loop;
-            elsif board(x,y) = Blocked then
-               --direction is full, we hit blocked first
-               exit NW_Loop;
-            end if;
+               if board(x,y) = Empty then
+                  NWSEfull := False;
+                  allfriendly := False;
+                  exit NW_Loop;
+               elsif board(x,y) = Blocked then
+                  --direction is full, we hit blocked first
+                  exit NW_Loop;
+               elsif board(x,y) = Opponent then
+                  allfriendly := False;
+               end if;
          end loop NW_Loop;
-      end if;
 
-      if NWSEfull and not allfriendly then
-         --straight SE
-         if (not(movey = Dimension'First or movex = Dimension'Last)) then
+         if NWSEfull and not allfriendly then
+            --straight SE
+            allfriendly := True;
             yroom := movey;
             xroom := Dimension'Last - movex;
             if (yroom > xroom) then
@@ -213,22 +224,25 @@ package body Features is
                x := movex + epoint;
                if board(x,y) = Empty then
                   NWSEfull := False;
+                  allfriendly := False;
                   exit SE_Loop;
                elsif board(x,y) = Blocked then
                   --direction is full, we hit blocked first
                   exit SE_Loop;
+               elsif board(x,y) = Opponent then
+                  allfriendly := False;
                end if;
             end loop SE_Loop;
          end if;
-      end if;
 
-          --on at least one line, everything we saw was friendly
+         --on at least one line, everything we saw was friendly
          if allfriendly then
             NWSEfull := True;
          end if;
 
+      end if;
 
-      return True;
+      return columnfull and rowfull and SWNEfull and NWSEfull;
    end CheckStability;
 
 end Features;
