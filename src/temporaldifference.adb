@@ -162,6 +162,8 @@ package body TemporalDifference is
       type Rand_Range is range 0..91;
       package Rand_Int is new Ada.Numerics.Discrete_Random(Rand_Range);
       seed : Rand_Int.Generator;
+
+      endprobability : Probability;
    begin
       for I in 1..iterations loop
 
@@ -194,12 +196,28 @@ package body TemporalDifference is
          end loop Single_Iteration;
       end loop;
 
+      Put_Line("Black wins " & Blackwins'Img & " times and white wins " & Whitewins'Img & "times");
       if (Player = White) then
-         Put_Line(Blackwins'Img & ' ' & Whitewins'Img);
-         return Whitewins / (Whitewins+Blackwins);
+         endprobability := Whitewins / (Whitewins+Blackwins);
+         if (endprobability'Valid) then
+            declare
+                crashus : Dimension;
+            begin
+               crashus := (Dimension'Last+1);
+            end;
+         end if;
+         return endprobability;
       elsif (Player = Black) then
          Put_Line(Blackwins'Img & ' ' & Whitewins'Img);
-         return Blackwins / (Whitewins+Blackwins);
+         endprobability := Blackwins / (Whitewins+Blackwins);
+         if (endprobability'Valid) then
+            declare
+               crashus : Dimension;
+            begin
+               crashus := (Dimension'Last+1);
+            end;
+         end if;
+         return endprobability;
       end if;
       return 0.0;
    end MonteCarlo;
