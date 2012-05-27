@@ -30,6 +30,12 @@ package body GameTree is
                   temp.state.StableNodes(i,j) = True;
                end if;
 
+               --copy and update estimated stability
+               temp.state.InternalNodes := state.state.InternalNodes;
+               if CheckInternal((i,j), toPlay, state.state.current_state) then
+                  temp.state.InternalNodes(i,j) = True;
+               end if;
+
 
                Children.children(Counter) := temp;
                Configure.count := Configure.count + 1;
