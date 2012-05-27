@@ -7,7 +7,7 @@ with TemporalDifference; use TemporalDifference;
 
 package body Features is
 
-   procedure CountStability(player : Players; board : GameBoard; stabmatrix : in out InfoMatrix; StablePieces : out Integer) is
+   procedure CountStability(player : Players; board : GameBoard; stabmatrix : in InfoMatrix; StablePieces : out Integer) is
 
    begin
       StablePieces := 0;
@@ -18,7 +18,7 @@ package body Features is
                   StablePieces := StablePieces + 1;
                else
                   if (CheckStability((i,j),player,board)) then
-                     stabmatrix(i,j) := True;
+--                       stabmatrix(i,j) := True;
                      StablePieces := StablePieces + 1;
                   end if;
                end if;
@@ -27,18 +27,18 @@ package body Features is
       end loop;
    end CountStability;
 
-   procedure CountInternals(player : Players; board : GameBoard; internalmatrix : in out InfoMatrix; InternalPieces: out Integer) is
+   procedure CountInternals(player : Players; board : GameBoard; internalmatrix : in InfoMatrix; InternalPieces: out Integer) is
    begin
       InternalPieces := 0;
       for i in Dimension'Range loop
          for j in Dimension'Range loop
             if board(i,j) = player then
                if internalmatrix(i,j) then
-                  internalmatrix := internalmatrix + 1;
+                  InternalPieces := InternalPieces + 1;
                else
                   if (CheckInternal((i,j),board)) then
-                     internalmatrix(i,j) := True;
-                     internalmatrix := internalmatrix + 1;
+--                       internalmatrix(i,j) := True;
+                     InternalPieces := InternalPieces + 1;
                   end if;
                end if;
             end if;
