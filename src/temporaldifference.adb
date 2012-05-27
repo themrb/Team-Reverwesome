@@ -177,20 +177,12 @@ package body TemporalDifference is
                   Blackwins := Blackwins + 1;
                else Ties := Ties + 1;
                end if;
-               --Put_Line(Image(temp.state));
-               --Put_Line(tempWinner'Img & " wins");
-               delay 0.2;
                exit Single_Iteration;
             end if;
 
             tempChildren := Expand(temp);
             Next_Int := Integer(Rand_Int.Random(seed));
             temp := tempChildren.children(Next_Int mod tempChildren.branching);
-            --Put_Line("nextint2 " & Next_Int'Img);
-
-            --delay 0.1;
-            --Put_Line("moving to");
-            --Put_Line(Image(temp.state));
          end loop Single_Iteration;
          --delay 2.0;
       end loop;
@@ -227,7 +219,6 @@ package body TemporalDifference is
                Sub : String := Slice(Subs, i);
             begin
                if(Line_No < 5) then
---                  Put_Line(Sub (Sub'First .. Sub'First + 11));
                   pieceWeights(Line_No, Dimension(i)-1) := Float'Value(Sub (Sub'First .. Sub'First + 11));
                elsif (Line_No = 5 and i = 1) then
                   mobilityWeight := Float'Value(Sub);
@@ -272,7 +263,7 @@ package body TemporalDifference is
       end loop;
 
       --Line for mobility weight
-      Next_Line := To_Unbounded_String(Float'Image(mobilityWeight));
+      Next_Line := To_Unbounded_String(Float'Image(mobilityWeight) & ",");
       Unbounded_IO.Put_Line(CSV_File, Next_Line);
       Close(CSV_File);
 
