@@ -62,39 +62,57 @@ package body TemporalDifference is
          end loop;
       end loop;
 
-      --- Train Mobility ---
+      --- Train One-Off Weights ---
       for k in History.History'First .. (History.Index-1) loop
          declare
-            NewSet : FeatureSet := OldSet;
             State : State_Type := History.History(k).state;
             lambdaSum : Float := 0.0;
+            lambdaMob, lambdaStab : Float;
             derivative : Float;
          begin
             if(State.Current_Phase = PEarlyGame) then
-               NewSet := EarlyGame;
                OldSet := EarlyGame;
             elsif(State.Current_Phase = PMidGame) then
-               NewSet := MidGame;
                OldSet := MidGame;
             else
-               NewSet := LateGame;
                OldSet := LateGame;
             end if;
 
-            NewSet.mobility := NewSet.mobility + step;
-            StepChange := ChangeInValue(Player, State.current_state, OldSet, NewSet, Step);
-            for m in (k+1) .. History.Index loop
-               derivative := EndBoardValue(Player, History.History(m).state.current_state, OldSet)
-                        - EndBoardValue(Player, State.current_state, OldSet);
-               lambdaSum := lambdaSum + (lambda ** (m-k)) * derivative;
+            for i in numIndWeights'Range loop:
+               declare
+                  NewSet : FeatureSet := OldSet;
+               begin
+                  case i is
+                     when 0 =>
+                        NewSet.mobility := NewSet.mobility + step;
+                     when 1 =>
+                        NewSet.stability := NewSet.stability + step;
+                  end case;
+                  StepChange := ChangeInValue(Player, State.current_state, OldSet, NewSet, Step);
+                  for m in (k+1) .. History.Index loop
+                     derivative := EndBoardValue(Player, History.History(m).state.current_state, OldSet)
+                       - EndBoardValue(Player, State.current_state, OldSet);
+                     lambdaSum := lambdaSum + (lambda ** (m-k)) * derivative;
+                  end loop;
+               end;
+               case i is
+                  when 0 =>
+                     lambdaMob := lambdaSum;
+                  when 1 =>
+                     lambdaStab := lambdaSum;
+               end case;
+               lambdaSum := 0.0;
             end loop;
 
             if(State.Current_Phase = PEarlyGame) then
-               ModEarly.mobility := ModEarly.mobility + alpha * (StepChange * lambdaSum);
+               ModEarly.mobility := ModEarly.mobility + alpha * (StepChange * lambdaMob);
+               ModEarly.stability := ModEarly.stability + alpha * (StepChange * lambdaStab);
             elsif(State.Current_Phase = PMidGame) then
-               ModMid.mobility := ModMid.mobility + alpha * (StepChange * lambdaSum);
+               ModMid.mobility := ModMid.mobility + alpha * (StepChange * lambdaMob);
+               ModMid.stability := ModMid.stability + alpha * (StepChange * lambdaStab);
             else
-               ModLate.mobility := ModLate.mobility + alpha * (StepChange * lambdaSum);
+               ModLate.mobility := ModLate.mobility + alpha * (StepChange * lambdaMob);
+               ModLate.stability := ModLate.stability + alpha * (StepChange * lambdaStab);
             end if;
          end;
       end loop;
