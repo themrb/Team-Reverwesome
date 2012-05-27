@@ -13,6 +13,8 @@ package TemporalDifference is
       stability : FeatureWeight;
    end record;
 
+   type numIndWeights is Natural range 0..1;
+
 --     basicSet : FeatureSet := ((others => (others => 0.0)), 1.0);
 
    function TokenScore(State : in GameBoard; Player: in BoardPoint;
