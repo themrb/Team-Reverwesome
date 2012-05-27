@@ -48,7 +48,10 @@ package body TemporalDifference is
             end if;
          end;
       else
-         Diff := 0.5 - Float(MonteCarlo(Player, Next, 100));
+         Diff := Float(MonteCarlo(Player, Next, 100)) - 0.5;
+         if(not (Diff'Valid or cease)) then
+            Put_Line("Monte Carlo did it");
+         end if;
          for i in Dimension'Range loop
             for j in Dimension'Range loop
                if(NewState(i,j) = Player) then
