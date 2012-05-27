@@ -199,7 +199,7 @@ package body TemporalDifference is
       Put_Line("Black wins " & Blackwins'Img & " times and white wins " & Whitewins'Img & "times");
       if (Player = White) then
          endprobability := Whitewins / (Whitewins+Blackwins);
-         if (endprobability'Valid) then
+         if (not endprobability'Valid) then
             declare
                 crashus : Dimension;
             begin
@@ -208,9 +208,8 @@ package body TemporalDifference is
          end if;
          return endprobability;
       elsif (Player = Black) then
-         Put_Line(Blackwins'Img & ' ' & Whitewins'Img);
          endprobability := Blackwins / (Whitewins+Blackwins);
-         if (endprobability'Valid) then
+         if (not endprobability'Valid) then
             declare
                crashus : Dimension;
             begin
