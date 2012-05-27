@@ -16,10 +16,14 @@ package body Agent is
    cplayercolour : Integer;
    cnextmovey : Integer;
    cnextmovex : Integer;
+   cprevmovey : Integer;
+   cprevmovex : Integer;
    pragma import(cpp, ccurrentstate, "currentcstate");
    pragma import(cpp, cplayercolour, "playercolour");
    pragma import(cpp, cnextmovey, "nextmovey");
    pragma import(cpp, cnextmovex, "nextmovex");
+   pragma import(cpp, cprevmovey, "prevmovey");
+   pragma import(cpp, cprevmovex, "prevmovex");
 
    currentstate : GameBoard;
    move : Place;
@@ -54,6 +58,17 @@ package body Agent is
       loop
          select
             accept NewMove  do
+--                 Put_Line(cprevmovex'Img & " " & cprevmovey'Img);
+--                 if not (cprevmovex < 0) then
+--                    declare
+--                       cx : Dimension := Dimension(cprevmovex);
+--                       cy : Dimension := Dimension(cprevmovey);
+--                    begin
+--                       null;
+--                    end;
+--                 end if;
+
+
                declare
                   treeroot : GameTree_Type;
                   value : BoardValue;
@@ -69,6 +84,32 @@ package body Agent is
                      end loop;
                   end loop;
 
+                  if CurrentGamePhase = PEarlyGame then
+                     for x in Dimension'Range loop
+                        if currentstate(x,Dimension'First) = Black or currentstate(x,Dimension'First) = White
+                          or currentstate(x,Dimension'Last) = Black or currentstate(x,Dimension'Last) = White
+                          or currentstate(Dimension'First,x) = Black or currentstate(Dimension'First,x) = White
+                          or currentstate(Dimension'Last,x) = Black or currentstate(Dimension'Last,x) = White then
+                           CurrentGamePhase := PMidGame;
+                        end if;
+                     end loop;
+                  elsif CurrentGamePhase = PMidGame then
+                     CurrentCorners := 0;
+                     if currentstate(Dimension'First, Dimension'First) = Black or currentstate(Dimension'First, Dimension'First) = White then
+                        CurrentCorners := CurrentCorners + 1;
+                     elsif currentstate(Dimension'Last, Dimension'Last) = Black or currentstate(Dimension'Last, Dimension'Last) = White then
+                        CurrentCorners := CurrentCorners + 1;
+                     elsif currentstate(Dimension'First, Dimension'Last) = Black or currentstate(Dimension'First, Dimension'Last) = White then
+                        CurrentCorners := CurrentCorners + 1;
+                     elsif currentstate(Dimension'Last, Dimension'First) = Black or currentstate(Dimension'Last, Dimension'First) = White then
+                        CurrentCorners := CurrentCorners + 1;
+                     end if;
+                     if CurrentCorners >= 2 then
+                        CurrentGamePhase := PLateGame;
+                     end if;
+                  end if;
+
+
                   -- Initialise game tree
                   treeroot.state.justWent := NextPlayer(my_player);
                   treeroot.state.current_state := currentstate;
@@ -76,6 +117,7 @@ package body Agent is
 
                   treeroot.state.StableNodes := EmptyMatrix;
                   treeroot.state.InternalNodes := EmptyMatrix;
+                  treeroot.state.Current_Phase := CurrentGamePhase;
 
                   for I in Dimension'Range loop
                      for J in Dimension'Range loop
@@ -108,14 +150,17 @@ package body Agent is
             end NewMove;
             AdvanceMove(my_player, currentstate, move(x), move(y));
             if CurrentGamePhase = PEarlyGame then
-               for x in Dimension'Range loop
-                  if currentstate(x,Dimension'First) = Black or currentstate(x,Dimension'First) = White
-                    or currentstate(x,Dimension'Last) = Black or currentstate(x,Dimension'Last) = White
-                    or currentstate(x,Dimension'Last) = Black or currentstate(x,Dimension'First) = White
-                    or currentstate(x,Dimension'First) = Black or currentstate(x,Dimension'Last) = White then
-                     CurrentGamePhase := PMidGame;
+               if move(x) = Dimension'First or move(x) = Dimension'Last or move(y) = Dimension'Last or move(y) = Dimension'First then
+                  CurrentGamePhase := PMidGame;
+               end if;
+            elsif CurrentGamePhase = PMidGame then
+               if (move(x) = Dimension'First and move(y) = Dimension'First) or (move(x) = Dimension'First and move(y) = Dimension'Last)
+                 or (move(x) = Dimension'Last and move(y) = Dimension'First) or (move(x) = Dimension'Last and move(y) = Dimension'Last) then
+                  CurrentCorners := CurrentCorners + 1;
+                  if CurrentCorners >= 2 then
+                     CurrentGamePhase := PLateGame;
                   end if;
-               end loop;
+               end if;
             end if;
          or
             accept GameEnd  do

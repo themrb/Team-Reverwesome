@@ -21,6 +21,8 @@ package Boards is
 
    subtype TurnsNo is Natural range 0 .. 96;
 
+   type Game_Phase is (PEarlyGame, PMidGame, PLateGame);
+
    -- Information on the game state
    type State_Type is record
       justWent : BoardPoint := Blocked;
@@ -28,6 +30,8 @@ package Boards is
       spot : Place;
       turnsleft : TurnsNo := 0;
       current_state : GameBoard;
+      Current_Phase : Game_Phase;
+      Corners : Natural := 0;
       StableNodes : InfoMatrix;
       InternalNodes : InfoMatrix;
    end record;

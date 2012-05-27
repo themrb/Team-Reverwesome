@@ -25,6 +25,21 @@ package body GameTree is
                temp.state.turnsleft := state.state.turnsleft - 1;
                temp.state.TokensTaken := temptokens;
 
+               temp.state.Current_Phase := state.state.Current_Phase;
+               if state.state.Current_Phase = PEarlyGame then
+                  if i = Dimension'First or i = Dimension'Last or j = Dimension'Last or j = Dimension'First then
+                     temp.state.Current_Phase := PMidGame;
+                  end if;
+               elsif state.state.Current_Phase = PMidGame then
+                  if (i = Dimension'First and j = Dimension'First) or (i = Dimension'First and j = Dimension'Last)
+                    or (i = Dimension'Last and j = Dimension'First) or (i = Dimension'Last and j = Dimension'Last) then
+                     temp.state.Corners := state.state.Corners + 1;
+                     if temp.state.Corners >= 2 then
+                        temp.state.Current_Phase := PLateGame;
+                     end if;
+                  end if;
+               end if;
+
                --copy and update estimated stability
                temp.state.StableNodes := state.state.StableNodes;
                if CheckStability((i,j), toPlay, state.state.current_state) then
