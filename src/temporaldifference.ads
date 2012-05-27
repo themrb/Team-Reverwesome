@@ -24,6 +24,7 @@ package TemporalDifference is
    function EndBoardValue(Player : BoardPoint; State : GameBoard;
                            NumMoves : Natural) return BoardValue;
 
+   procedure CloseFile;
    procedure LoadWeights;
    procedure StoreWeights;
 
