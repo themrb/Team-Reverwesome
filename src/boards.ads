@@ -12,7 +12,9 @@ package Boards is
 
    type GameBoard is array(Dimension, Dimension) of BoardPoint;
    type InfoMatrix is array(Dimension, Dimension) of Boolean;
-   pragma Pack(StabilityMatrix);
+   pragma Pack(InfoMatrix);
+
+   EmptyMatrix : constant InfoMatrix := (others => (others => False));
 
    type Coordinate is (x, y);
    type Place is array(Coordinate) of Dimension;
@@ -33,7 +35,6 @@ package Boards is
    function NextPlayer(player : BoardPoint) return BoardPoint;
 
    procedure Winner(State : GameBoard; Winner : out BoardPoint);
-
 
    function ValidMove(player : BoardPoint; board : in GameBoard; movex : in Dimension; movey : in Dimension) return Natural;
 

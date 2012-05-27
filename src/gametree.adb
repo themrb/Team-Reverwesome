@@ -2,6 +2,7 @@ with Boards; use Boards;
 with Ada.Text_IO; use Ada.Text_IO;
 with Ada.Unchecked_Deallocation;
 with Configure; use Configure;
+with Features; use Features;
 
 package body GameTree is
 
@@ -27,13 +28,13 @@ package body GameTree is
                --copy and update estimated stability
                temp.state.StableNodes := state.state.StableNodes;
                if CheckStability((i,j), toPlay, state.state.current_state) then
-                  temp.state.StableNodes(i,j) = True;
+                  temp.state.StableNodes(i,j):= True;
                end if;
 
                --copy and update estimated stability
                temp.state.InternalNodes := state.state.InternalNodes;
-               if CheckInternal((i,j), toPlay, state.state.current_state) then
-                  temp.state.InternalNodes(i,j) = True;
+               if CheckInternal((i,j), state.state.current_state) then
+                  temp.state.InternalNodes(i,j) := True;
                end if;
 
 

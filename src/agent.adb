@@ -8,6 +8,7 @@ with Exceptions; use Exceptions;
 with TemporalDifference; use TemporalDifference;
 with GNAT.Traceback;           use GNAT.Traceback;
 with GNAT.Traceback.Symbolic;  use GNAT.Traceback.Symbolic;
+with Features; use Features;
 
 package body Agent is
 
@@ -49,7 +50,6 @@ package body Agent is
       loop
          select
             accept NewMove  do
-
                LoadWeights;
 
                declare
@@ -73,6 +73,20 @@ package body Agent is
                   treeroot.state.justWent := NextPlayer(my_player);
                   treeroot.state.current_state := currentstate;
                   treeroot.state.turnsleft := turnsleft;
+
+                  treeroot.state.StableNodes := EmptyMatrix;
+                  treeroot.state.InternalNodes := EmptyMatrix;
+
+                  for I in Dimension'Range loop
+                     for J in Dimension'Range loop
+                        if (CheckStability((i,j),my_player,currentstate)) then
+                           treeroot.state.StableNodes(i,j) := True;
+                        end if;
+                        if (CheckInternal((i,j),currentstate)) then
+                           treeroot.state.InternalNodes(i,j) := True;
+                        end if;
+                     end loop;
+                  end loop;
 
                   if (turnsleft < 16) then
                      NegaMax(my_player, treeroot, 15, value, BoardValue'First, BoardValue'Last, move);
