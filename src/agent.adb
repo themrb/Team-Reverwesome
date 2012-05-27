@@ -119,8 +119,8 @@ package body Agent is
                   treeroot.state.InternalNodes := EmptyMatrix;
                   treeroot.state.Current_Phase := CurrentGamePhase;
 
-                  for I in Dimension'Range loop
-                     for J in Dimension'Range loop
+                  for i in Dimension'Range loop
+                     for j in Dimension'Range loop
                         if (CheckStability((i,j),my_player,currentstate)) then
                            treeroot.state.StableNodes(i,j) := True;
                         end if;

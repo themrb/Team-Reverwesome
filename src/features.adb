@@ -7,6 +7,23 @@ with TemporalDifference; use TemporalDifference;
 
 package body Features is
 
+   procedure CountStability(player : Players; board : GameBoard; stabmatrix : in out InfoMatrix; StablePieces : out Integer := 0) is
+
+   begin
+      for I in Dimension'Range loop
+         for J in Dimension'Range loop
+            if stabmatrix(I,J
+
+            if (CheckStability((i,j),my_player,currentstate)) then
+               treeroot.state.StableNodes(i,j) := True;
+            end if;
+            if (CheckInternal((i,j),currentstate)) then
+               treeroot.state.InternalNodes(i,j) := True;
+            end if;
+         end loop;
+      end loop;
+   end;
+
    function CheckStability(move : Place; player : BoardPoint; board : GameBoard) return Boolean is
 
       Opponent : BoardPoint := NextPlayer(player);
