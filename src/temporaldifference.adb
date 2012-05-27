@@ -9,98 +9,98 @@ with Ada.Numerics.Discrete_Random;
 
 package body TemporalDifference is
 
-   procedure TD(Current, Next : GameTree_Type; Player : Players) is
-      pieceReward : BoardPositionWeights := (others => (others => 0.0));
-      mobilityReward : FeatureWeight := 0.0;
-      State, NewState : GameBoard;
-      Diff : FeatureWeight;
+   procedure TD(History: HistoryType; Player : Players) is
+--        deltaWeights : FeatureSet;
+--        delt : FeatureWeight;
+         ModFeatures : FeatureSet := basicSet;
+         Step : Float := 0.0001;
+         OldSet : FeatureSet := basicSet;
+         StepChange : BoardValue := 0.0;
+         Change : BoardValue := 0.0;
    begin
-      State := Current.state.current_state;
-      NewState := Next.state.current_state;
-      if(Terminal(NewState)) then
+      -- Train Piece Weights
+      for i in Dimension'Range loop
+         for j in Dimension'Range loop
+            for k in History.History'First .. (History.Index-1) loop
+               declare
+                  NewSet : FeatureSet := OldSet;
+                  State : State_Type := History.History(k).state;
+                  lambdaSum : Float := 0.0;
+                  derivative : Float;
+               begin
+                  NewSet.piece(i,j) := NewSet.piece(i,j) + step;
+                  StepChange := ChangeInValue(Player, State.current_state, OldSet, NewSet, Step);
+                  for m in (k+1) .. History.Index loop
+                     derivative := EndBoardValue(Player, History.History(m).state.current_state)
+                        - EndBoardValue(Player, State.current_state);
+                     lambdaSum := lambdaSum + (lambda ** (m-k)) * derivative;
+                  end loop;
+
+                  Change := Change + alpha * (StepChange * lambdaSum);
+               end;
+            end loop;
+            ModFeatures.piece(i,j) := ModFeatures.piece(i,j) + Change;
+         end loop;
+      end loop;
+
+      --- Train Mobility ---
+      for k in History.History'First .. (History.Index-1) loop
          declare
-            BlackC, WhiteC : TurnsNo;
-            Winner : Players;
+            NewSet : FeatureSet := OldSet;
+            State : State_Type := History.History(k).state;
+            lambdaSum : Float := 0.0;
+            derivative : Float;
          begin
-            TokenCount(NewState, WhiteC, BlackC);
-            Diff := Float(abs(WhiteC - BlackC));
-            if(WhiteC > BlackC) then
-               Winner := White;
-            else
-               Winner := Black;
-            end if;
-            for i in Dimension'Range loop
-               for j in Dimension'Range loop
-                  if(NewState(i,j) = Winner) then
-                     pieceReward(i,j) := Diff;
-                  elsif(NewState(i,j) = NextPlayer(Winner)) then
-                     pieceReward(i,j) := -Diff;
-                  else
-                     pieceReward(i,j) := 0.0;
-                  end if;
-               end loop;
+            NewSet.mobility := NewSet.mobility + step;
+            StepChange := ChangeInValue(Player, State.current_state, OldSet, NewSet, Step);
+            for m in (k+1) .. History.Index loop
+               derivative := EndBoardValue(Player, History.History(m).state.current_state)
+                        - EndBoardValue(Player, State.current_state);
+               lambdaSum := lambdaSum + (lambda ** (m-k)) * derivative;
             end loop;
 
-            if(Player = Winner) then
-               mobilityReward := mobilityReward + Diff;
-            else
-               mobilityReward := mobilityReward - Diff;
-            end if;
+            Change := Change + alpha * (StepChange * lambdaSum);
          end;
-      else
-         Diff := -(Float(MonteCarlo(NextPlayer(Player), Next, 100)) - 0.5);
-         for i in Dimension'Range loop
-            for j in Dimension'Range loop
-               if(NewState(i,j) = Player) then
-                  pieceReward(i,j) := Diff;
-               elsif(NewState(i,j) = NextPlayer(Player)) then
-                  pieceReward(i,j) := -Diff;
-               else
-                  pieceReward(i,j) := 0.0;
-               end if;
-            end loop;
-         end loop;
+      end loop;
 
-         mobilityReward := mobilityReward + Diff;
-      end if;
+      ModFeatures.mobility := ModFeatures.mobility + Change;
 
-      declare
-         curVal, nextVal : BoardValue;
-         nMoves, nNewMoves : TurnsNo;
-         newW : FeatureWeight;
-      begin
-         nMoves := NumMoves(State, Player);
-         nNewMoves := NumMoves(NewState, NextPlayer(Player));
-         curVal := EndBoardValue(Player, State, nMoves);
-         nextVal := -EndBoardValue(NextPlayer(Player), NewState, nNewMoves);
-
-         Put_Line(curVal'Img & nextVal'Img);
-
-         for i in Dimension'Range loop
-            for j in Dimension'Range loop
-               newW := pieceWeights(i,j) + alpha * (curVal - nextVal + pieceReward(i,j));
-               pieceWeights(i,j) := newW;
-            end loop;
-         end loop;
-
-         mobilityReward := mobilityReward*FeatureWeight(nMoves - nNewMoves);
-         newW := mobilityWeight + alpha * (curVal - nextVal + mobilityReward);
-         mobilityWeight := newW;
-      end;
+      basicSet := ModFeatures;
    end TD;
 
-   function EndBoardValue(Player : BoardPoint; State : GameBoard;
-                          NumMoves : Natural) return BoardValue is
+   function ChangeInValue(Player : Players; Board : GameBoard;
+                          OldSet, NewSet : FeatureSet; Step : Float) return BoardValue is
+      Current, Updated : BoardValue;
+   begin
+      Current := EndBoardValue(Player, Board,
+                               NumMoves(Board, Player), OldSet);
+      Updated := EndBoardValue(Player, Board,
+                               NumMoves(Board, Player), NewSet);
+      return (Updated - Current)/Step;
+   end;
+
+   function EndBoardValue(Player : Players; State : GameBoard; Moves : TurnsNo;
+                          Set : FeatureSet) return BoardValue is
       Score : BoardValue;
    begin
-      Score := TokenScore(State, Player);
+      Score := TokenScore(State, Player, Set.piece);
       -- Weighting on the number of available moves
-      Score := Score + (FeatureWeight(NumMoves) * mobilityWeight);
+      Score := Score + (FeatureWeight(Moves) * Set.mobility);
       return Score;
    end EndBoardValue;
 
-   function TokenScore(State : in GameBoard; Player: in BoardPoint) return BoardValue is
-      Weights : BoardPositionWeights := pieceWeights;
+   function EndBoardValue(Player : Players; State : GameBoard) return BoardValue is
+   begin
+      return EndBoardValue(Player, State, NumMoves(State, Player), basicSet);
+   end EndBoardValue;
+
+   function EndBoardValue(Player : Players; State : GameBoard; Moves : TurnsNo) return BoardValue is
+   begin
+      return EndBoardValue(Player, State, Moves, basicSet);
+   end;
+
+   function TokenScore(State : in GameBoard; Player: in BoardPoint;
+                        Weights : BoardPositionWeights) return BoardValue is
       Score : BoardValue := 0.0;
    begin
       for I in Dimension'Range loop
@@ -216,9 +216,9 @@ package body TemporalDifference is
                begin
                   if(Line_No < 5) then
                      Put_Line(Sub);
-                     pieceWeights(Line_No, Dimension(i)-1) := Float'Value(Sub);
+                     basicSet.piece(Line_No, Dimension(i)-1) := Float'Value(Sub);
                   elsif (Line_No = 5 and i = 1) then
-                     mobilityWeight := Float'Value(Sub);
+                     basicSet.mobility := Float'Value(Sub);
                   end if;
                end;
             end loop;
@@ -229,12 +229,12 @@ package body TemporalDifference is
 
       for i in Dimension'Range loop
          for j in Dimension'Range loop
-            if (pieceWeights(WeightMapping(i), WeightMapping(j)) = 0.0) then
-               pieceWeights(i,j)
-                 := pieceWeights(WeightMapping(j),WeightMapping(i));
+            if (basicSet.piece(WeightMapping(i), WeightMapping(j)) = 0.0) then
+               basicSet.piece(i,j)
+                 := basicSet.piece(WeightMapping(j),WeightMapping(i));
             else
-               pieceWeights(i,j)
-                 := pieceWeights(WeightMapping(i),WeightMapping(j));
+              basicSet.piece(i,j)
+                 := basicSet.piece(WeightMapping(i),WeightMapping(j));
             end if;
          end loop;
       end loop;
@@ -254,11 +254,11 @@ package body TemporalDifference is
       for i in Dimension range 0.. (Dimension'Last/2) loop
          Next_Line := To_Unbounded_String("");
          for j in Dimension range 0..i loop
-            weightaverage := pieceWeights(i,j)+pieceWeights(Dimension'Last-i,j)
-                 +pieceWeights(Dimension'Last-i,Dimension'Last-j)+pieceWeights(i,Dimension'Last-j);
+            weightaverage := basicSet.piece(i,j)+basicSet.piece(Dimension'Last-i,j)
+                 +basicSet.piece(Dimension'Last-i,Dimension'Last-j)+basicSet.piece(i,Dimension'Last-j);
             if (i /= j) then
-               weightaverage := weightaverage + pieceWeights(j,i) + pieceWeights(Dimension'Last-j,i)
-                 +pieceWeights(Dimension'Last-j,Dimension'Last-i)+pieceWeights(j,Dimension'Last-i);
+               weightaverage := weightaverage + basicSet.piece(j,i) + basicSet.piece(Dimension'Last-j,i)
+                 +basicSet.piece(Dimension'Last-j,Dimension'Last-i)+basicSet.piece(j,Dimension'Last-i);
                divBy := divBy + 4.0;
             end if;
             weightaverage := weightaverage / divBy;
@@ -268,7 +268,7 @@ package body TemporalDifference is
       end loop;
 
       --Line for mobility weight
-      Next_Line := To_Unbounded_String(Float'Image(mobilityWeight));
+      Next_Line := To_Unbounded_String(Float'Image(basicSet.mobility));
       Unbounded_IO.Put_Line(CSV_File, Next_Line);
       Close(CSV_File);
 
