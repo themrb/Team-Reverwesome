@@ -11,6 +11,8 @@ package Boards is
    subtype Players is BoardPoint range White .. Black;
 
    type GameBoard is array(Dimension, Dimension) of BoardPoint;
+   type InfoMatrix is array(Dimension, Dimension) of Boolean;
+   pragma Pack(StabilityMatrix);
 
    type Coordinate is (x, y);
    type Place is array(Coordinate) of Dimension;
@@ -24,6 +26,8 @@ package Boards is
       spot : Place;
       turnsleft : TurnsNo := 0;
       current_state : GameBoard;
+      StableNodes : InfoMatrix;
+      InternalNodes : InfoMatrix;
    end record;
 
    function NextPlayer(player : BoardPoint) return BoardPoint;
