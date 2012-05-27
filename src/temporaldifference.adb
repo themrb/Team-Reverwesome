@@ -34,7 +34,7 @@ package body TemporalDifference is
                   if(NewState(i,j) = Winner) then
                      pieceReward(i,j) := Diff;
                   elsif(NewState(i,j) = NextPlayer(Winner)) then
-                     pieceReward(i,j) := -Diff;
+                     pieceReward(i,j) := Diff;
                   else
                      pieceReward(i,j) := 0.0;
                   end if;
@@ -76,12 +76,30 @@ package body TemporalDifference is
 
          Put_Line(curVal'Img & nextVal'Img);
 
-         for i in Dimension'Range loop
-            for j in Dimension'Range loop
-               newW := pieceWeights(i,j) + alpha * (curVal - nextVal + pieceReward(i,j));
-               pieceWeights(i,j) := newW;
+         declare
+            BlackC, WhiteC : TurnsNo;
+            Winner : Players;
+         begin
+            TokenCount(NewState, WhiteC, BlackC);
+            Diff := Float(abs(WhiteC - BlackC));
+            if(WhiteC > BlackC) then
+               Winner := White;
+            else
+               Winner := Black;
+            end if;
+            for i in Dimension'Range loop
+               for j in Dimension'Range loop
+                  if(NewState(i,j) = Winner) then
+                     newW := pieceWeights(i,j) + alpha * (curVal - nextVal + pieceReward(i,j));
+                  elsif(NewState(i,j) = NextPlayer(Winner)) then
+                     newW := pieceWeights(i,j) - alpha * (curVal - nextVal + pieceReward(i,j));
+                  else
+                     newW := pieceWeights(i,j);
+                  end if;
+                  pieceWeights(i,j) := newW;
+               end loop;
             end loop;
-         end loop;
+         end;
 
          mobilityReward := mobilityReward*FeatureWeight(nMoves - nNewMoves);
          newW := mobilityWeight + alpha * (curVal - nextVal + mobilityReward);
@@ -218,6 +236,7 @@ package body TemporalDifference is
          declare
             Line : String := Get_Line(CSV_File);
          begin
+            --Put_Line(Line);
             GNAT.String_Split.Create(Subs, Line, ",");
             for i in 1..(Slice_Count(Subs)-1) loop
                declare
@@ -229,7 +248,14 @@ package body TemporalDifference is
          end;
       end loop;
       -- Grab out peripheral features one by one
-      Weights.mobilityWeight := Float'Value(Get_Line(CSV_File));
+      --Put_Line("no raise here");
+      declare
+         Line : String := Get_Line(CSV_File);
+      begin
+         --Put_Line(Line);
+         Weights.mobilityWeight := Float'Value(Line);
+      end;
+      --Put_Line("after");
 
 
 
@@ -276,7 +302,7 @@ package body TemporalDifference is
                divBy := divBy + 4.0;
             end if;
             weightaverage := weightaverage / divBy;
-            Next_Line := Next_Line & To_Unbounded_String(Float'Image(weightaverage) & ",");
+            Next_Line := Next_Line & To_Unbounded_String(Float'Image(weightaverage));
          end loop;
          Unbounded_IO.Put_Line(CSV_File, Next_Line);
       end loop;

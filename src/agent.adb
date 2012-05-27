@@ -21,11 +21,15 @@ package body Agent is
    pragma import(cpp, cnextmovey, "nextmovey");
    pragma import(cpp, cnextmovex, "nextmovex");
 
+   currentstate : GameBoard;
+   move : Place;
+
    task body Main is
    begin
       accept Initialise  do
          --Put_Line("is it weights?");
 
+         CurrentGamePhase := PEarlyGame;
          LoadWeights;
 
          if (cplayercolour = 1) then
@@ -50,12 +54,13 @@ package body Agent is
       loop
          select
             accept NewMove  do
+               -- why are we loading? weights should already be stored
                LoadWeights;
+               pieceWeights := EarlyGame.pieceWeights;
+               mobilityWeight := EarlyGame.mobilityWeight;
 
                declare
-                  currentstate : GameBoard;
                   treeroot : GameTree_Type;
-                  move : Place;
                   value : BoardValue;
                   turnsleft : TurnsNo := 0;
                begin
@@ -120,12 +125,26 @@ package body Agent is
 
                      TD(previousState, nextState, my_player);
                   end;
-                  StoreWeights;
                end;
             end NewMove;
+            AdvanceMove(my_player, currentstate, move(x), move(y));
+            if CurrentGamePhase = PEarlyGame then
+               for x in Dimension'Range loop
+                  if currentstate(x,Dimension'First) = Black or currentstate(x,Dimension'First) = White
+                    or currentstate(x,Dimension'Last) = Black or currentstate(x,Dimension'Last) = White
+                    or currentstate(x,Dimension'Last) = Black or currentstate(x,Dimension'First) = White
+                    or currentstate(x,Dimension'First) = Black or currentstate(x,Dimension'Last) = White then
+                     CurrentGamePhase := PMidGame;
+                  end if;
+               end loop;
+            end if;
+            EarlyGame.pieceWeights := pieceWeights;
+            EarlyGame.mobilityWeight := mobilityWeight;
+            StoreWeights;
          or
             accept GameEnd  do
-               StoreWeights;
+               null;
+               --StoreWeights; -- probably shouldn't store weights here incase we overwrite the other guy
                -- also free time
             end GameEnd;
             exit Main_Loop;
