@@ -21,9 +21,9 @@ package body Agent is
    pragma import(cpp, cnextmovex, "nextmovex");
 
    task body Main is
+      History : HistoryType;
    begin
       accept Initialise  do
-         --Put_Line("is it weights?");
 
          LoadWeights;
 
@@ -49,9 +49,6 @@ package body Agent is
       loop
          select
             accept NewMove  do
-
-               LoadWeights;
-
                declare
                   currentstate : GameBoard;
                   treeroot : GameTree_Type;
@@ -74,8 +71,11 @@ package body Agent is
                   treeroot.state.current_state := currentstate;
                   treeroot.state.turnsleft := turnsleft;
 
+                  History.History(History.Index) := treeroot;
+                  History.Index := History.Index + 1;
+
                   if (turnsleft < 16) then
-                     NegaMax(my_player, treeroot, 15, value, BoardValue'First, BoardValue'Last, move);
+                     NegaMax(my_player, treeroot, 12, value, BoardValue'First, BoardValue'Last, move);
                   else
                      NegaMax(my_player, treeroot, 5, value, BoardValue'First, BoardValue'Last, move);
                   end if;
@@ -87,32 +87,14 @@ package body Agent is
                   end;
                   cnextmovey := Integer(move(x));
                   cnextmovex := Integer(move(y));
-
-                  declare
-                     previousState, nextState : GameTree_Type;
-                  begin
-
-                     previousState := treeroot;
-                     nextState := treeroot;
-
-                     nextState.state.justWent := my_player;
-
-                     AdvanceMove(my_player, nextState.state.current_state,
-                        move(x), move(y));
-
-                     if(previousState.state.current_state = nextState.state.current_state) then
-                        Put_Line("Damned shallow copy");
-                     end if;
-
-                     TD(previousState, nextState, my_player);
-                  end;
-                  StoreWeights;
                end;
             end NewMove;
          or
             accept GameEnd  do
-               StoreWeights;
-               -- also free time
+               if(my_player = White) then
+                  TD(History, my_player);
+                  StoreWeights;
+               end if;
             end GameEnd;
             exit Main_Loop;
          end select;

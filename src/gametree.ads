@@ -15,6 +15,11 @@ package GameTree is
 
    type ChildrenArray is array(TurnsNo) of GameTree_Type;
 
+   type HistoryType is record
+      History : ChildrenArray;
+      Index  : TurnsNo := 0;
+   end record;
+
    -- Information on the game state
    type ExpandedChildren is record
       branching : TurnsNo;
