@@ -11,6 +11,7 @@ package TemporalDifference is
       piece : BoardPositionWeights;
       mobility : FeatureWeight;
       stability : FeatureWeight;
+      internal : FeatureWeight;
    end record;
 
 --     basicSet : FeatureSet := ((others => (others => 0.0)), 1.0);
@@ -20,12 +21,12 @@ package TemporalDifference is
 
    procedure TokenCount(State : in GameBoard; WhiteTokens, BlackTokens : out TurnsNo);
 
-   function EndBoardValue(Player : Players; State : GameBoard; Moves : TurnsNo;
+   function EndBoardValue(Player : Players; State : State_Type; Moves : TurnsNo;
                           Set : FeatureSet) return BoardValue;
 
-   function EndBoardValue(Player : Players; State : GameBoard; Set: FeatureSet) return BoardValue;
+   function EndBoardValue(Player : Players; State : State_Type; Set: FeatureSet) return BoardValue;
 
-   function ChangeInValue(Player : Players; Board : GameBoard; OldSet, NewSet : FeatureSet; Step : Float) return BoardValue;
+   function ChangeInValue(Player : Players; Board : State_Type; OldSet, NewSet : FeatureSet; Step : Float) return BoardValue;
 
    procedure CloseFile;
    procedure LoadWeights;

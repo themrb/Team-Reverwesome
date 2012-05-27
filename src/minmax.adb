@@ -29,7 +29,19 @@ package body MinMax is
 
       if (Terminal(state.state.current_state)) then
          bestMove := (0,0);
-         outValue := EndBoardValue(Player,state.state.current_state, 0, Set);
+         --outValue := EndBoardValue(Player,state.state.current_state, 0, Set);
+
+         --if we win, take it. if we lose, avoid like the plague!
+         declare
+            WinningPlayer : BoardPoint;
+         begin
+            Winner(state.state.current_state,WinningPlayer);
+            if WinningPlayer = Player then
+               outValue := BoardValue(5000);
+            else
+               outValue := BoardValue(-5000);
+            end if;
+         end;
          return;
       end if;
 
@@ -42,7 +54,7 @@ package body MinMax is
 
       if (depth = 0) then
          bestMove := (0,0);
-         outValue := EndBoardValue(Player,state.state.current_state, successors.branching, Set);
+         outValue := EndBoardValue(Player,state.state, successors.branching, Set);
          return;
       end if;
 
