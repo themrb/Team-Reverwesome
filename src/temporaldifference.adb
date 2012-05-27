@@ -49,9 +49,6 @@ package body TemporalDifference is
          end;
       else
          Diff := Float(MonteCarlo(Player, Next, 100)) - 0.5;
-         if(not (Diff'Valid or cease)) then
-            Put_Line("Monte Carlo did it");
-         end if;
          for i in Dimension'Range loop
             for j in Dimension'Range loop
                if(NewState(i,j) = Player) then
@@ -80,28 +77,12 @@ package body TemporalDifference is
          for i in Dimension'Range loop
             for j in Dimension'Range loop
                newW := pieceWeights(i,j) + alpha * (nextVal - curVal + pieceReward(i,j));
-
-               if(not (newW'Valid or cease)) then
-                  Put_Line("*****************");
-                  Put_Line(i'Img & j'Img & pieceWeights(i,j)'Img & nextVal'Img
-                           & curVal'Img & pieceReward(i,j)'Img);
-                  Put_Line("*****************");
-                  cease := True;
-               end if;
-
                pieceWeights(i,j) := newW;
             end loop;
          end loop;
 
          mobilityReward := mobilityReward*FeatureWeight(nMoves - nNewMoves);
          newW := mobilityWeight + alpha * (nextVal - curVal + mobilityReward);
-         if(not (newW'Valid or cease)) then
-            Put_Line("*****************");
-            Put_Line("Mobility" & mobilityWeight'Img & nextVal'Img
-                     & curVal'Img & mobilityReward'Img);
-            Put_Line("*****************");
-            cease := True;
-         end if;
          mobilityWeight := newW;
       end;
    end TD;
@@ -151,8 +132,8 @@ package body TemporalDifference is
    end TokenCount;
 
    function MonteCarlo (Player : BoardPoint; state : GameTree_Type; iterations : Positive) return Probability is
-      Whitewins : Long_Float := 0.0;
-      Blackwins : Long_Float := 0.0;
+      Whitewins : Natural := 0;
+      Blackwins : Natural := 0;
       Ties : Natural := 0;
       temp : GameTree_Type;
       tempChildren : ExpandedChildren;
@@ -166,24 +147,17 @@ package body TemporalDifference is
       endprobability : Probability;
    begin
       for I in 1..iterations loop
-
-         declare
-            type Rand_Range is range 0..91;
-            package Rand_Int is new Ada.Numerics.Discrete_Random(Rand_Range);
-            seed : Rand_Int.Generator;
-         begin
-            Rand_Int.Reset(seed);
-            temp := Children.children(Integer(Rand_Int.Random(seed)) mod Children.branching);
-         end;
+         Rand_Int.Reset(seed);
+         temp := Children.children(Integer(Rand_Int.Random(seed)) mod Children.branching);
 
          Single_Iteration:
          loop
             if (Terminal(temp.state.current_state)) then
                   Winner(temp.state.current_state,tempWinner);
                   if (tempWinner = White) then
-                     Whitewins := Whitewins + 1.0;
+                     Whitewins := Whitewins + 1;
                   elsif (tempWinner = Black) then
-                     Blackwins := Blackwins + 1.0;
+                     Blackwins := Blackwins + 1;
                   else Ties := Ties + 1;
                   end if;
                exit Single_Iteration;
@@ -196,26 +170,16 @@ package body TemporalDifference is
          end loop Single_Iteration;
       end loop;
 
-      Put_Line("Black wins " & Blackwins'Img & " times and white wins " & Whitewins'Img & "times");
+      Put_Line(Player'Img & "'s turn: Black wins " & Blackwins'Img & " times and white wins " & Whitewins'Img & "times");
+      if Whitewins = 0 and Blackwins = 0 then
+         -- we only saw ties
+         return 0.5;
+      end if;
       if (Player = White) then
-         endprobability := Whitewins / (Whitewins+Blackwins);
-         if (not endprobability'Valid) then
-            declare
-                crashus : Dimension;
-            begin
-               crashus := (Dimension'Last+1);
-            end;
-         end if;
+         endprobability := Long_Float(Whitewins) / Long_Float(Whitewins+Blackwins);
          return endprobability;
       elsif (Player = Black) then
-         endprobability := Blackwins / (Whitewins+Blackwins);
-         if (not endprobability'Valid) then
-            declare
-               crashus : Dimension;
-            begin
-               crashus := (Dimension'Last+1);
-            end;
-         end if;
+         endprobability := Long_Float(Blackwins) / Long_Float(Whitewins+Blackwins);
          return endprobability;
       end if;
       return 0.0;
