@@ -38,7 +38,7 @@ package TemporalDifference is
    mobilityWeight : FeatureWeight := 1.0;
 
    epsilon : Float := 0.1;
-   alpha : Float := 0.1;
+   alpha : Float := 0.01;
 
    cease : Boolean := False;
 

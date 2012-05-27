@@ -48,7 +48,7 @@ package body TemporalDifference is
             end if;
          end;
       else
-         Diff := 0.5 - Float(MonteCarlo(Player, Next, 100));
+         Diff := -(Float(MonteCarlo(NextPlayer(Player), Next, 100)) - 0.5);
          for i in Dimension'Range loop
             for j in Dimension'Range loop
                if(NewState(i,j) = Player) then
@@ -70,35 +70,21 @@ package body TemporalDifference is
          newW : FeatureWeight;
       begin
          nMoves := NumMoves(State, Player);
-         nNewMoves := NumMoves(NewState, Player);
+         nNewMoves := NumMoves(NewState, NextPlayer(Player));
          curVal := EndBoardValue(Player, State, nMoves);
-         nextVal := EndBoardValue(Player, NewState, nNewMoves);
+         nextVal := -EndBoardValue(NextPlayer(Player), NewState, nNewMoves);
+
+         Put_Line(curVal'Img & nextVal'Img);
 
          for i in Dimension'Range loop
             for j in Dimension'Range loop
-               newW := pieceWeights(i,j) + alpha * (nextVal - curVal + pieceReward(i,j));
-
-               if(not (newW'Valid or cease)) then
-                  Put_Line("*****************");
-                  Put_Line(i'Img & j'Img & pieceWeights(i,j)'Img & nextVal'Img
-                           & curVal'Img & pieceReward(i,j)'Img);
-                  Put_Line("*****************");
-                  cease := True;
-               end if;
-
+               newW := pieceWeights(i,j) + alpha * (curVal - nextVal + pieceReward(i,j));
                pieceWeights(i,j) := newW;
             end loop;
          end loop;
 
          mobilityReward := mobilityReward*FeatureWeight(nMoves - nNewMoves);
-         newW := mobilityWeight + alpha * (nextVal - curVal + mobilityReward);
-         if(not (newW'Valid or cease)) then
-            Put_Line("*****************");
-            Put_Line("Mobility" & mobilityWeight'Img & nextVal'Img
-                     & curVal'Img & mobilityReward'Img);
-            Put_Line("*****************");
-            cease := True;
-         end if;
+         newW := mobilityWeight + alpha * (curVal - nextVal + mobilityReward);
          mobilityWeight := newW;
       end;
    end TD;
@@ -229,8 +215,8 @@ package body TemporalDifference is
                   Sub : String := Slice(Subs, i);
                begin
                   if(Line_No < 5) then
-                     Put_Line(Sub (Sub'First .. Sub'First + 5));
-                     pieceWeights(Line_No, Dimension(i)-1) := Float'Value(Sub (Sub'First .. Sub'First + 5));
+                     Put_Line(Sub);
+                     pieceWeights(Line_No, Dimension(i)-1) := Float'Value(Sub);
                   elsif (Line_No = 5 and i = 1) then
                      mobilityWeight := Float'Value(Sub);
                   end if;
@@ -260,6 +246,7 @@ package body TemporalDifference is
       Subs : Slice_Set;
       Next_Line : Unbounded_String;
       weightaverage : Float;
+      divBy : Float := 4.0;
    begin
       Create(CSV_File, Out_File, Filename);
 
@@ -267,7 +254,14 @@ package body TemporalDifference is
       for i in Dimension range 0.. (Dimension'Last/2) loop
          Next_Line := To_Unbounded_String("");
          for j in Dimension range 0..i loop
-            weightaverage := (pieceWeights(i,j)+pieceWeights(Dimension'Last-i,j)+pieceWeights(Dimension'Last-i,Dimension'Last-j)+pieceWeights(i,Dimension'Last-j))/(4.0);
+            weightaverage := pieceWeights(i,j)+pieceWeights(Dimension'Last-i,j)
+                 +pieceWeights(Dimension'Last-i,Dimension'Last-j)+pieceWeights(i,Dimension'Last-j);
+            if (i /= j) then
+               weightaverage := weightaverage + pieceWeights(j,i) + pieceWeights(Dimension'Last-j,i)
+                 +pieceWeights(Dimension'Last-j,Dimension'Last-i)+pieceWeights(j,Dimension'Last-i);
+               divBy := divBy + 4.0;
+            end if;
+            weightaverage := weightaverage / divBy;
             Next_Line := Next_Line & To_Unbounded_String(Float'Image(weightaverage) & ",");
          end loop;
           Unbounded_IO.Put_Line(CSV_File, Next_Line);
