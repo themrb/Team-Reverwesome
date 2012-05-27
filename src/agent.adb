@@ -21,8 +21,6 @@ package body Agent is
    pragma import(cpp, cnextmovex, "nextmovex");
 
    task body Main is
-      previousState : GameTree_Type;
-      havePrevious : Boolean := False;
    begin
       accept Initialise  do
          --Put_Line("is it weights?");
@@ -76,20 +74,6 @@ package body Agent is
                   treeroot.state.current_state := currentstate;
                   treeroot.state.turnsleft := turnsleft;
 
-                  declare
-                     bestprob : Probability := 0.0;
-                  begin
-                     bestprob := MonteCarlo(my_player,treeroot,100);
-                     Put_Line("Probability of winning : " & Long_Float'Image(bestprob));
-                  end;
-
-                  if(not havePrevious) then
-                     previousState := treeroot; -- This line is purely to get rid of a compiler warning.
-                  else
-                     TD(previousState, treeroot, my_player);
-                     StoreWeights;
-                  end if;
-
                   if (turnsleft < 16) then
                      NegaMax(my_player, treeroot, 15, value, BoardValue'First, BoardValue'Last, move);
                   else
@@ -104,8 +88,25 @@ package body Agent is
                   cnextmovey := Integer(move(x));
                   cnextmovex := Integer(move(y));
 
-                  previousState := treeroot;
-                  havePrevious := True;
+                  declare
+                     previousState, nextState : GameTree_Type;
+                  begin
+
+                     previousState := treeroot;
+                     nextState := treeroot;
+
+                     nextState.state.justWent := my_player;
+
+                     AdvanceMove(my_player, nextState.state.current_state,
+                        move(x), move(y));
+
+                     if(previousState.state.current_state = nextState.state.current_state) then
+                        Put_Line("Damned shallow copy");
+                     end if;
+
+                     TD(previousState, nextState, my_player);
+                  end;
+                  StoreWeights;
                end;
             end NewMove;
          or
