@@ -20,4 +20,7 @@ package Agent is
 
    my_player : BoardPoint;
 
+   type Game_Phase is (PEarlyGame, PMidGame, PLateGame, PEndGame);
+   CurrentGamePhase : Game_Phase;
+
 end Agent;

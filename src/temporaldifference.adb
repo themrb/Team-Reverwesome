@@ -64,7 +64,6 @@ package body TemporalDifference is
       end loop;
 
       ModFeatures.mobility := ModFeatures.mobility + Change;
-
       basicSet := ModFeatures;
    end TD;
 
@@ -201,78 +200,98 @@ package body TemporalDifference is
 
    procedure LoadWeights is
       Filename : constant String := "data.csv";
-      Line_No : Natural := 0;
-      Subs : GNAT.String_Split.Slice_Set;
    begin
       Open(CSV_File, In_File, Filename);
-      while not End_Of_File (CSV_File) loop
+      LoadWeightSet(EarlyGame);
+      LoadWeightSet(MidGame);
+      LoadWeightSet(LateGame);
+      Close(CSV_File);
+   end LoadWeights;
+
+   procedure LoadWeightSet(Weights : out FeatureWeights) is
+      Subs : GNAT.String_Split.Slice_Set;
+      InternalCount : Natural := 0;
+   begin
+      -- Grab out piece weights first
+      for xpoint in Dimension range 0..Dimension'Last/2 loop
          declare
             Line : String := Get_Line(CSV_File);
          begin
+            --Put_Line(Line);
             GNAT.String_Split.Create(Subs, Line, ",");
             for i in 1..(Slice_Count(Subs)-1) loop
                declare
                   Sub : String := Slice(Subs, i);
                begin
-                  if(Line_No < 5) then
-                     Put_Line(Sub);
-                     basicSet.piece(Line_No, Dimension(i)-1) := Float'Value(Sub);
-                  elsif (Line_No = 5 and i = 1) then
-                     basicSet.mobility := Float'Value(Sub);
-                  end if;
+                  Weights.pieceWeights(xpoint, Dimension(i)-1) := Float'Value(Sub);
                end;
             end loop;
          end;
-         Line_No := Line_No + 1;
       end loop;
-      Close(CSV_File);
+      -- Grab out peripheral features one by one
+      --Put_Line("no raise here");
+      declare
+         Line : String := Get_Line(CSV_File);
+      begin
+         --Put_Line(Line);
+         Weights.mobilityWeight := Float'Value(Line);
+      end;
+      --Put_Line("after");
 
+
+
+      --Spread out piece weights
       for i in Dimension'Range loop
          for j in Dimension'Range loop
-            if (basicSet.piece(WeightMapping(i), WeightMapping(j)) = 0.0) then
-               basicSet.piece(i,j)
-                 := basicSet.piece(WeightMapping(j),WeightMapping(i));
+            if (Weights.pieceWeights(WeightMapping(i), WeightMapping(j)) = 0.0) then
+               Weights.pieceWeights(i,j)
+                 := Weights.pieceWeights(WeightMapping(j),WeightMapping(i));
             else
-              basicSet.piece(i,j)
-                 := basicSet.piece(WeightMapping(i),WeightMapping(j));
+               Weights.pieceWeights(i,j)
+                 := Weights.pieceWeights(WeightMapping(i),WeightMapping(j));
             end if;
          end loop;
       end loop;
-   end LoadWeights;
+   end;
 
    procedure StoreWeights is
       Filename : constant String := "data.csv";
-      Line_No : Natural := 0;
+   begin
+      Create(CSV_File, Out_File, Filename);
+      StoreWeightSet(EarlyGame);
+      StoreWeightSet(MidGame);
+      StoreWeightSet(LateGame);
+      Close(CSV_File);
+
+   end StoreWeights;
+
+   procedure StoreWeightSet(Weights : FeatureWeights) is
       Subs : Slice_Set;
       Next_Line : Unbounded_String;
       weightaverage : Float;
       divBy : Float := 4.0;
    begin
-      Create(CSV_File, Out_File, Filename);
-
       --Line for each pieceweight line
       for i in Dimension range 0.. (Dimension'Last/2) loop
          Next_Line := To_Unbounded_String("");
          for j in Dimension range 0..i loop
-            weightaverage := basicSet.piece(i,j)+basicSet.piece(Dimension'Last-i,j)
-                 +basicSet.piece(Dimension'Last-i,Dimension'Last-j)+basicSet.piece(i,Dimension'Last-j);
+            weightaverage := Weights.piece(i,j)+Weights.piece(Dimension'Last-i,j)
+                 +Weights.piece(Dimension'Last-i,Dimension'Last-j)+Weights.piece(i,Dimension'Last-j);
             if (i /= j) then
-               weightaverage := weightaverage + basicSet.piece(j,i) + basicSet.piece(Dimension'Last-j,i)
-                 +basicSet.piece(Dimension'Last-j,Dimension'Last-i)+basicSet.piece(j,Dimension'Last-i);
+               weightaverage := weightaverage + Weights.piece(j,i) + Weights.piece(Dimension'Last-j,i)
+                 +Weights.piece(Dimension'Last-j,Dimension'Last-i)+Weights.piece(j,Dimension'Last-i);
                divBy := divBy + 4.0;
             end if;
             weightaverage := weightaverage / divBy;
-            Next_Line := Next_Line & To_Unbounded_String(Float'Image(weightaverage) & ",");
+            Next_Line := Next_Line & To_Unbounded_String(Float'Image(weightaverage));
          end loop;
-          Unbounded_IO.Put_Line(CSV_File, Next_Line);
+         Unbounded_IO.Put_Line(CSV_File, Next_Line);
       end loop;
 
-      --Line for mobility weight
-      Next_Line := To_Unbounded_String(Float'Image(basicSet.mobility));
-      Unbounded_IO.Put_Line(CSV_File, Next_Line);
+      --Line for each peripheral weight
+      Unbounded_IO.Put_Line(CSV_File, To_Unbounded_String(Float'Image(basicSet.mobility)));
       Close(CSV_File);
-
-   end StoreWeights;
+   end StoreWeightSet;
 
    function WeightMapping(i : Dimension) return Dimension is
    begin

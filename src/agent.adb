@@ -8,6 +8,7 @@ with Exceptions; use Exceptions;
 with TemporalDifference; use TemporalDifference;
 with GNAT.Traceback;           use GNAT.Traceback;
 with GNAT.Traceback.Symbolic;  use GNAT.Traceback.Symbolic;
+with Features; use Features;
 
 package body Agent is
 
@@ -20,11 +21,15 @@ package body Agent is
    pragma import(cpp, cnextmovey, "nextmovey");
    pragma import(cpp, cnextmovex, "nextmovex");
 
+   currentstate : GameBoard;
+   move : Place;
+
    task body Main is
       History : HistoryType;
    begin
       accept Initialise  do
 
+         CurrentGamePhase := PEarlyGame;
          LoadWeights;
 
          if (cplayercolour = 1) then
@@ -50,9 +55,7 @@ package body Agent is
          select
             accept NewMove  do
                declare
-                  currentstate : GameBoard;
                   treeroot : GameTree_Type;
-                  move : Place;
                   value : BoardValue;
                   turnsleft : TurnsNo := 0;
                begin
@@ -71,7 +74,21 @@ package body Agent is
                   treeroot.state.current_state := currentstate;
                   treeroot.state.turnsleft := turnsleft;
 
-                  History.History(History.Index) := treeroot;
+                  treeroot.state.StableNodes := EmptyMatrix;
+                  treeroot.state.InternalNodes := EmptyMatrix;
+
+                  for I in Dimension'Range loop
+                     for J in Dimension'Range loop
+                        if (CheckStability((i,j),my_player,currentstate)) then
+                           treeroot.state.StableNodes(i,j) := True;
+                        end if;
+                        if (CheckInternal((i,j),currentstate)) then
+                           treeroot.state.InternalNodes(i,j) := True;
+                        end if;
+                     end loop;
+                  end loop;
+
+                    History.History(History.Index) := treeroot;
                   History.Index := History.Index + 1;
 
                   if (turnsleft < 16) then
@@ -89,6 +106,20 @@ package body Agent is
                   cnextmovex := Integer(move(y));
                end;
             end NewMove;
+            AdvanceMove(my_player, currentstate, move(x), move(y));
+            if CurrentGamePhase = PEarlyGame then
+               for x in Dimension'Range loop
+                  if currentstate(x,Dimension'First) = Black or currentstate(x,Dimension'First) = White
+                    or currentstate(x,Dimension'Last) = Black or currentstate(x,Dimension'Last) = White
+                    or currentstate(x,Dimension'Last) = Black or currentstate(x,Dimension'First) = White
+                    or currentstate(x,Dimension'First) = Black or currentstate(x,Dimension'Last) = White then
+                     CurrentGamePhase := PMidGame;
+                  end if;
+               end loop;
+            end if;
+            EarlyGame.pieceWeights := pieceWeights;
+            EarlyGame.mobilityWeight := mobilityWeight;
+            StoreWeights;
          or
             accept GameEnd  do
                if(my_player = White) then

@@ -245,4 +245,39 @@ package body Features is
       return columnfull and rowfull and SWNEfull and NWSEfull;
    end CheckStability;
 
+   function CheckInternal(move : Place; board : GameBoard) return Boolean is
+   begin
+      if move(x) = Dimension'Last then
+         if move(y) = Dimension'Last then
+            return (board(move(x)-1,move(y)) /= Empty and board(move(x)-1,move(y)-1) /= Empty and board(move(x),move(y)-1) /= Empty);
+         elsif move(y) = Dimension'First then
+            return (board(move(x)-1,move(y)) /= Empty and board(move(x)-1,move(y)+1) /= Empty and
+                      board(move(x),move(y)+1) /= Empty);
+         else
+            return (board(move(x)-1,move(y)) /= Empty and board(move(x)-1,move(y)-1) /= Empty and board(move(x)-1,move(y)+1) /= Empty and board(move(x),move(y)-1) /= Empty and
+                      board(move(x),move(y)+1) /= Empty);
+         end if;
+      elsif move(x) = Dimension'First then
+         if move(y) = Dimension'Last then
+                  return (board(move(x),move(y)-1) /= Empty and
+                board(move(x)+1,move(y)) /= Empty and board(move(x)+1,move(y)-1) /= Empty);
+         elsif move(y) = Dimension'First then
+                  return (board(move(x),move(y)+1) /= Empty and board(move(x)+1,move(y)) /= Empty and board(move(x)+1,move(y)+1) /= Empty);
+         else
+            return (board(move(x),move(y)-1) /= Empty and
+                      board(move(x),move(y)+1) /= Empty and board(move(x)+1,move(y)) /= Empty and board(move(x)+1,move(y)-1) /= Empty and board(move(x)+1,move(y)+1) /= Empty);
+         end if;
+      elsif move(y) = Dimension'First then
+         return (board(move(x)-1,move(y)) /= Empty and board(move(x)-1,move(y)+1) /= Empty and
+                   board(move(x),move(y)+1) /= Empty and board(move(x)+1,move(y)) /= Empty and board(move(x)+1,move(y)+1) /= Empty);
+      elsif move(y) = Dimension'Last then
+         return (board(move(x)-1,move(y)) /= Empty and board(move(x)-1,move(y)-1) /= Empty and board(move(x),move(y)-1) /= Empty and
+                   board(move(x)+1,move(y)) /= Empty and board(move(x)+1,move(y)-1) /= Empty);
+      else
+         --Put_Line(move(x)'Img & "," & move(y)'Img);
+         return (board(move(x)-1,move(y)) /= Empty and board(move(x)-1,move(y)-1) /= Empty and board(move(x)-1,move(y)+1) /= Empty and board(move(x),move(y)-1) /= Empty and
+                board(move(x),move(y)+1) /= Empty and board(move(x)+1,move(y)) /= Empty and board(move(x)+1,move(y)-1) /= Empty and board(move(x)+1,move(y)+1) /= Empty);
+      end if;
+   end CheckInternal;
+
 end Features;
