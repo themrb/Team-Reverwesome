@@ -26,6 +26,7 @@ package body Agent is
    begin
       accept Initialise  do
          --Put_Line("is it weights?");
+
          LoadWeights;
 
          if (cplayercolour = 1) then
@@ -33,6 +34,12 @@ package body Agent is
          elsif (cplayercolour = 2) then
             my_player := Black;
          end if;
+
+      exception
+         when E : others =>
+            Show_Exception (E);
+            CloseFile;
+            LoadWeights;
 
          --Put_Line("not weights or players");
          -- spawn explorer tasks as required
