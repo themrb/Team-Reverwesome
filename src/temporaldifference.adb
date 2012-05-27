@@ -167,21 +167,6 @@ package body TemporalDifference is
       for I in 1..iterations loop
          Next_Int := Integer(Rand_Int.Random(seed));
          temp := Children.children(Next_Int mod Children.branching);
-         --Put_Line("nextint " & Next_Int'Img);
-
-         --Put_Line("Starting from");
-         --Put_Line(Image(temp.state));
-
---                    declare
---                       rootexpand : ExpandedChildren := Expand(treeroot);
---                    begin
---                       Put_Line("begin children, all " & rootexpand.branching'Img);
---                       for i in TurnsNo range TurnsNo'First .. rootexpand.branching-1 loop
---
---                       end loop;
---                    end;
---                    Put_Line("end children");
-
 
          Single_Iteration:
          loop
@@ -195,20 +180,13 @@ package body TemporalDifference is
                end if;
                --Put_Line(Image(temp.state));
                --Put_Line(tempWinner'Img & " wins");
-               delay 0.2;
                exit Single_Iteration;
             end if;
 
             tempChildren := Expand(temp);
             Next_Int := Integer(Rand_Int.Random(seed));
             temp := tempChildren.children(Next_Int mod tempChildren.branching);
-            --Put_Line("nextint2 " & Next_Int'Img);
-
-            --delay 0.1;
-            --Put_Line("moving to");
-            --Put_Line(Image(temp.state));
          end loop Single_Iteration;
-         --delay 2.0;
       end loop;
 
       Put_Line(Player'Img & "'s turn: Black wins " & Blackwins'Img & " times and white wins " & Whitewins'Img & "times");
@@ -228,30 +206,37 @@ package body TemporalDifference is
       return 0.0;
    end MonteCarlo;
 
+   CSV_File : File_Type;
+
+   procedure CloseFile is
+   begin
+      Close(CSV_File);
+   end CloseFile;
+
    procedure LoadWeights is
-      CSV_File : File_Type;
-      Line : String(1..255);
       Filename : constant String := "data.csv";
       Line_No : Natural := 0;
-      Last : Natural;
-      Subs : Slice_Set;
+      Subs : GNAT.String_Split.Slice_Set;
    begin
       Open(CSV_File, In_File, Filename);
       while not End_Of_File (CSV_File) loop
-         Get_Line(CSV_File, Line, Last);
-         Create(Subs, Line, ",");
-         for i in 1..(Slice_Count(Subs)-1) loop
-            declare
-               Sub : String := Slice(Subs, i);
-            begin
-               if(Line_No < 5) then
---                  Put_Line(Sub (Sub'First .. Sub'First + 11));
-                  pieceWeights(Line_No, Dimension(i)-1) := Float'Value(Sub (Sub'First .. Sub'First + 11));
-               elsif (Line_No = 5 and i = 1) then
-                  mobilityWeight := Float'Value(Sub);
-               end if;
-            end;
-         end loop;
+         declare
+            Line : String := Get_Line(CSV_File);
+         begin
+            GNAT.String_Split.Create(Subs, Line, ",");
+            for i in 1..(Slice_Count(Subs)-1) loop
+               declare
+                  Sub : String := Slice(Subs, i);
+               begin
+                  if(Line_No < 5) then
+                     Put_Line(Sub (Sub'First .. Sub'First + 5));
+                     pieceWeights(Line_No, Dimension(i)-1) := Float'Value(Sub (Sub'First .. Sub'First + 5));
+                  elsif (Line_No = 5 and i = 1) then
+                     mobilityWeight := Float'Value(Sub);
+                  end if;
+               end;
+            end loop;
+         end;
          Line_No := Line_No + 1;
       end loop;
       Close(CSV_File);
@@ -270,7 +255,6 @@ package body TemporalDifference is
    end LoadWeights;
 
    procedure StoreWeights is
-      CSV_File : File_Type;
       Filename : constant String := "data.csv";
       Line_No : Natural := 0;
       Subs : Slice_Set;
