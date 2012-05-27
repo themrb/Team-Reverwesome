@@ -13,14 +13,23 @@ package body MinMax is
       a, b : BoardValue;
       value : BoardValue;
       best : Place;
+      Set : FeatureSet;
    begin
+      case state.state.Current_Phase is
+         when PEarlyGame =>
+            Set := EarlyGame;
+         when PMidGame =>
+            Set := MidGame;
+         when PLateGame =>
+            Set := LateGame;
+      end case;
       if (Player = Blocked or state.state.justWent = Blocked) then
          Put_Line("BAD");
       end if;
 
       if (Terminal(state.state.current_state)) then
          bestMove := (0,0);
-         outValue := EndBoardValue(Player,state.state.current_state, 0);
+         outValue := EndBoardValue(Player,state.state.current_state, 0, Set);
          return;
       end if;
 
@@ -33,7 +42,7 @@ package body MinMax is
 
       if (depth = 0) then
          bestMove := (0,0);
-         outValue := EndBoardValue(Player,state.state.current_state, successors.branching);
+         outValue := EndBoardValue(Player,state.state.current_state, successors.branching, Set);
          return;
       end if;
 
