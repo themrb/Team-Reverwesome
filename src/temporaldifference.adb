@@ -187,26 +187,17 @@ package body TemporalDifference is
       end loop;
 
       Put_Line(Player'Img & "'s turn: Black wins " & Blackwins'Img & " times and white wins " & Whitewins'Img & "times");
+      if Whitewins = 0 and Blackwins = 0 then
+         -- we only saw ties
+         return 0.5;
+      end if;
       if (Player = White) then
          endprobability := Long_Float(Whitewins) / Long_Float(Whitewins+Blackwins);
-         if (not endprobability'Valid) then
-            declare
-                crashus : Dimension;
-            begin
-               crashus := (Dimension'Last+1);
-            end;
-         end if;
+
          return endprobability;
       elsif (Player = Black) then
-         Put_Line(Blackwins'Img & ' ' & Whitewins'Img);
          endprobability := Long_Float(Blackwins) / Long_Float(Whitewins+Blackwins);
-         if (not endprobability'Valid) then
-            declare
-               crashus : Dimension;
-            begin
-               crashus := (Dimension'Last+1);
-            end;
-         end if;
+
          return endprobability;
       end if;
       return 0.0;
