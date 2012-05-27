@@ -2,10 +2,11 @@ with Ada.Text_IO; use Ada.Text_IO;
 with Ada.Text_IO.Unbounded_IO;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with GNAT.String_Split; use GNAT.String_Split;
-with Boards;
+with Boards; use Boards;
 with GameTree; use GameTree;
 with Ada.Numerics;
 with Ada.Numerics.Discrete_Random;
+with Features; use Features;
 
 package body TemporalDifference is
 
@@ -43,10 +44,10 @@ package body TemporalDifference is
                   end if;
 
                   NewSet.piece(i,j) := NewSet.piece(i,j) + step;
-                  StepChange := ChangeInValue(Player, State.current_state, OldSet, NewSet, Step);
+                  StepChange := ChangeInValue(Player, State, OldSet, NewSet, Step);
                   for m in (k+1) .. History.Index loop
-                     derivative := EndBoardValue(Player, History.History(m).state.current_state, OldSet)
-                       - EndBoardValue(Player, State.current_state, OldSet);
+                     derivative := EndBoardValue(Player, History.History(m).state, OldSet)
+                       - EndBoardValue(Player, State, OldSet);
                      lambdaSum := lambdaSum + (lambda ** (m-k)) * derivative;
                   end loop;
 
@@ -67,7 +68,7 @@ package body TemporalDifference is
          declare
             State : State_Type := History.History(k).state;
             lambdaSum : Float := 0.0;
-            lambdaMob, lambdaStab : Float;
+            lambdaMob, lambdaStab, lambdaIntr : Float;
             derivative : Float;
          begin
             if(State.Current_Phase = PEarlyGame) then
@@ -78,7 +79,7 @@ package body TemporalDifference is
                OldSet := LateGame;
             end if;
 
-            for i in numIndWeights'Range loop:
+            for i in numIndWeights'Range loop
                declare
                   NewSet : FeatureSet := OldSet;
                begin
@@ -87,32 +88,39 @@ package body TemporalDifference is
                         NewSet.mobility := NewSet.mobility + step;
                      when 1 =>
                         NewSet.stability := NewSet.stability + step;
+                     when 2 =>
+                        NewSet.internal := NewSet.internal + step;
                   end case;
-                  StepChange := ChangeInValue(Player, State.current_state, OldSet, NewSet, Step);
+                  StepChange := ChangeInValue(Player, State, OldSet, NewSet, Step);
                   for m in (k+1) .. History.Index loop
-                     derivative := EndBoardValue(Player, History.History(m).state.current_state, OldSet)
-                       - EndBoardValue(Player, State.current_state, OldSet);
+                     derivative := EndBoardValue(Player, History.History(m).state, OldSet)
+                       - EndBoardValue(Player, State, OldSet);
                      lambdaSum := lambdaSum + (lambda ** (m-k)) * derivative;
                   end loop;
                end;
                case i is
                   when 0 =>
-                     lambdaMob := lambdaSum;
+                     lambdaMob := alpha * (StepChange * lambdaSum);
                   when 1 =>
-                     lambdaStab := lambdaSum;
+                     lambdaStab := alpha * (StepChange * lambdaSum);
+                  when 2 =>
+                     lambdaIntr := alpha * (StepChange * lambdaSum);
                end case;
                lambdaSum := 0.0;
             end loop;
 
             if(State.Current_Phase = PEarlyGame) then
-               ModEarly.mobility := ModEarly.mobility + alpha * (StepChange * lambdaMob);
-               ModEarly.stability := ModEarly.stability + alpha * (StepChange * lambdaStab);
+               ModEarly.mobility := ModEarly.mobility + lambdaMob;
+               ModEarly.stability := ModEarly.stability + lambdaStab;
+               ModEarly.internal := ModEarly.internal + lambdaIntr;
             elsif(State.Current_Phase = PMidGame) then
-               ModMid.mobility := ModMid.mobility + alpha * (StepChange * lambdaMob);
-               ModMid.stability := ModMid.stability + alpha * (StepChange * lambdaStab);
+               ModMid.mobility := ModMid.mobility + lambdaMob;
+               ModMid.stability := ModMid.stability + lambdaStab;
+               ModMid.internal := ModMid.internal + lambdaIntr;
             else
-               ModLate.mobility := ModLate.mobility + alpha * (StepChange * lambdaMob);
-               ModLate.stability := ModLate.stability + alpha * (StepChange * lambdaStab);
+               ModLate.mobility := ModLate.mobility + lambdaMob;
+               ModLate.stability := ModLate.stability + lambdaStab;
+               ModLate.internal := ModLate.internal + lambdaIntr;
             end if;
          end;
       end loop;
@@ -122,30 +130,42 @@ package body TemporalDifference is
       LateGame := ModLate;
    end TD;
 
-   function ChangeInValue(Player : Players; Board : GameBoard;
+   function ChangeInValue(Player : Players; Board : State_Type;
                           OldSet, NewSet : FeatureSet; Step : Float) return BoardValue is
       Current, Updated : BoardValue;
    begin
       Current := EndBoardValue(Player, Board,
-                               NumMoves(Board, Player), OldSet);
+                               NumMoves(Board.current_state, Player), OldSet);
       Updated := EndBoardValue(Player, Board,
-                               NumMoves(Board, Player), NewSet);
+                               NumMoves(Board.current_state, Player), NewSet);
       return (Updated - Current)/Step;
    end;
 
-   function EndBoardValue(Player : Players; State : GameBoard; Moves : TurnsNo;
+   function EndBoardValue(Player : Players; State : State_Type; Moves : TurnsNo;
                           Set : FeatureSet) return BoardValue is
       Score : BoardValue;
    begin
-      Score := TokenScore(State, Player, Set.piece);
+      Score := TokenScore(State.current_state, Player, Set.piece);
       -- Weighting on the number of available moves
       Score := Score + (FeatureWeight(Moves) * Set.mobility);
+      declare
+         StablePieces : Integer;
+      begin
+         CountStability(Player, State.current_state, State.StableNodes, StablePieces);
+         Score := Score + (FeatureWeight(StablePieces) * Set.stability);
+      end;
+      declare
+         InternalPieces : Integer;
+      begin
+         CountInternals(Player, State.current_state, State.InternalNodes, InternalPieces);
+         Score := Score + (FeatureWeight(InternalPieces) * Set.internal);
+      end;
       return Score;
    end EndBoardValue;
 
-   function EndBoardValue(Player : Players; State : GameBoard; Set: FeatureSet) return BoardValue is
+   function EndBoardValue(Player : Players; State : State_Type; Set: FeatureSet) return BoardValue is
    begin
-      return EndBoardValue(Player, State, NumMoves(State, Player), Set);
+      return EndBoardValue(Player, State, NumMoves(State.current_state, Player), Set);
    end EndBoardValue;
 
    function TokenScore(State : in GameBoard; Player: in BoardPoint;
@@ -181,6 +201,25 @@ package body TemporalDifference is
          end loop;
    end loop;
    end TokenCount;
+
+--     function OwnDiscs(Player : Players; State : in GameBoard) return TurnsNo is
+--
+--     begin
+--        BlackTokens := 0;
+--        WhiteTokens := 0;
+--        for I in Dimension'Range loop
+--           for J in Dimension'Range loop
+--              case State(I,J) is
+--                 when White =>
+--                    WhiteTokens := WhiteTokens + 1;
+--                 when Black =>
+--                    BlackTokens := BlackTokens + 1;
+--                 when others =>
+--                    null;
+--              end case;
+--           end loop;
+--        end loop;
+--     end OwnDiscs;
 
    function MonteCarlo (Player : BoardPoint; state : GameTree_Type; iterations : Positive) return Probability is
       Whitewins : Natural := 0;
@@ -285,6 +324,18 @@ package body TemporalDifference is
          Put_Line(Line);
          Weights.mobility := Float'Value(Line);
       end;
+      declare
+         Line : String := Get_Line(CSV_File);
+      begin
+         Put_Line(Line);
+         Weights.stability := Float'Value(Line);
+      end;
+      declare
+         Line : String := Get_Line(CSV_File);
+      begin
+         Put_Line(Line);
+         Weights.internal := Float'Value(Line);
+      end;
 
       --Spread out piece weights
       for i in Dimension'Range loop
@@ -336,6 +387,8 @@ package body TemporalDifference is
 
       --Line for each peripheral weight
       Unbounded_IO.Put_Line(CSV_File, To_Unbounded_String(Float'Image(Weights.mobility)));
+      Unbounded_IO.Put_Line(CSV_File, To_Unbounded_String(Float'Image(Weights.stability)));
+      Unbounded_IO.Put_Line(CSV_File, To_Unbounded_String(Float'Image(Weights.internal)));
    end StoreWeightSet;
 
    function WeightMapping(i : Dimension) return Dimension is
