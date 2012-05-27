@@ -69,6 +69,13 @@ package body Agent is
                   treeroot.state.current_state := currentstate;
                   treeroot.state.turnsleft := turnsleft;
 
+                  declare
+                     bestprob : Probability := 0.0;
+                  begin
+                     bestprob := MonteCarlo(my_player,treeroot,100);
+                     Put_Line("Probability of winning : " & Long_Float'Image(bestprob));
+                  end;
+
                   if(not havePrevious) then
                      previousState := treeroot; -- This line is purely to get rid of a compiler warning.
                   else
