@@ -17,6 +17,11 @@ package TemporalDifference is
 --                                                       );
 --     defaultMobility : constant FeatureWeight := 92;
 
+   type FeatureWeights is record
+      pieceWeights : BoardPositionWeights := (others => (others => 0.0));
+      mobilityWeight : FeatureWeight := 1.0;
+   end record;
+
    function TokenScore(State : in GameBoard; Player: in BoardPoint) return BoardValue;
 
    procedure TokenCount(State : in GameBoard; WhiteTokens, BlackTokens : out TurnsNo);
@@ -26,7 +31,9 @@ package TemporalDifference is
 
    procedure CloseFile;
    procedure LoadWeights;
+   procedure LoadWeightSet(Weights : out FeatureWeights);
    procedure StoreWeights;
+   procedure StoreWeightSet(Weights : FeatureWeights);
 
    function WeightMapping(i : Dimension) return Dimension;
 
@@ -41,5 +48,9 @@ package TemporalDifference is
    alpha : Float := 0.01;
 
    cease : Boolean := False;
+
+   EarlyGame : FeatureWeights;
+   MidGame : FeatureWeights;
+   LateGame : FeatureWeights;
 
 end TemporalDifference;
