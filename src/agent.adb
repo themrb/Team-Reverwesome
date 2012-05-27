@@ -117,9 +117,6 @@ package body Agent is
                   end if;
                end loop;
             end if;
-            EarlyGame.pieceWeights := pieceWeights;
-            EarlyGame.mobilityWeight := mobilityWeight;
-            StoreWeights;
          or
             accept GameEnd  do
                if(my_player = White) then
