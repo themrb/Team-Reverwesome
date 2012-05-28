@@ -81,6 +81,8 @@ package body Agent is
                      end loop;
                   end loop;
 
+                  Put_Line(Image(currentstate));
+
                   PhaseTransition(CurrentGamePhase, currentstate, CurrentCorners);
 
                   -- Initialise game tree
@@ -92,48 +94,37 @@ package body Agent is
                   treeroot.state.InternalNodes := EmptyMatrix;
                   treeroot.state.Current_Phase := CurrentGamePhase;
 
-                  --if our move is forced
-                  if NumMoves(currentstate, my_player) = 1 then
-                     declare
-                        Children : ExpandedChildren := Expand(treeroot);
-                     begin
-                        Put_Line("forced move");
-                        move := Children.children(0).state.spot;
-                     end;
-
-                  else
-                     for i in Dimension'Range loop
-                        for j in Dimension'Range loop
-                           if (CheckStability((i,j),my_player,currentstate)) then
-                              treeroot.state.StableNodes(i,j) := True;
-                           end if;
-                           if (CheckInternal((i,j),currentstate)) then
-                              treeroot.state.InternalNodes(i,j) := True;
-                           end if;
-                        end loop;
+                  for i in Dimension'Range loop
+                     for j in Dimension'Range loop
+                        if (CheckStability((i,j),my_player,currentstate)) then
+                           treeroot.state.StableNodes(i,j) := True;
+                        end if;
+                        if (CheckInternal((i,j),currentstate)) then
+                           treeroot.state.InternalNodes(i,j) := True;
+                        end if;
                      end loop;
+                  end loop;
 
-                     History.History(History.Index) := treeroot;
-                     History.Index := History.Index + 1;
+                  History.History(History.Index) := treeroot;
+                  History.Index := History.Index + 1;
 
-                     toExplore.Initialise(treeroot);
-                     toExplore.GetResult(move);
+                  toExplore.Initialise(treeroot);
+                  toExplore.GetResult(move);
 
-                     if TimeLeft < 15.0 then
-                        Configure.depth := 2;
-                     elsif (turnsleft < 13) then
-                        Configure.depth := 12;
-                     elsif TimeLeft < 30.0 or (PrevTimeLeft - TimeLeft) > 5.0 then
-                        Configure.depth := 5;
-                        BumpedDown := True;
-                     elsif PrevTimeLeft - TimeLeft < 1.5 and not BumpedDown and TimeLeft < 45.0 then
-                        Configure.depth := 8;
-                     else
-                        Configure.depth := 7;
-                     end if;
-                     PrevTimeLeft := TimeLeft;
-
-                  end if;
+                  Configure.depth := 2;
+                  --                       if TimeLeft < 15.0 then
+                  --                          Configure.depth := 2;
+                  --                       elsif (turnsleft < 13) then
+                  --                          Configure.depth := 12;
+                  --                       elsif TimeLeft < 30.0 or (PrevTimeLeft - TimeLeft) > 5.0 then
+                  --                          Configure.depth := 5;
+                  --                          BumpedDown := True;
+                  --                       elsif PrevTimeLeft - TimeLeft < 1.5 and not BumpedDown and TimeLeft < 45.0 then
+                  --                          Configure.depth := 8;
+                  --                       else
+                  --                          Configure.depth := 7;
+                  --                       end if;
+                  --                       PrevTimeLeft := TimeLeft;
 
                   declare
                      temppieces : Natural := ValidMove(my_player, currentstate, move(x), move(y));
@@ -143,21 +134,23 @@ package body Agent is
                   cnextmovey := Integer(move(x));
                   cnextmovex := Integer(move(y));
                end;
-            end NewMove;
-            AdvanceMove(my_player, currentstate, move(x), move(y));
-            if CurrentGamePhase = PEarlyGame then
-               if move(x) = Dimension'First or move(x) = Dimension'Last or move(y) = Dimension'Last or move(y) = Dimension'First then
-                  CurrentGamePhase := PMidGame;
-               end if;
-            elsif CurrentGamePhase = PMidGame then
-               if (move(x) = Dimension'First and move(y) = Dimension'First) or (move(x) = Dimension'First and move(y) = Dimension'Last)
-                 or (move(x) = Dimension'Last and move(y) = Dimension'First) or (move(x) = Dimension'Last and move(y) = Dimension'Last) then
-                  CurrentCorners := CurrentCorners + 1;
-                  if CurrentCorners >= 2 then
-                     CurrentGamePhase := PLateGame;
+               AdvanceMove(my_player, currentstate, move(x), move(y));
+               Put_Line("After moving:");
+               Put_Line(Image(currentstate));
+               if CurrentGamePhase = PEarlyGame then
+                  if move(x) = Dimension'First or move(x) = Dimension'Last or move(y) = Dimension'Last or move(y) = Dimension'First then
+                     CurrentGamePhase := PMidGame;
+                  end if;
+               elsif CurrentGamePhase = PMidGame then
+                  if (move(x) = Dimension'First and move(y) = Dimension'First) or (move(x) = Dimension'First and move(y) = Dimension'Last)
+                    or (move(x) = Dimension'Last and move(y) = Dimension'First) or (move(x) = Dimension'Last and move(y) = Dimension'Last) then
+                     CurrentCorners := CurrentCorners + 1;
+                     if CurrentCorners >= 2 then
+                        CurrentGamePhase := PLateGame;
+                     end if;
                   end if;
                end if;
-            end if;
+            end NewMove;
          or
             accept GameEnd  do
                declare
@@ -200,7 +193,6 @@ package body Agent is
 
    procedure Ada_Subroutine is
    begin
-      Put("asking main for a move");
       MainTask.NewMove;
 
    exception
