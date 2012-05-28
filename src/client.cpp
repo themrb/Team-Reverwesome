@@ -122,7 +122,7 @@ int main(int argc, char *argv[])
             cerr << "CLIENT: receive error" << endl;
             exit(-1);
         }
-        //messageIn.board.visualize();
+        messageIn.board.visualize();
 
         if (messageIn.status == ABORT) {
             cerr << "CLIENT: server abort" << endl;
