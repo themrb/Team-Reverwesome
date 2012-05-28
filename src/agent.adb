@@ -18,12 +18,14 @@ package body Agent is
    cnextmovex : Integer;
    cprevmovey : Integer;
    cprevmovex : Integer;
+   cwinner : Integer;
    pragma import(cpp, ccurrentstate, "currentcstate");
    pragma import(cpp, cplayercolour, "playercolour");
    pragma import(cpp, cnextmovey, "nextmovey");
    pragma import(cpp, cnextmovex, "nextmovex");
    pragma import(cpp, cprevmovey, "prevmovey");
    pragma import(cpp, cprevmovex, "prevmovex");
+   pragma import(cpp, cwinner, "cwinner");
 
    currentstate : GameBoard;
    move : Place;
@@ -167,20 +169,25 @@ package body Agent is
                declare
                   feedback : Float := 0.0;
                   Board : GameBoard := History.History(History.Index - 1).state.current_state;
+                  GameWinner : Players;
                begin
                   if(my_player = White) then
-                     if(Terminal(Board)) then
-                        declare
-                           WinningPlayer : BoardPoint;
-                        begin
-                           Winner(Board,WinningPlayer);
-                           if WinningPlayer = my_player then
-                              feedback := 1.0;
-                           elsif WinningPlayer = NextPlayer(my_player) then
-                              feedback := -1.0;
-                           end if;
-                        end;
+                     if (cwinner = 1) then
+                        GameWinner := White;
+                     elsif (cwinner = 2) then
+                        GameWinner := Black;
                      end if;
+
+                     if(GameWinner = my_player) then
+                        feedback := 1.0;
+                     elsif (GameWinner = NextPlayer(my_player)) then
+                        feedback := -1.0;
+                     end if;
+
+                     Put_Line(cwinner'Img);
+                     Put_Line(my_player'Img);
+
+                     Put_Line("Feedback : " & feedback'Img);
                      TD(History, my_player, feedback);
                      StoreWeights;
                   end if;

@@ -10,7 +10,7 @@ with Features; use Features;
 
 package body TemporalDifference is
 
-   procedure TD(History: HistoryType; Player : Players) is
+   procedure TD(History: HistoryType; Player : Players; Feedback : Float) is
 --        deltaWeights : FeatureSet;
 --        delt : FeatureWeight;
          ModEarly, ModMid, ModLate : FeatureSet;
@@ -33,22 +33,21 @@ package body TemporalDifference is
                   derivative : Float;
                begin
                   if(State.Current_Phase = PEarlyGame) then
-                     NewSet := EarlyGame;
                      OldSet := EarlyGame;
                   elsif(State.Current_Phase = PMidGame) then
-                     NewSet := MidGame;
                      OldSet := MidGame;
                   else
-                     NewSet := LateGame;
                      OldSet := LateGame;
                   end if;
+
+                  NewSet := OldSet;
 
                   NewSet.piece(i,j) := NewSet.piece(i,j) + step;
                   StepChange := ChangeInValue(Player, State, OldSet, NewSet, Step);
                   for m in (k+1) .. History.Index loop
                      derivative := EndBoardValue(Player, History.History(m).state, OldSet)
                        - EndBoardValue(Player, State, OldSet);
-                     lambdaSum := lambdaSum + (lambda ** (m-k)) * derivative;
+                     lambdaSum := lambdaSum + (lambda ** (m-k)) * (derivative + Feedback);
                   end loop;
 
                   if(State.Current_Phase = PEarlyGame) then
@@ -95,7 +94,7 @@ package body TemporalDifference is
                   for m in (k+1) .. History.Index loop
                      derivative := EndBoardValue(Player, History.History(m).state, OldSet)
                        - EndBoardValue(Player, State, OldSet);
-                     lambdaSum := lambdaSum + (lambda ** (m-k)) * derivative;
+                     lambdaSum := lambdaSum + (lambda ** (m-k)) * (derivative + Feedback);
                   end loop;
                end;
                case i is
