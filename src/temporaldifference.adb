@@ -151,7 +151,7 @@ package body TemporalDifference is
          declare
             StablePieces : Integer;
          begin
-            CountStability(Player, State.current_state, State.StableNodes, StablePieces);
+            CountStabilityFull(Player, State.current_state, State.StableNodes, StablePieces);
             Score := Score + (FeatureWeight(StablePieces) * Set.stability);
          end;
       end if;
@@ -161,6 +161,9 @@ package body TemporalDifference is
          CountInternals(Player, State.current_state, State.InternalNodes, InternalPieces);
          Score := Score + (FeatureWeight(InternalPieces) * Set.internal);
       end;
+
+      -- use own disc count
+
       return Score;
    end EndBoardValue;
 
@@ -203,24 +206,18 @@ package body TemporalDifference is
    end loop;
    end TokenCount;
 
---     function OwnDiscs(Player : Players; State : in GameBoard) return TurnsNo is
---
---     begin
---        BlackTokens := 0;
---        WhiteTokens := 0;
---        for I in Dimension'Range loop
---           for J in Dimension'Range loop
---              case State(I,J) is
---                 when White =>
---                    WhiteTokens := WhiteTokens + 1;
---                 when Black =>
---                    BlackTokens := BlackTokens + 1;
---                 when others =>
---                    null;
---              end case;
---           end loop;
---        end loop;
---     end OwnDiscs;
+   function OwnDiscs(Player : Players; State : in GameBoard) return TurnsNo is
+      Discs : TurnsNo := 0;
+   begin
+      for I in Dimension'Range loop
+         for J in Dimension'Range loop
+            if (State(I,J) = Player) then
+               Discs := Discs + 1;
+            end if;
+         end loop;
+      end loop;
+      return Discs;
+   end OwnDiscs;
 
    function MonteCarlo (Player : BoardPoint; state : GameTree_Type; iterations : Positive) return Probability is
       Whitewins : Natural := 0;

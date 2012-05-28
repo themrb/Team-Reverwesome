@@ -2,9 +2,11 @@ with Boards; use Boards;
 
 package Configure is
    -- Total depth to search to
-   depth : TurnsNo := 5;
+   depth : TurnsNo := 6;
    -- Number of worker tasks: Warning, should be set to one less than number of available cores
-   workerTasks : Natural := 1;
+   workerTasks : Natural := 2;
    count : Natural := 0;
    initialised : Boolean := False;
+
+   my_player : BoardPoint;
 end Configure;
