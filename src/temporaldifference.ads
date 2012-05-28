@@ -23,10 +23,8 @@ package TemporalDifference is
 
    procedure TokenCount(State : in GameBoard; WhiteTokens, BlackTokens : out TurnsNo);
 
-   function EndBoardValue(Player : Players; State : State_Type; Moves : TurnsNo;
+   function EndBoardValue(Player : Players; State : State_Type;
                           Set : FeatureSet) return BoardValue;
-
-   function EndBoardValue(Player : Players; State : State_Type; Set: FeatureSet) return BoardValue;
 
    function ChangeInValue(Player : Players; Board : State_Type; OldSet, NewSet : FeatureSet; Step : Float) return BoardValue;
 
