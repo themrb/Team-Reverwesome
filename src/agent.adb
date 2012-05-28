@@ -18,6 +18,7 @@ package body Agent is
    cprevmovex : Integer;
    cwinner : Integer;
    TimeLeft : Long_Float;
+   PrevTimeLeft : Long_Float;
    pragma import(cpp, ccurrentstate, "currentcstate");
    pragma import(cpp, cplayercolour, "playercolour");
    pragma import(cpp, cnextmovey, "nextmovey");
@@ -34,6 +35,7 @@ package body Agent is
       History : HistoryType;
       toExplore : aliased BeingExplored;
       workers : array(Natural range 1..Configure.workerTasks) of Explorer(toExplore'Access);
+      BumpedDown : Boolean := False;
    begin
       accept Initialise  do
 
@@ -107,9 +109,19 @@ package body Agent is
                   toExplore.Initialise(treeroot);
                   toExplore.GetResult(move);
 
-                  if (turnsleft < 13) then
+                  if TimeLeft < 15.0 then
+                     Configure.depth := 2;
+                  elsif (turnsleft < 13) then
                      Configure.depth := 12;
+                  elsif TimeLeft < 30.0 or (PrevTimeLeft - TimeLeft) > 5.0 then
+                     Configure.depth := 5;
+                     BumpedDown := True;
+                  elsif PrevTimeLeft - TimeLeft < 1.5 and not BumpedDown then
+                     Configure.depth := 8;
+                  else
+                     Configure.depth := 7;
                   end if;
+                  PrevTimeLeft := TimeLeft;
 
                   declare
                      temppieces : Natural := ValidMove(my_player, currentstate, move(x), move(y));
