@@ -112,19 +112,22 @@ package body Agent is
                   toExplore.GetResult(move);
 
                   Configure.depth := 2;
-                  --                       if TimeLeft < 15.0 then
-                  --                          Configure.depth := 2;
-                  --                       elsif (turnsleft < 13) then
-                  --                          Configure.depth := 12;
-                  --                       elsif TimeLeft < 30.0 or (PrevTimeLeft - TimeLeft) > 5.0 then
-                  --                          Configure.depth := 5;
-                  --                          BumpedDown := True;
-                  --                       elsif PrevTimeLeft - TimeLeft < 1.5 and not BumpedDown and TimeLeft < 45.0 then
-                  --                          Configure.depth := 8;
-                  --                       else
-                  --                          Configure.depth := 7;
-                  --                       end if;
-                  --                       PrevTimeLeft := TimeLeft;
+--                    if TimeLeft < 5.0 then
+--                       Configure.depth := 2;
+--                    elsif TimeLeft < 15.0 then
+--                       Configure.depth := 4;
+--                    elsif (turnsleft < 13) then
+--                       Configure.depth := 12;
+--                    elsif TimeLeft < 30.0 or (PrevTimeLeft - TimeLeft) > 5.0 then
+--                       Configure.depth := 5;
+--                       BumpedDown := True;
+--                    elsif PrevTimeLeft - TimeLeft < 3.0 and not BumpedDown and TimeLeft > 50.0 then
+--                       Configure.depth := 8;
+--                    else
+--                       Configure.depth := 7;
+--                    end if;
+                  PrevTimeLeft := TimeLeft;
+                  Put_Line("Depth at " & Configure.depth'Img);
 
                   declare
                      temppieces : Natural := ValidMove(my_player, currentstate, move(x), move(y));
