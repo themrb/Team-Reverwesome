@@ -2,7 +2,7 @@ with Boards; use Boards;
 with GameTree; use GameTree;
 
 package TemporalDifference is
-   procedure TD(History: HistoryType; Player : Players);
+   procedure TD(History: HistoryType; Player : Players; Feedback : Float);
 
    subtype FeatureWeight is BoardValue'Base;
    type BoardPositionWeights is array(Dimension, Dimension) of FeatureWeight;
