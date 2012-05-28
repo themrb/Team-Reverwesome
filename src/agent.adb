@@ -17,6 +17,7 @@ package body Agent is
    cprevmovey : Integer;
    cprevmovex : Integer;
    cwinner : Integer;
+   TimeLeft : Long_Float;
    pragma import(cpp, ccurrentstate, "currentcstate");
    pragma import(cpp, cplayercolour, "playercolour");
    pragma import(cpp, cnextmovey, "nextmovey");
@@ -24,6 +25,7 @@ package body Agent is
    pragma import(cpp, cprevmovey, "prevmovey");
    pragma import(cpp, cprevmovex, "prevmovex");
    pragma import(cpp, cwinner, "cwinner");
+   pragma import(cpp, TimeLeft, "timeleft");
 
    currentstate : GameBoard;
    move : Place;
@@ -66,6 +68,7 @@ package body Agent is
                   treeroot : GameTree_Type;
                   turnsleft : TurnsNo := 0;
                begin
+                  Put_Line("We have " & TimeLeft'Img & " seconds left");
                   -- Read in CPP values for the board
                   for I in Dimension'Range loop
                      for J in Dimension'Range loop
