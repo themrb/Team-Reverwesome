@@ -55,6 +55,7 @@ package body TemporalDifference is
                   elsif(State.Current_Phase = PMidGame) then
                      ModMid.piece(i,j) := ModMid.piece(i,j) + alpha * (StepChange * lambdaSum);
                   else
+                     Put_Line(StepChange'Img & lambdaSum'Img);
                      ModLate.piece(i,j) := ModLate.piece(i,j) + alpha * (StepChange * lambdaSum);
                   end if;
                end;
@@ -147,7 +148,7 @@ package body TemporalDifference is
       Score := TokenScore(State.current_state, Player, Set.piece);
       -- Weighting on the number of available moves
       Score := Score + (FeatureWeight(Moves) * Set.mobility);
-      if State.CurrentPhase /= PEarlyGame then
+      if State.Current_Phase /= PEarlyGame then
          declare
             StablePieces : Integer;
          begin
