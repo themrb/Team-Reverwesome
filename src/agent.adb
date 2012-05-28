@@ -1,5 +1,4 @@
-with Ada.Text_IO;
-use Ada.Text_IO;
+with Ada.Text_IO; use Ada.Text_IO;
 with Boards; use Boards;
 with GameTree; use GameTree;
 with MinMax; use MinMax;
@@ -44,6 +43,8 @@ package body Agent is
          elsif (cplayercolour = 2) then
             my_player := Black;
          end if;
+
+         toExplore.OneOffInit;
 
       exception
          when E : others =>
@@ -107,7 +108,6 @@ package body Agent is
                      Configure.depth := 12;
                   end if;
 
-
                   declare
                      temppieces : Natural := ValidMove(my_player, currentstate, move(x), move(y));
                   begin
@@ -150,9 +150,6 @@ package body Agent is
                   elsif (GameWinner = NextPlayer(my_player)) then
                      feedback := -1.0;
                   end if;
-
-                  Put_Line(cwinner'Img);
-                  Put_Line(my_player'Img);
 
                   Put_Line("Feedback : " & feedback'Img);
                   TD(History, my_player, feedback);
