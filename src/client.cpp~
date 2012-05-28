@@ -35,6 +35,7 @@ int nextmovex;
 int nextmovey;
 int prevmovex;
 int prevmovey;
+int winner;
 int playercolour;
 
 int main(int argc, char *argv[])

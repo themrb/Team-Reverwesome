@@ -18,12 +18,14 @@ package body Agent is
    cnextmovex : Integer;
    cprevmovey : Integer;
    cprevmovex : Integer;
+   cwinner : Integer;
    pragma import(cpp, ccurrentstate, "currentcstate");
    pragma import(cpp, cplayercolour, "playercolour");
    pragma import(cpp, cnextmovey, "nextmovey");
    pragma import(cpp, cnextmovex, "nextmovex");
    pragma import(cpp, cprevmovey, "prevmovey");
    pragma import(cpp, cprevmovex, "prevmovex");
+   pragma import(cpp, cprevmovex, "cwinner");
 
    currentstate : GameBoard;
    move : Place;
@@ -164,10 +166,20 @@ package body Agent is
             end if;
          or
             accept GameEnd  do
-               if(my_player = White) then
-                  TD(History, my_player);
-                  StoreWeights;
-               end if;
+               declare
+                  GameWinner : Players;
+               begin
+                  if (cwinner = 1) then
+                     GameWinner := White;
+                  elsif (cwinner = 2) then
+                     GameWinner := Black;
+                  end if;
+
+                  if(my_player = White) then
+                     TD(History, my_player);
+                     StoreWeights;
+                  end if;
+               end;
             end GameEnd;
             exit Main_Loop;
          end select;

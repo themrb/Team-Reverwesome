@@ -35,6 +35,7 @@ int nextmovex;
 int nextmovey;
 int prevmovex;
 int prevmovey;
+int cwinner;
 int playercolour;
 
 int main(int argc, char *argv[])
@@ -128,6 +129,7 @@ int main(int argc, char *argv[])
         } else if (messageIn.status == GAME_END) {
             cerr << "CLIENT: end of game (winner was " 
                  << getString(messageIn.winner) << ")" << endl;
+			cwinner = messageIn.winner == WHITE ? 1 : 2;
             break;
         } else if (messageIn.status == NO_MOVE) {
             messageOut.x = messageOut.y = -1;
