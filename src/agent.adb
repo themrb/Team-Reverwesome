@@ -109,17 +109,17 @@ package body Agent is
                   toExplore.Initialise(treeroot);
                   toExplore.GetResult(move);
 
-                  if TimeLeft < 15 then
+                  if TimeLeft < 15.0 then
                      Configure.depth := 2;
                   elsif (turnsleft < 13) then
                      Configure.depth := 12;
-                  elsif TimeLeft < 30 or (PrevTimeLeft - TimeLeft) > 5.0 then
+                  elsif TimeLeft < 30.0 or (PrevTimeLeft - TimeLeft) > 5.0 then
                      Configure.depth := 5;
                      BumpedDown := True;
                   elsif PrevTimeLeft - TimeLeft < 1.5 and not BumpedDown then
-                     Configure.depth := 7;
+                     Configure.depth := 8;
                   else
-                     Configure.depth := 6;
+                     Configure.depth := 7;
                   end if;
                   PrevTimeLeft := TimeLeft;
 
