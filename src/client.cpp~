@@ -175,7 +175,7 @@ int main(int argc, char *argv[])
     }
     gameend();
     
-	cerr << "Cpp asking ada to terminate\n";
+	cerr << "asking ada to terminate";
 	adafinal();
 
     return 0;
