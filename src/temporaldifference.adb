@@ -147,12 +147,14 @@ package body TemporalDifference is
       Score := TokenScore(State.current_state, Player, Set.piece);
       -- Weighting on the number of available moves
       Score := Score + (FeatureWeight(Moves) * Set.mobility);
-      declare
-         StablePieces : Integer;
-      begin
-         CountStability(Player, State.current_state, State.StableNodes, StablePieces);
-         Score := Score + (FeatureWeight(StablePieces) * Set.stability);
-      end;
+      if State.CurrentPhase /= PEarlyGame then
+         declare
+            StablePieces : Integer;
+         begin
+            CountStability(Player, State.current_state, State.StableNodes, StablePieces);
+            Score := Score + (FeatureWeight(StablePieces) * Set.stability);
+         end;
+      end if;
       declare
          InternalPieces : Integer;
       begin
