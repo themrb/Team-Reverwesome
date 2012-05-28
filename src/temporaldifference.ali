@@ -1,0 +1,341 @@
+V "GNAT Lib v4.6"
+A -mtune=generic
+A -march=x86-64
+P SS ZX
+R nnnnnnnnnnvnnnnvnnnnnvnnvvnnnnnnnnvnnnnnnvnnvnnnnnnnnnnnnnvnvvnnnnnnnnnnnnnnnnnn
+
+U temporaldifference%b	temporaldifference.adb	193cc612 NE OO PK IU
+W ada%s			ada.ads			ada.ali
+W ada.numerics%s	a-numeri.ads		a-numeri.ali
+W ada.numerics.discrete_random%s
+W ada.strings%s		a-string.ads		a-string.ali
+W ada.strings.unbounded%s  a-strunb.adb		a-strunb.ali
+W ada.tags%s		a-tags.adb		a-tags.ali
+W ada.text_io%s		a-textio.adb		a-textio.ali
+W ada.text_io.unbounded_io%s  a-tiunio.ads	a-tiunio.ali
+W boards%s		boards.adb		boards.ali
+W features%s		features.adb		features.ali
+W gametree%s		gametree.adb		gametree.ali
+W gnat%s		gnat.ads		gnat.ali
+W gnat.string_split%s	g-strspl.ads		g-strspl.ali
+W interfaces%s		interfac.ads		interfac.ali
+W system%s		system.ads		system.ali
+W system.concat_2%s	s-conca2.adb		s-conca2.ali
+W system.concat_6%s	s-conca6.adb		s-conca6.ali
+W system.exn_llf%s	s-exnllf.adb		s-exnllf.ali
+W system.finalization_implementation%s  s-finimp.adb  s-finimp.ali
+W system.finalization_root%s  s-finroo.adb	s-finroo.ali
+W system.img_enum_new%s	s-imenne.adb		s-imenne.ali
+W system.img_int%s	s-imgint.adb		s-imgint.ali
+W system.img_real%s	s-imgrea.adb		s-imgrea.ali
+W system.parameters%s	s-parame.adb		s-parame.ali
+W system.random_numbers%s  s-rannum.adb		s-rannum.ali
+W system.secondary_stack%s  s-secsta.adb	s-secsta.ali
+W system.soft_links%s	s-soflin.adb		s-soflin.ali
+W system.standard_library%s  s-stalib.adb	s-stalib.ali
+W system.val_real%s	s-valrea.adb		s-valrea.ali
+
+U temporaldifference%s	temporaldifference.ads	be9db7a3 EE NE OO PK IU
+W boards%s		boards.adb		boards.ali
+W gametree%s		gametree.adb		gametree.ali
+
+D ada.ads		20070406091342 3ffc8e18
+D a-calend.ads		20090409150019 343c83dd
+D a-charac.ads		20070912115821 2d3ec45b
+D a-chlat1.ads		20070912115821 2825df20
+D a-contai.ads		20101025135029 61e5e089
+D a-cdlili.ads		20090409150019 8288c973
+D a-except.ads		20090727140100 0c711ac9
+D a-finali.ads		20090409150019 e5e85fa4
+D a-filico.ads		20090409150019 872dc219
+D a-ioexce.ads		20091130110856 8b9de6cd
+D a-numeri.ads		20080324174807 bb51c45a
+D a-nudira.ads		20100622172941 2fef2912
+D a-nudira.adb		20100622172941 e57ce22b
+D a-stream.ads		20090409150019 2ca4ee37
+D a-string.ads		20070406091342 90ac6797
+D a-strmap.ads		20090409150019 9cb836fb
+D a-strunb.ads		20101220072657 e684739b
+D a-suteio.ads		20090409150019 26d8e9aa
+D a-tags.ads		20101021101406 c7695348
+D a-textio.ads		20091028140912 386df5d4
+D a-tiunio.ads		20070406091342 759c6b0c
+D a-unccon.ads		20070406091342 f9eb8f06
+D a-uncdea.ads		20070406091342 f15a5ed1
+D boards.ads		20120527132232 89153097
+D features.ads		20120527151358 04231d8a
+D gametree.ads		20120527123806 35fe1659
+D gnat.ads		20050905075125 fd2ad2f1
+D g-arrspl.ads		20090409150019 c903d743
+D g-strspl.ads		20090409150019 dbf24c7a
+D interfac.ads		20090409150019 f77d8799
+D i-cstrea.ads		20100622165701 1bd72c32
+D system.ads		20120503154647 23e1f70b
+D s-conca2.ads		20090420091404 fbd0f2fc
+D s-conca6.ads		20090420091404 c7caf514
+D s-crtl.ads		20100617122610 ac77b159
+D s-exctab.ads		20090417131547 66e51330
+D s-exnllf.ads		20090409150019 81841eef
+D s-ficobl.ads		20100909103250 443b9d66
+D s-finimp.ads		20090409150019 46853fe8
+D s-finroo.ads		20090409150019 dbb860c9
+D s-imenne.ads		20090417131547 8707cbf0
+D s-imgint.ads		20090409150019 02dbe0c2
+D s-imgrea.ads		20090409150019 c7a851e2
+D s-imguns.ads		20090409150019 9ff43cf7
+D s-parame.ads		20091130110856 9c5d83fa
+D s-rannum.ads		20100623054052 5eb33f0a
+D s-rannum.adb		20100623062126 67756f39
+D s-secsta.ads		20090707124243 eea35a36
+D s-soflin.ads		20090729085153 9414c974
+D s-stache.ads		20090417130712 596fc1b4
+D s-stalib.ads		20101021102512 c4241c00
+D s-stoele.ads		20090417130712 facd7d98
+D s-stoele.adb		20100617152355 afc5dc80
+D s-stratt.ads		20100909123135 aedef97e
+D s-traent.ads		20090417130712 5221ee41
+D s-unstyp.ads		20090409150019 6ae15c76
+D s-valrea.ads		20090409150019 fe297711
+D s-valuns.ads		20090409150019 10a8ed3b
+D s-wchcon.ads		20090417130712 bfeb2e3d
+D temporaldifference.ads  20120528030101 0276916d
+D temporaldifference.adb  20120528041433 47bb204a
+X 1 ada.ads
+16K9*Ada 19e8 61|1r6 1r23 2r6 3r6 3r33 7r6 8r6 235r31
+X 11 a-numeri.ads
+16K13*Numerics 32e17 61|7w10 8r10 235r35
+X 12 a-nudira.ads
+44k22*Discrete_Random 73e33 61|8w19 235r44
+48R9 Generator 61|236r23[235]
+50V13 Random{61|234I12} 61|243s39[235] 262s42[235]
+53U14 Reset<46|91p14> 61|241s16[235]
+X 13 a-nudira.adb
+51V16 Random[46|74]{61|234I12} 47|394b13[61|235]
+X 15 a-string.ads
+16K13*Strings 35e16 61|3r10 3r37
+X 17 a-strunb.ads
+77K21*Unbounded 490e26 61|3w18 3r45
+80R9*Unbounded_String 474e14 61|368r19
+95V13*To_Unbounded_String{80R9} 61|374s23 384s38 390s39 391s39 392s39
+120V13*"&"{80R9} 61|384s36
+X 20 a-textio.ads
+49K13*Text_IO 472e16 61|1w10 1r27 2r10
+52P9*File_Type(370R9) 61|284r15
+53n23*In_File{53E9} 61|294r22
+53n32*Out_File{53E9} 61|358r24
+87U14*Create 61|358s7
+93U14*Open 61|294s7
+99U14*Close 61|288s7 298s7 362s7
+254V13*Get_Line{string} 61|308s30 323s27 329s27 335s27
+264U14*Put_Line 61|267s7 325s10 331s10 337s10
+X 21 a-tiunio.ads
+25K21*Unbounded_IO 61e29 61|2w18 386r10 390r7 391r7 392r7
+36U14*Put_Line=39:42 61|386s23 390s20 391s20 392s20
+X 24 boards.ads
+1K9*Boards 53e11 60|1w6 1r18 61|5w6 5r18
+3F12*BoardValue{float} 60|7r29 22r64 27r52 29r89 31r115 61|19r23 20r19 133r77
+. 134r26 144r52 145r15 167r89 173r64 174r15
+5I12*Dimension{natural} 60|8r39 8r50 39r31 39r49 61|26r16 27r19 176r16 177r19
+. 192r18 193r19 306r21 306r41 316r41 342r16 343r19 373r16 373r37 375r19 376r63
+. 377r33 377r50 377r84 379r84 380r33 380r50 380r84 395r31 395r49 398r17
+9E9*BoardPoint 9e53 60|21r57 43r34 61|172r57 225r34 231r20
+9n31*White{9E9} 61|195r18 250r33 272r20
+9n38*Black{9E9} 61|197r18 252r36 276r23
+11E12*Players{9E9} 60|5r48 26r36 29r36 31r36 61|13r48 132r36 143r36 167r36
+13A9*GameBoard(9E9)<integer><integer> 60|21r35 24r36 61|172r35 188r36
+14A9*InfoMatrix(boolean)<integer><integer>
+22I12*TurnsNo{natural} 60|24r78 26r73 61|143r73 188r78
+24n24*PEarlyGame{24E9} 61|35r44 53r44 73r38 111r38 150r33
+24n36*PMidGame{24E9} 61|37r47 55r47 75r41 115r41
+27R9*State_Type 37e14 60|26r53 29r53 31r53 61|31r27 68r21 132r53 143r53 167r53
+32a7*current_state{13A9} 61|137r47 139r47 147r33 154r42 161r39 169r58 248r37
+. 249r34
+33e7*Current_Phase{24E9} 61|35r28 37r31 53r28 55r31 73r22 75r25 111r22 115r25
+. 150r16
+35a7*StableNodes{14A9} 61|154r63
+36a7*InternalNodes{14A9} 61|161r60
+39V13*NextPlayer{9E9} 61|180s32
+41U14*Winner 61|249s16
+X 25 features.ads
+3K9*Features 10e13 61|9w6 9r20
+5U14*CountStability 61|154s13
+6U14*CountInternals 61|161s10
+X 26 gametree.ads
+5K9*GameTree 36e13 60|2w6 2r20 61|6w6 6r20
+7R9*GameTree_Type 14e14 60|43r54 61|225r54 229r14
+11R9*GameTree_Type
+12r7*state{24|27R9} 61|31r60 48r77 68r54 95r77 248r31 249r28
+16A9*ChildrenArray(11R9)<integer>
+18R9*HistoryType 21e14 60|5r26 61|13r26
+19a7*History{16A9} 61|28r30 31r49 48r66 66r24 68r43 95r66
+20i7*Index{24|22I12} 61|28r56 47r45 66r50 94r45
+24R9*ExpandedChildren 28e14 61|230r22 232r18
+25i7*branching{24|22I12} 61|244r58 263r69
+27a7*children{16A9} 61|244r27 263r34
+30V13*Expand{24R9} 61|232s38 261s29
+32V13*NumMoves{natural} 61|137s32 139s32 169s43
+34V13*Terminal{boolean} 61|248s17
+X 27 gnat.ads
+36K9*GNAT 39e9 61|4r6 4r29 302r14 311r13
+X 28 g-arrspl.ads
+74R9*Slice_Set 61|302r32[29|39] 367r14[29|39]
+82U14*Create 61|311s31[29|39]
+116I9*Slice_Number<integer>
+119V13*Slice_Count{116I9[29|39]} 61|312s26[29|39]
+123V13*Slice{string} 61|314s35[29|39]
+X 29 g-strspl.ads
+39K14*String_Split[28|58] 61|4w11 4r34 302r19 311r18
+X 30 interfac.ads
+57M9*Unsigned_32
+60M9*Unsigned_64
+X 46 s-rannum.ads
+66V13*Random{30|57M9} 47|223i21
+67V13*Random{30|60M9} 47|223i21
+X 60 temporaldifference.ads
+4K9*TemporalDifference 54l5 54e23 61|11b14 403l5 403t23
+5U14*TD 5>17 5>39 5>57 61|13b14 130l8 130t10
+5r17 History{26|18R9} 61|13b17 28r22 28r48 31r41 47r37 48r58 66r16 66r42
+. 68r35 94r37 95r58
+5e39 Player{24|11E12} 61|13b39 46r47 48r50 49r40 93r47 95r50 96r40
+5f57 Feedback{float} 61|13b57 50r81 97r81
+7F12*FeatureWeight{float} 8r64 12r18 13r19 14r18 61|149r25 155r31 162r28
+8A9*BoardPositionWeights(7F12)<integer><integer> 11r15 22r35 61|173r35
+10R9*FeatureSet 15e14 27r33 29r70 31r82 35r42 37r39 50r16 51r14 52r15 61|16r38
+. 18r19 30r28 83r28 133r44 144r33 167r70 301r42 366r39
+11a7*piece{8A9} 61|45m26 45r47 54m31 54r54 56m29 56r50 58m30 58r52 147r60
+. 316m27 344r25 345m24 346r29 348m24 349r29 376r38 376r57 377r27 377r76 379r57
+. 379r78 380r27 380r76
+12f7*mobility{7F12} 61|87m32 87r51 112m25 112r46 116m23 116r42 120m24 120r44
+. 149r52 326m18 390r79
+13f7*stability{7F12} 61|89m32 89r52 113m25 113r47 117m23 117r43 121m24 121r45
+. 155r65 332m18 391r79
+14f7*internal{7F12} 61|91m32 91r51 114m25 114r46 118m23 118r42 122m24 122r44
+. 162r64 338m18 392r79
+17I12*numIndWeights{natural} 61|81r22
+21V13*TokenScore{24|3F12} 21>24 21>46 22>25 61|147s16 172b13 186l8 186t18
+21a24 State{24|13A9} 61|172b24 178r16 180r19
+21e46 Player{24|9E9} 61|172b46 178r29 180r43
+22a25 Weights{8A9} 61|173b25 179r33 181r33
+24U14*TokenCount 24>25 24<47 24<60 61|188b14 204l8 204t18
+24a25 State{24|13A9} 61|188b25 194r18
+24i47 WhiteTokens{24|22I12} 61|188b47 191m7 196m16 196r31
+24i60 BlackTokens{24|22I12} 61|188b60 190m7 198m16 198r31
+26V13*EndBoardValue{24|3F12} 26>27 26>45 26>65 27>27 61|136s18 138s18 143b13
+. 165l8 165t21 169s14
+26e27 Player{24|11E12} 61|143b27 147r48 154r28 161r25
+26r45 State{24|27R9} 61|143b45 147r27 150r10 154r36 154r57 161r33 161r54
+26i65 Moves{24|22I12} 61|143b65 149r39
+27r27 Set{10R9} 61|144b27 147r56 149r48 155r61 162r60
+29V13*EndBoardValue{24|3F12} 29>27 29>45 29>65 61|48s36 49s26 95s36 96s26
+. 167b13 170l8 170t21
+29e27 Player{24|11E12} 61|167b27 169r28 169r73
+29r45 State{24|27R9} 61|167b45 169r36 169r52
+29r65 Set{10R9} 61|167b65 169r82
+31V13*ChangeInValue{24|3F12} 31>27 31>45 31>65 31>73 31>94 61|46s33 93s33
+. 132b13 141t7
+31e27 Player{24|11E12} 61|132b27 136r32 137r62 138r32 139r62
+31r45 Board{24|27R9} 61|132b45 136r40 137r41 138r40 139r41
+31r65 OldSet{10R9} 61|133b27 137r71
+31r73 NewSet{10R9} 61|133b35 139r71
+31f94 Step{float} 61|133b56 140r34
+33U14*CloseFile 61|286b14 289l8 289t17
+34U14*LoadWeights 61|291b14 299l8 299t19
+35U14*LoadWeightSet 35<28 61|295s7 296s7 297s7 301b14 353t7
+35r28 Weights{10R9} 61|301b28 316m19 326m10 332m10 338m10 344r17 345m16 346r21
+. 348m16 349r21
+36U14*StoreWeights 61|355b14 364l8 364t20
+37U14*StoreWeightSet 37>29 61|359s7 360s7 361s7 366b14 393l8 393t22
+37r29 Weights{10R9} 61|366b29 376r30 376r49 377r19 377r68 379r49 379r70 380r19
+. 380r68 390r71 391r71 392r71
+39V13*WeightMapping{24|5I12} 39>27 61|344s31 344s49 346s35 346s52 349s35
+. 349s52 395b13 402t7
+39i27 i{24|5I12} 61|395b27 397r10 398r34 400r17
+41F12*Probability{long_float} 43r99 61|225r99 239r24
+43V13*MonteCarlo{41F12} 43>25 43>46 43>69 61|225b13 282l8 282t18
+43e25 Player{24|9E9} 61|225b25 267r16 272r11 276r14
+43r46 state{26|11R9} 61|225b46 232r45
+43i69 iterations{positive} 61|225b69 242r19
+45f4*lambda{float} 61|50r48 97r48
+46f4*alpha{float} 61|54r67 56r63 58r65 102r35 104r36 106r36
+48b4*cease{boolean}
+50r4*EarlyGame{10R9} 61|22r19 36r32 74r26 127m7 295m21 359r22
+51r4*MidGame{10R9} 61|23r17 38r32 76r26 128m7 296m21 360r22
+52r4*LateGame{10R9} 61|24r18 40r32 78r26 129m7 297m21 361r22
+X 61 temporaldifference.adb
+16r10 ModEarly{60|10R9} 22m7 54m22 54r45 112m16 112r37 113m16 113r38 114m16
+. 114r37 127r20
+16r20 ModMid{60|10R9} 23m7 56m22 56r43 116m16 116r35 117m16 117r36 118m16
+. 118r35 128r18
+16r28 ModLate{60|10R9} 24m7 58m22 58r44 120m16 120r36 121m16 121r37 122m16
+. 122r36 129r19
+17f10 Step{float} 45r60 46r78 87r62 89r64 91r62 93r78
+18r10 OldSet{60|10R9} 36m22 38m22 40m22 43r29 46r62 48r84 49r55 74m16 76m16
+. 78m16 83r42 93r62 95r84 96r55
+19f10 StepChange{24|3F12} 46m19 54r76 56r72 58r74 93m19 102r44 104r45 106r45
+20f10 Change{24|3F12}
+26i11 i{24|5I12} 45r32 45r53 54r37 54r60 56r35 56r56 58r36 58r58
+27i14 j{24|5I12} 45r34 45r55 54r39 54r62 56r37 56r58 58r38 58r60
+28i17 k{integer} 31r57 47r29 50r61
+30r19 NewSet{60|10R9} 43m19 45m19 45r40 46r70
+31r19 State{24|27R9} 35r22 37r25 46r55 49r48 53r22 55r25
+32f19 lambdaSum{float} 50m22 50r35 54r89 56r85 58r87
+33f19 derivative{float} 48m22 50r68
+47i23 m{integer} 48r74 50r59
+66i11 k{integer} 68r51 94r29 97r61
+68r13 State{24|27R9} 73r16 75r19 93r55 96r48 111r16 115r19
+69f13 lambdaSum{float} 97m22 97r35 102r57 104r58 106r58 108m16
+70f13 lambdaMob{float} 102m22 112r57 116r53 120r55
+70f24 lambdaStab{float} 104m22 113r59 117r55 121r57
+70f36 lambdaIntr{float} 106m22 114r57 118r53 122r55
+71f13 derivative{float} 95m22 97r68
+81i17 i{60|17I12} 85r24 100r21
+83r19 NewSet{60|10R9} 87m25 87r44 89m25 89r45 91m25 91r44 93r70
+94i23 m{integer} 95r74 97r59
+134f7 Current{24|3F12} 136m7 140r25
+134f16 Updated{24|3F12} 138m7 140r15
+145f7 Score{24|3F12} 147m7 149m7 149r16 155m13 155r22 162m10 162r19 164r14
+152i13 StablePieces{integer} 154m76 155r45
+159i10 InternalPieces{integer} 161m75 162r42
+174f7 Score{24|3F12} 179m16 179r25 181m16 181r25 185r14
+176i11 I{24|5I12} 178r22 179r41 180r25 181r41
+177i14 J{24|5I12} 178r24 179r43 180r27 181r43
+192i13 I{24|5I12} 194r24
+193i14 J{24|5I12} 194r26
+226i7 Whitewins{natural} 251m19 251r32 267r97 268r10 273r39 273r63 277r63
+227i7 Blackwins{natural} 253m19 253r32 267r54 268r28 273r73 277r39 277r73
+228i7 Ties{natural} 254m21 254r29
+229r7 temp{26|11R9} 244m10 248r26 249r23 261r36 263m13
+230r7 tempChildren{26|24R9} 261m13 263r21 263r56
+231e7 tempWinner{24|9E9} 249m48 250r20 252r23
+232r7 Children{26|24R9} 244r18 244r49
+234I12 Rand_Range<short_short_integer> 235r60
+235K15 Rand_Int[12|44] 236r14 241r7 243r30 262r33
+236r7 seed{12|48R9[235]} 241r22 243r46 262r49
+238i7 Next_Int{integer} 243m10 244r36 262m13 263r43
+239f7 endprobability{60|41F12} 273m10 275r17 277m10 279r17
+242i11 I{integer}
+246l10 Single_Iteration 258r21 264l19 264e35
+284p4 CSV_File{20|52P9} 288m13 294m12 298m13 308r39 323r36 329r36 335r36
+. 358m14 362m13 386r32 390r29 391r29 392r29
+292a7 Filename{string} 294r31
+302r7 Subs{28|74R9[29|39]} 311m38 312r38 314r41
+303i7 InternalCount{natural}
+306i11 xpoint{integer} 316r33
+308a13 Line{string} 311r44
+312i17 i<integer> 314r47 316r51
+314a19 Sub{string} 316r72
+323a10 Line{string} 325r19 326r42
+329a10 Line{string} 331r19 332r43
+335a10 Line{string} 337r19 338r42
+342i11 i{24|5I12} 344r45 345r30 346r66 348r30 349r49
+343i14 j{24|5I12} 344r63 345r32 346r49 348r32 349r66
+356a7 Filename{string} 358r34
+367r7 Subs{28|74R9[29|39]}
+368r7 Next_Line{17|80R9} 374m10 384m13 384r26 386r42
+369f7 weightaverage{float} 376m13 379m16 379r33 383m13 383r30 384r70
+370f7 divBy{float} 381m16 381r25 383r46
+373i11 i{integer} 375r38 376r44 376r78 377r48 377r82 378r17 379r65 379r101
+. 380r65 380r99
+375i14 j{integer} 376r46 376r80 377r65 377r99 378r22 379r63 379r99 380r48
+. 380r82
+

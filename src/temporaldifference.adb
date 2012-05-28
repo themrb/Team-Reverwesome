@@ -381,7 +381,7 @@ package body TemporalDifference is
                divBy := divBy + 4.0;
             end if;
             weightaverage := weightaverage / divBy;
-            Next_Line := Next_Line & To_Unbounded_String(Float'Image(weightaverage));
+            Next_Line := Next_Line & To_Unbounded_String(Float'Image(weightaverage)&",");
          end loop;
          Unbounded_IO.Put_Line(CSV_File, Next_Line);
       end loop;
