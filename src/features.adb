@@ -47,6 +47,26 @@ package body Features is
       end loop;
    end CountStabilityFull;
 
+   procedure FindStability(player : Players; board : GameBoard; stabmatrix : in out InfoMatrix; StablePieces : out Integer) is
+
+   begin
+      StablePieces := 0;
+      for i in Dimension'Range loop
+         for j in Dimension'Range loop
+            if board(i,j) = player then
+               if stabmatrix(i,j) then
+                  StablePieces := StablePieces + 1;
+               else
+                  if (CheckStability((i,j),player,board)) then
+                     stabmatrix(i,j) := True;
+                     StablePieces := StablePieces + 1;
+                  end if;
+               end if;
+            end if;
+         end loop;
+      end loop;
+   end FindStability;
+
    procedure CountInternals(player : Players; board : GameBoard; internalmatrix : in InfoMatrix; InternalPieces: out Integer) is
    begin
       InternalPieces := 0;
