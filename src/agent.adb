@@ -103,11 +103,10 @@ package body Agent is
                   toExplore.Initialise(treeroot);
                   toExplore.GetResult(move);
 
---                    if (turnsleft < 13) then
---                       NegaMax(my_player, treeroot, 12, value, BoardValue'First, BoardValue'Last, move);
---                    else
---                       NegaMax(my_player, treeroot, 6, value, BoardValue'First, BoardValue'Last, move);
---                    end if;
+                  if (turnsleft < 13) then
+                     Configure.depth := 12;
+                  end if;
+
 
                   declare
                      temppieces : Natural := ValidMove(my_player, currentstate, move(x), move(y));
@@ -139,27 +138,30 @@ package body Agent is
                   Board : GameBoard := History.History(History.Index - 1).state.current_state;
                   GameWinner : Players;
                begin
-                  if(my_player = White) then
-                     if (cwinner = 1) then
-                        GameWinner := White;
-                     elsif (cwinner = 2) then
-                        GameWinner := Black;
-                     end if;
 
-                     if(GameWinner = my_player) then
-                        feedback := 1.0;
-                     elsif (GameWinner = NextPlayer(my_player)) then
-                        feedback := -1.0;
-                     end if;
-
-                     Put_Line(cwinner'Img);
-                     Put_Line(my_player'Img);
-
-                     Put_Line("Feedback : " & feedback'Img);
-                     TD(History, my_player, feedback);
-                     StoreWeights;
+                  if (cwinner = 1) then
+                     GameWinner := White;
+                  elsif (cwinner = 2) then
+                     GameWinner := Black;
                   end if;
+
+                  if(GameWinner = my_player) then
+                     feedback := 1.0;
+                  elsif (GameWinner = NextPlayer(my_player)) then
+                     feedback := -1.0;
+                  end if;
+
+                  Put_Line(cwinner'Img);
+                  Put_Line(my_player'Img);
+
+                  Put_Line("Feedback : " & feedback'Img);
+                  TD(History, my_player, feedback);
+                  StoreWeights;
                end;
+
+               for i in workers'Range loop
+                  abort workers(i);
+               end loop;
             end GameEnd;
             exit Main_Loop;
          end select;

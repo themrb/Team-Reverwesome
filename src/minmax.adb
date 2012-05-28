@@ -15,6 +15,9 @@ package body MinMax is
       best : Place;
       Set : FeatureSet;
    begin
+      a := alpha;
+      b := beta;
+      value := BoardValue'First;  -- Set to minimum board-value;
 
       Set := PhaseToSet(state.state.Current_Phase);
 
@@ -28,17 +31,14 @@ package body MinMax is
          return;
       end if;
 
-      a := alpha;
-      b := beta;
-      value := BoardValue'First;  -- Set to minimum board-value;
       successors := Expand(state);
       -- This needs to occur /after/ checking if this state is Terminal!
       bestMove := successors.children(0).state.spot;
 
       if (depth = 0) then
          bestMove := (0,0);
-         outValue := EndBoardValue(Player,state.state, successors.branching, Set)
-           -EndBoardValue(NextPlayer(Player),state.state, successors.branching, Set);
+         outValue := EndBoardValue(Player,state.state, successors.branching, Set);
+--             -EndBoardValue(NextPlayer(Player),state.state, NumMoves(state.state.current_state,NextPlayer(Player)), Set);
          return;
       end if;
 
@@ -46,6 +46,11 @@ package body MinMax is
       if (successors.nomove) then
          state.state.justWent := NextPlayer(state.state.justWent);
          NegaMax(Player, state, depth-1, outValue, a, b, best);
+         return;
+      end if;
+
+      if (successors.branching = 1) then
+         NegaMax(Player, successors.children(0), depth, outValue, a, b, best);
          return;
       end if;
 
@@ -104,9 +109,9 @@ package body MinMax is
          begin
             Winner(state,WinningPlayer);
             if WinningPlayer = Player then
-               outValue := BoardValue(5000);
+               outValue := BoardValue'Last - 1.0;
             else
-               outValue := BoardValue(-5000);
+               outValue := BoardValue'First + 1.0;
             end if;
          end;
       end if;

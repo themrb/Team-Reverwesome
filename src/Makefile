@@ -19,6 +19,7 @@ client: ${FILES_OBJ} client.o
 	$ gnatgcc -c exceptions.adb
 	$ gnatgcc -c temporaldifference.adb
 	$ gnatgcc -c features.adb
+	$ gnatgcc -c workers.adb
 	$ gnatbind -n agent
 	$ gnatgcc -c b~agent.adb
 	$ gnatlink -L/usr/lib/gcc/x86_64-linux-gnu/4.4.3 -lstdc++ -o client client.o ${FILES_OBJ} agent.ali --LINK=c++

@@ -55,12 +55,6 @@ package body Boards is
       --Put_Line("Starting right");
       Right_Loop :
       for xpoint in Dimension range 1 .. (Dimension'Last - movex) loop
-         declare
-            difference : Dimension := Dimension'Last - movex;
-         begin
-            null;
-            --Put(difference'Img);
-         end;
          y := movey;
          x := movex + xpoint;
          if board(x,y) = Empty then
