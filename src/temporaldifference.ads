@@ -40,6 +40,7 @@ package TemporalDifference is
 
    subtype Probability is Long_Float;
 
+   function OwnDiscs(Player : Players; State : in GameBoard) return TurnsNo;
    function MonteCarlo (Player : BoardPoint; state : GameTree_Type; iterations : Positive) return Probability;
 
    lambda : Float := 0.9;
