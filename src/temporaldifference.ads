@@ -42,7 +42,7 @@ package TemporalDifference is
    function MonteCarlo (Player : BoardPoint; state : GameTree_Type; iterations : Positive) return Probability;
 
    lambda : Float := 0.9;
-   alpha : Float := 0.0001;
+   alpha : Float := 0.00001;
 
    cease : Boolean := False;
 
