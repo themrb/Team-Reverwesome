@@ -1,0 +1,86 @@
+V "GNAT Lib v4.6"
+A -mtune=generic
+A -march=x86-64
+P SS ZX
+R nnnnnnnnnnnnnnnnnnnnnnnnnvnnnnnnnnnnnnnnnvnnvnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn
+
+U exceptions%b		exceptions.adb		5bbde418 NE OO PK
+W ada%s			ada.ads			ada.ali
+W ada.tags%s		a-tags.adb		a-tags.ali
+W ada.task_identification%s  a-taside.adb	a-taside.ali
+W ada.text_io%s		a-textio.adb		a-textio.ali
+W system.concat_2%s	s-conca2.adb		s-conca2.ali
+W system.concat_3%s	s-conca3.adb		s-conca3.ali
+W system.secondary_stack%s  s-secsta.adb	s-secsta.ali
+
+U exceptions%s		exceptions.ads		9f89b2ce EE NE OO PK
+W ada%s			ada.ads			ada.ali
+W ada.exceptions%s	a-except.adb		a-except.ali
+
+D ada.ads		20070406091342 3ffc8e18
+D a-except.ads		20090727140100 0c711ac9
+D a-finali.ads		20090409150019 e5e85fa4
+D a-filico.ads		20090409150019 872dc219
+D a-ioexce.ads		20091130110856 8b9de6cd
+D a-stream.ads		20090409150019 2ca4ee37
+D a-tags.ads		20101021101406 c7695348
+D a-taside.ads		20090409150019 a4888134
+D a-textio.ads		20091028140912 386df5d4
+D a-unccon.ads		20070406091342 f9eb8f06
+D exceptions.ads	20120526045417 93f8a807
+D exceptions.adb	20120526045417 54a038ff
+D interfac.ads		20090409150019 f77d8799
+D i-c.ads		20101007125900 809c38c4
+D i-cstrea.ads		20100622165701 1bd72c32
+D system.ads		20120503154647 23e1f70b
+D s-atacco.ads		20090409150019 1dc856ad
+D s-conca2.ads		20090420091404 fbd0f2fc
+D s-conca3.ads		20090420091404 762a026a
+D s-crtl.ads		20100617122610 ac77b159
+D s-exctab.ads		20090417131547 66e51330
+D s-ficobl.ads		20100909103250 443b9d66
+D s-finimp.ads		20090409150019 46853fe8
+D s-finroo.ads		20090409150019 dbb860c9
+D s-linux.ads		20090730092306 47911ab1
+D s-multip.ads		20101011073009 38ac9f73
+D s-osinte.ads		20101127183452 6e2d2e09
+D s-parame.ads		20091130110856 9c5d83fa
+D s-secsta.ads		20090707124243 eea35a36
+D s-soflin.ads		20090729085153 9414c974
+D s-stache.ads		20090417130712 596fc1b4
+D s-stausa.ads		20101018101807 bba781f7
+D s-stalib.ads		20101021102512 c4241c00
+D s-stoele.ads		20090417130712 facd7d98
+D s-stoele.adb		20100617152355 afc5dc80
+D s-stratt.ads		20100909123135 aedef97e
+D s-tasinf.ads		20090409150019 21316953
+D s-taspri.ads		20080408071349 af44aca8
+D s-taskin.ads		20101021101406 b2eaee08
+D s-traent.ads		20090417130712 5221ee41
+D s-unstyp.ads		20090409150019 6ae15c76
+D s-wchcon.ads		20090417130712 bfeb2e3d
+X 1 ada.ads
+16K9*Ada 19e8 11|15r6 15r26 12|5r6 5r35 6r6 6r34
+X 2 a-except.ads
+55K13*Exceptions 370e19 11|15w10 15r30
+68R9*Exception_Occurrence 332e14 11|19r53 12|10r53
+109V13*Exception_Information{string} 12|15s17
+X 8 a-taside.ads
+39K13*Task_Identification 72e28 12|5w10 5r39
+43P9*Task_Id(39|891R9)
+51V13*Image{string} 12|14s27
+53V13*Current_Task{43P9} 12|14s34
+X 9 a-textio.ads
+49K13*Text_IO 472e16 12|6w10 6r38
+52P9*File_Type(370R9)
+124V13*Current_Error{52P9} 12|13s17
+260U14*Put_Line 12|13s7
+264U14*Put_Line 12|15s7 17s10
+X 11 exceptions.ads
+17K10*Exceptions 22l5 22e15 12|8b14 21l5 21t15
+19U14*Show_Exception 19>30 20>30 12|10b14 19l8 19t22
+19r30 Exception_Identifier{2|68R9} 12|10b30 15r40
+20s30 Optional_Message{string} 12|11b30 16r10 17r45
+X 39 s-taskin.ads
+891R9*Ada_Task_Control_Block
+

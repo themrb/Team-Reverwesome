@@ -106,7 +106,7 @@ int main(int argc, char *argv[])
 
     // send connect message to server
     ConnectMessage message(player, player == WHITE ?
-    "Team Adawesome: Reverwesome's Vengence" : "Team Adawesome: Reverwesome's Vengence");
+        "404 Player Not Found" : "Team Adawesome: Reverwesome's Vengence");
     if (!message.send(client_socket)) {
         cerr << "CLIENT: could not connect to server" << endl;
         exit(-1);

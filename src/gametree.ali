@@ -1,0 +1,151 @@
+V "GNAT Lib v4.6"
+A -mtune=generic
+A -march=x86-64
+P SS ZX
+R nnnnnnnnnnvnnnnnnnnnnnnnnvnnnvnnnnnnnvnnnnnnvnnnnnnnnnnvnnvnnnnnnnnnnnnnnnnnnnnn
+
+U gametree%b		gametree.adb		b11cccc9 NE OO PK
+W ada%s			ada.ads			ada.ali
+W ada.tags%s		a-tags.adb		a-tags.ali
+W ada.text_io%s		a-textio.adb		a-textio.ali
+W ada.unchecked_deallocation%s
+W boards%s		boards.adb		boards.ali
+W configure%s		configure.ads		configure.ali
+W features%s		features.adb		features.ali
+W interfaces%s		interfac.ads		interfac.ali
+
+U gametree%s		gametree.ads		cf39b16c EE NE OO PK
+W ada%s			ada.ads			ada.ali
+W ada.containers%s	a-contai.ads		a-contai.ali
+W ada.containers.doubly_linked_lists%s
+W ada.unchecked_deallocation%s
+W boards%s		boards.adb		boards.ali
+
+D ada.ads		20070406091342 3ffc8e18
+D a-contai.ads		20101025135029 61e5e089
+D a-cdlili.ads		20090409150019 8288c973
+D a-except.ads		20090727140100 0c711ac9
+D a-finali.ads		20090409150019 e5e85fa4
+D a-filico.ads		20090409150019 872dc219
+D a-ioexce.ads		20091130110856 8b9de6cd
+D a-stream.ads		20090409150019 2ca4ee37
+D a-tags.ads		20101021101406 c7695348
+D a-textio.ads		20091028140912 386df5d4
+D a-unccon.ads		20070406091342 f9eb8f06
+D a-uncdea.ads		20070406091342 f15a5ed1
+D boards.ads		20120527132232 89153097
+D configure.ads		20120526045417 79fdfda6
+D features.ads		20120527151358 04231d8a
+D gametree.ads		20120527123806 35fe1659
+D gametree.adb		20120528023843 b91ea12e
+D interfac.ads		20090409150019 f77d8799
+D i-cstrea.ads		20100622165701 1bd72c32
+D system.ads		20120503154647 23e1f70b
+D s-crtl.ads		20100617122610 ac77b159
+D s-exctab.ads		20090417131547 66e51330
+D s-ficobl.ads		20100909103250 443b9d66
+D s-finimp.ads		20090409150019 46853fe8
+D s-finroo.ads		20090409150019 dbb860c9
+D s-parame.ads		20091130110856 9c5d83fa
+D s-secsta.ads		20090707124243 eea35a36
+D s-soflin.ads		20090729085153 9414c974
+D s-stache.ads		20090417130712 596fc1b4
+D s-stalib.ads		20101021102512 c4241c00
+D s-stoele.ads		20090417130712 facd7d98
+D s-stoele.adb		20100617152355 afc5dc80
+D s-stratt.ads		20100909123135 aedef97e
+D s-traent.ads		20090417130712 5221ee41
+D s-unstyp.ads		20090409150019 6ae15c76
+D s-wchcon.ads		20090417130712 bfeb2e3d
+X 1 ada.ads
+16K9*Ada 19e8 16|2r6 3r6 17|2r6 2r23 3r6
+X 2 a-contai.ads
+16K13*Containers 24e19 16|2r10
+X 3 a-cdlili.ads
+43k24*Doubly_Linked_Lists 276e39 16|2w21
+X 10 a-textio.ads
+49K13*Text_IO 472e16 17|2w10 2r27
+X 12 a-uncdea.ads
+20u15*Unchecked_Deallocation 16|3w10 17|3w10
+X 13 boards.ads
+1K9*Boards 53e11 16|1w6 1r18 17|1w6 1r18
+5I12*Dimension{natural} 17|17r16 18r19 30r26 30r49 30r71 30r93 34r27 34r51
+. 34r76 34r100 35r29 35r52 35r77 35r100 79r16 80r19 95r16 96r19
+9E9*BoardPoint 9e53 17|14r16
+9n31*White{9E9} 17|97r30
+9n38*Black{9E9} 17|97r65
+11E12*Players{9E9} 16|32r50 17|75r50
+13A9*GameBoard(9E9)<integer><integer> 16|32r30 34r33 17|75r30 93r33
+14A9*InfoMatrix(boolean)<integer><integer>
+20A9*Place(5I12)<19E9>
+22I12*TurnsNo{natural} 16|16r32 20r16 25r19 17|13r17 15r20
+24n24*PEarlyGame{24E9} 17|29r47
+24n36*PMidGame{24E9} 17|31r50 33r50
+24n46*PLateGame{24E9} 17|38r53
+27R9*State_Type 37e14 16|12r15
+28e7*justWent{9E9} 17|14r53 22m27 22r62 68m21 68r56
+29i7*TokensTaken{22I12} 17|26m27
+30a7*spot{20A9} 17|24m27
+31i7*turnsleft{22I12} 17|25m27 25r52
+32a7*current_state{13A9} 17|19r56 23m47 45r61 51r52
+33e7*Current_Phase{24E9} 17|28m27 28r56 29r31 31m33 33r34 38m36
+34i7*Corners{natural} 17|36m33 36r56 37r36
+35a7*StableNodes{14A9} 17|44m27 44r54 46m30
+36a7*InternalNodes{14A9} 17|50m27 50r56 52m30
+39V13*NextPlayer{9E9} 17|14s30 22s39 68s33
+43V13*ValidMove{natural} 17|19s27 81s21 97s20 97s55
+43e23 player{9E9} 17|81r31
+43a44 board{13A9} 17|82r31
+43i66 movex{5I12} 17|83r31
+43i88 movey{5I12} 17|84r31
+45U14*AdvanceMove 17|23s16
+X 14 configure.ads
+3K9*Configure 10e14 17|4w6 4r21 57r16 57r35
+8i4*count{natural} 17|57m26 57r45
+X 15 features.ads
+3K9*Features 10e13 17|5w6 5r20
+7V13*CheckStability{boolean} 17|45s19
+8V13*CheckInternal{boolean} 17|51s19
+X 16 gametree.ads
+5K9*GameTree 36l5 36e13 17|7b14 105l5 105t13
+7R9*GameTree_Type 8r39 11c9 14e14 16r44 30r31 17|10r31 11r22
+8P9*GameTree_Access(7R9)
+11R9*GameTree_Type
+12r7*state{13|27R9} 17|14r47 19r50 22m21 22r56 23m41 24m21 25m21 25r46 26m21
+. 28m21 28r50 29r25 31m27 33r28 36m27 36r50 37r30 38m30 44m21 44r48 45r55
+. 46m24 50m21 50r50 51r46 52m24 68m15 68r50
+13b7*expanded{boolean}
+16A9*ChildrenArray(11R9)<integer> 19r17 27r18
+18R9*HistoryType 21e14
+19a7*History{16A9}
+20i7*Index{13|22I12}
+24R9*ExpandedChildren 28e14 30r53 17|10r53 12r18
+25i7*branching{13|22I12} 17|63m16
+26b7*nomove{boolean} 17|70m19
+27a7*children{16A9} 17|56m25
+30V13*Expand{24R9} 30>20 17|10b13 69s22 73l8 73t14
+30r20 state{11R9} 17|10b20 14r41 19r44 21r24 22r50 25r40 28r44 29r19 33r22
+. 36r44 44r42 45r49 50r44 51r40 67r18 68r44
+32V13*NumMoves{natural} 32>22 32>41 17|75b13 91l8 91t16
+32a22 Board{13|13A9} 17|75b22 82r41
+32e41 Player{13|11E12} 17|75b41 81r41
+34V13*Terminal{boolean} 34>22 17|93b13 104l8 104t16
+34a22 board{13|13A9} 17|93b22 97r36 97r71
+X 17 gametree.adb
+11r7 temp{16|11R9} 21m16 22m16 23m36 24m16 25m16 26m16 28m16 31m22 36m22
+. 37r25 38m25 44m16 46m19 50m16 52m19 56r46 67m10 68m10 69r29
+12r7 Children{16|24R9} 56m16 63m7 69m10 70m10 72r14
+13i7 Counter{13|22I12} 56r34 58m16 58r27 63r29 65r11
+14e7 toPlay{13|9E9} 19r37 23r28 45r41
+15i7 temptokens{13|22I12} 19m13 20r17 26r42
+17i11 i{13|5I12} 19r71 23r62 24r36 30r22 30r45 34r23 34r72 35r25 35r73 45r35
+. 46r42 51r34 52r44
+18i14 j{13|5I12} 19r73 23r65 24r38 30r67 30r89 34r47 34r96 35r48 35r96 45r37
+. 46r44 51r36 52r46
+76i7 temp{natural} 81m13 85r16
+77i7 count{natural} 86m16 86r25 90r14
+79i11 i{13|5I12} 83r41
+80i14 j{13|5I12} 84r41
+95i11 i{13|5I12} 97r43 97r78
+96i14 j{13|5I12} 97r45 97r80
+
