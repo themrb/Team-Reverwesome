@@ -133,7 +133,7 @@ package body Agent is
                     History.History(History.Index) := treeroot;
                   History.Index := History.Index + 1;
 
-                  if (turnsleft < 16) then
+                  if (turnsleft < 13) then
                      NegaMax(my_player, treeroot, 12, value, BoardValue'First, BoardValue'Last, move);
                   else
                      NegaMax(my_player, treeroot, 5, value, BoardValue'First, BoardValue'Last, move);
@@ -164,10 +164,27 @@ package body Agent is
             end if;
          or
             accept GameEnd  do
-               if(my_player = White) then
-                  TD(History, my_player);
-                  StoreWeights;
-               end if;
+               declare
+                  feedback : Float := 0.0;
+                  Board : GameBoard := History.History(History.Index - 1).state.current_state;
+               begin
+                  if(my_player = White) then
+                     if(Terminal(Board)) then
+                        declare
+                           WinningPlayer : BoardPoint;
+                        begin
+                           Winner(Board,WinningPlayer);
+                           if WinningPlayer = my_player then
+                              feedback := 1.0;
+                           elsif WinningPlayer = NextPlayer(my_player) then
+                              feedback := -1.0;
+                           end if;
+                        end;
+                     end if;
+                     TD(History, my_player, feedback);
+                     StoreWeights;
+                  end if;
+               end;
             end GameEnd;
             exit Main_Loop;
          end select;
