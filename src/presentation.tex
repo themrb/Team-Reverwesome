@@ -122,7 +122,7 @@
   \item
     15 weights for each piece position
 	\begin{itemize}
-		\item based on (naieve) 8-way symmetry
+		\item based on (naive) 8-way symmetry
 		\item in actuality, only a 4-way symmetry exists. However, in practice this doesn't make a lot of difference.
 		% Include picture showing the difference?
 	\end{itemize}
@@ -150,6 +150,10 @@
   \item
    Line stability from the whole direction being stable and full in your favour
   \end{itemize}
+
+\end{frame}
+
+\begin{frame}{Piece Stability}
 \begin{center}
 \includegraphics[scale=0.50]{stability.PNG}\\
 Stable positions for white
@@ -181,9 +185,16 @@ Stable positions for white
 \end{frame}
 
 \begin{frame}{Learning Strategies}
-Josh to talk about this.\\
-Alpha 0.01\\
-E-greedy policy 0.15\\
+\begin{itemize}
+	\item $\alpha = 0.0001$
+		\\ Learning weight. Tend to get divergence if we set it any higher.
+	
+	\item $\epsilon = 0.15$
+		\\ Used for $\epsilon$-greedy policy. The chance we'll pick a random move instead of a good one.
+	\item $\gamma = 0.9$
+		\\ Discount factor on how much we weight boards far into the 'future' when training.
+		\\ Scales as $\gamma^t$, where $t$ is the number of boards in the futre we're looking.
+	\end{itemize}
 \end{frame}
 
 \begin{frame}{Negamax with alpha beta pruning}
@@ -247,12 +258,42 @@ E-greedy policy 0.15\\
   \end{itemize}
 \end{frame}
 
-\begin{frame}{Other ideas}
+\begin{frame}{Other ideas (Monte Carlo)}
     \begin{itemize}
   \item
-    Use monte carlo prediction as a substitute for reward to help with learning of mid-game states
+    	Use monte carlo prediction as a substitute for reward to help with learning of mid-game states
+  \item
+	Tends to make the algorithm learn more quickly, and on-the-fly
+  \item
+	Can also be used as a predictor of how good a board state is.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Other ideas (MinMax)}
+    \begin{itemize}
   \item
     Optimised search ordering - expand nodes by their value in our piece feature weights
+  \item
+	Store searches between moves. Could have saved a huge amount of computation time.
+  \item
+	Vary depth of search based on branching factor and volatility of the state.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Other ideas (Evolutionary Algorithm)}
+    \begin{itemize}
+  \item
+   	Use an evolutionary algorithm strategy to play agents off against each other.
+  \item
+	Use feature values as 'genes'.
+  \item
+	'Breeding' via exchanging features. Don't need a heuristic for which to exchange, as features tend to be relatively independent.
+  \item
+	Mutation via small random change to a feature.
+	\\ e.g. from a uniform distribution around (-1,1), or
+	\\ Normal distribution with mean 0.
+  \item
+	Essentially still doing gradient decent. Can be used as a substitute for an $\epsilon$-greedy policy.
   \end{itemize}
 \end{frame}
 
