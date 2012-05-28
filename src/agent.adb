@@ -136,7 +136,7 @@ package body Agent is
                      end loop;
                   end loop;
 
-                    History.History(History.Index) := treeroot;
+                  History.History(History.Index) := treeroot;
                   History.Index := History.Index + 1;
 
                   if (turnsleft < 13) then
