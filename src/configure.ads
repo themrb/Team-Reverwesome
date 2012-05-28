@@ -8,5 +8,6 @@ package Configure is
    count : Natural := 0;
    initialised : Boolean := False;
 
+   epsilon : Float := 0.1; -- For epsilon-greedy move selection;
    my_player : BoardPoint;
 end Configure;
