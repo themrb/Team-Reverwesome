@@ -18,7 +18,8 @@ package Agent is
    pragma export(CPP, Ada_Subroutine );
    pragma export(CPP, GameEnd );
 
-   my_player : BoardPoint;
+   procedure PhaseTransition(CurrentGamePhase : in out Game_Phase;
+                             State : in GameBoard; Corners : in out Natural);
 
    CurrentGamePhase : Game_Phase;
    CurrentCorners : Natural := 0;

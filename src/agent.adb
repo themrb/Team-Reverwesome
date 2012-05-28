@@ -6,9 +6,8 @@ with MinMax; use MinMax;
 with Configure; use Configure;
 with Exceptions; use Exceptions;
 with TemporalDifference; use TemporalDifference;
-with GNAT.Traceback;           use GNAT.Traceback;
-with GNAT.Traceback.Symbolic;  use GNAT.Traceback.Symbolic;
 with Features; use Features;
+with Workers; use Workers;
 
 package body Agent is
 
@@ -32,6 +31,8 @@ package body Agent is
 
    task body Main is
       History : HistoryType;
+      toExplore : aliased BeingExplored;
+      workers : array(Natural range 1..Configure.workerTasks) of Explorer(toExplore'Access);
    begin
       accept Initialise  do
 
@@ -60,20 +61,8 @@ package body Agent is
       loop
          select
             accept NewMove  do
---                 Put_Line(cprevmovex'Img & " " & cprevmovey'Img);
---                 if not (cprevmovex < 0) then
---                    declare
---                       cx : Dimension := Dimension(cprevmovex);
---                       cy : Dimension := Dimension(cprevmovey);
---                    begin
---                       null;
---                    end;
---                 end if;
-
-
                declare
                   treeroot : GameTree_Type;
-                  value : BoardValue;
                   turnsleft : TurnsNo := 0;
                begin
                   -- Read in CPP values for the board
@@ -86,35 +75,7 @@ package body Agent is
                      end loop;
                   end loop;
 
-
-                  if CurrentGamePhase = PEarlyGame then
-                     for x in Dimension'Range loop
-                        if currentstate(x,Dimension'First) = Black or currentstate(x,Dimension'First) = White
-                          or currentstate(x,Dimension'Last) = Black or currentstate(x,Dimension'Last) = White
-                          or currentstate(Dimension'First,x) = Black or currentstate(Dimension'First,x) = White
-                          or currentstate(Dimension'Last,x) = Black or currentstate(Dimension'Last,x) = White then
-                           CurrentGamePhase := PMidGame;
-                        end if;
-                     end loop;
-                  elsif CurrentGamePhase = PMidGame then
-                     CurrentCorners := 0;
-                     if ((currentstate(Dimension'First, Dimension'First) = Black) or (currentstate(Dimension'First, Dimension'First) = White)) then
-                        CurrentCorners := CurrentCorners + 1;
-                     end if;
-                     if currentstate(Dimension'Last, Dimension'Last) = Black or currentstate(Dimension'Last, Dimension'Last) = White then
-                        CurrentCorners := CurrentCorners + 1;
-                     end if;
-                     if currentstate(Dimension'First, Dimension'Last) = Black or currentstate(Dimension'First, Dimension'Last) = White then
-                        CurrentCorners := CurrentCorners + 1;
-                     end if;
-                     if currentstate(Dimension'Last, Dimension'First) = Black or currentstate(Dimension'Last, Dimension'First) = White then
-                        CurrentCorners := CurrentCorners + 1;
-                     end if;
-                     if CurrentCorners >= 2 then
-                        CurrentGamePhase := PLateGame;
-                     end if;
-                  end if;
-
+                  PhaseTransition(CurrentGamePhase, currentstate, CurrentCorners);
 
                   -- Initialise game tree
                   treeroot.state.justWent := NextPlayer(my_player);
@@ -139,11 +100,14 @@ package body Agent is
                   History.History(History.Index) := treeroot;
                   History.Index := History.Index + 1;
 
-                  if (turnsleft < 13) then
-                     NegaMax(my_player, treeroot, 12, value, BoardValue'First, BoardValue'Last, move);
-                  else
-                     NegaMax(my_player, treeroot, 7, value, BoardValue'First, BoardValue'Last, move);
-                  end if;
+                  toExplore.Initialise(treeroot);
+                  toExplore.GetResult(move);
+
+--                    if (turnsleft < 13) then
+--                       NegaMax(my_player, treeroot, 12, value, BoardValue'First, BoardValue'Last, move);
+--                    else
+--                       NegaMax(my_player, treeroot, 6, value, BoardValue'First, BoardValue'Last, move);
+--                    end if;
 
                   declare
                      temppieces : Natural := ValidMove(my_player, currentstate, move(x), move(y));
@@ -227,5 +191,37 @@ package body Agent is
    begin
       null;
    end GreedyMove;
+
+   procedure PhaseTransition(CurrentGamePhase : in out Game_Phase; State : in GameBoard;
+                             Corners : in out Natural) is
+   begin
+      if CurrentGamePhase = PEarlyGame then
+         for x in Dimension'Range loop
+            if State(x,Dimension'First) = Black or State(x,Dimension'First) = White
+              or State(x,Dimension'Last) = Black or State(x,Dimension'Last) = White
+              or State(Dimension'First,x) = Black or State(Dimension'First,x) = White
+              or State(Dimension'Last,x) = Black or State(Dimension'Last,x) = White then
+               CurrentGamePhase := PMidGame;
+            end if;
+         end loop;
+      elsif CurrentGamePhase = PMidGame then
+         Corners := 0;
+         if ((State(Dimension'First, Dimension'First) = Black) or (State(Dimension'First, Dimension'First) = White)) then
+            Corners := Corners + 1;
+         end if;
+         if State(Dimension'Last, Dimension'Last) = Black or State(Dimension'Last, Dimension'Last) = White then
+            Corners := Corners + 1;
+         end if;
+         if State(Dimension'First, Dimension'Last) = Black or State(Dimension'First, Dimension'Last) = White then
+            Corners := Corners + 1;
+         end if;
+         if State(Dimension'Last, Dimension'First) = Black or State(Dimension'Last, Dimension'First) = White then
+            Corners := Corners + 1;
+         end if;
+         if Corners >= 2 then
+            CurrentGamePhase := PLateGame;
+         end if;
+      end if;
+   end PhaseTransition;
 
 end Agent;
