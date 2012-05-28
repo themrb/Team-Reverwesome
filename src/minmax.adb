@@ -54,7 +54,7 @@ package body MinMax is
 
       if (depth = 0) then
          bestMove := (0,0);
-         outValue := EndBoardValue(Player,state.state, successors.branching, Set);
+         outValue := EndBoardValue(Player,state.state, successors.branching, Set)-EndBoardValue(NextPlayer(Player),state.state, successors.branching, Set);
          return;
       end if;
 
