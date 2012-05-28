@@ -145,6 +145,8 @@
    Line stability from the whole line being 'full'
   \item
    Line stability from the whole direction being stable and full in your favour
+  \item
+    Because of the removed squares, piece stability became especially important ahead
   \end{itemize}
 
 \end{frame}
@@ -258,8 +260,6 @@ Stable positions for white
 
 \begin{frame}{Key Observations}
     \begin{itemize}
-  \item
-    Because of the removed squares, piece stability became especially important ahead
   \end{itemize}
 \end{frame}
 
