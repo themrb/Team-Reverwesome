@@ -158,6 +158,19 @@ Stable positions for white
 \end{center}
 \end{frame}
 
+\begin{frame}{Mobility}
+    \begin{itemize}
+  \item
+	Mobility is a measure of the number of moves a player has in a given board state.
+  \item
+	High mobility tends to be much more important in the early to mid game than the number of pieces a player has, since Reversi boards can change very quickly.
+  \item
+	Much less useful in the later game, where we want to focus on pieces and stability.
+  \item
+	Has the unfortunate side-effect of making the branching factor quite large, meaning we cannot search to great depth.
+  \end{itemize}
+\end{frame}
+
 \begin{frame}{Piece Internality}
     \begin{itemize}
   \item
@@ -255,11 +268,6 @@ Stable positions for white
     Below 15 seconds, drop to depth 4
   \item
      Below 5 seconds, drop to depth 2  
-  \end{itemize}
-\end{frame}
-
-\begin{frame}{Key Observations}
-    \begin{itemize}
   \end{itemize}
 \end{frame}
 

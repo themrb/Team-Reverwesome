@@ -112,6 +112,8 @@
     Concurrent searching
   \item
     Time management
+  \item
+    C++ and Ada interfacing
   \end{itemize}
 \end{frame}
 
@@ -233,6 +235,8 @@ Stable positions for white
     Use static evaluation feature weights to evaluate how far in our favour the board value is
   \item
     Terminals in our favour worth $\infty$, in opponent's favour worth $-\infty$.
+  \item
+    This means we avoid a loss at all costs, and take a win at all costs (for example wiping out a player early)
   \end{itemize}
 \end{frame}
 
@@ -265,9 +269,45 @@ Stable positions for white
   \item
     Vary the search depth depending on time left and how long the previous move took
   \item
+     Below 5 seconds, drop to depth 2  
+  \item
     Below 15 seconds, drop to depth 4
   \item
-     Below 5 seconds, drop to depth 2  
+    If we have extra time, increase to 8
+  \item
+    If we have less time, decrease to 5
+  \item
+    Default to 7
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{C++ and Ada}
+    \begin{itemize}
+  \item
+    We took the C++ sample client code and used it to call procedures in Ada
+  \item
+    C++ client listened for new messages and saved them
+  \item
+   C++ called Ada procedures
+  \item
+   Procedures called entries on Ada's Main Task
+  \item
+   Messages and information passed using direct edits to shared memory
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{C++ and Ada Experiences}
+    \begin{itemize}
+  \item
+    Make the communication as simple as possible
+  \item
+   Don't call entries or complex data structures
+  \item
+   C++ decapitalises everything
+  \item
+   Avoid C++ and Ada running computation concurrently near shared data
+  \item
+   C++ and Ada store arrays in different fashions
   \end{itemize}
 \end{frame}
 
@@ -307,6 +347,19 @@ Stable positions for white
 	\\ Normal distribution with mean 0.
   \item
 	Essentially still doing gradient decent. Can be used as a substitute for an $\epsilon$-greedy policy.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Other ideas (Utilising opponent time)}
+    \begin{itemize}
+  \item
+   	Compute further down the game tree while the opponent is thinking
+  \item
+	Could allow significantly greater search depths to be reached
+  \item
+	Required memory management and large data structures
+  \item
+	Ada would be very well positioned to perform this task
   \end{itemize}
 \end{frame}
 
