@@ -94,7 +94,7 @@
   \item
     Network communication with server
   \item
-    90 seconds total time per player
+    150 seconds total time per player
   \item
     Design an agent to play intelligently
   \end{itemize}
@@ -120,7 +120,12 @@
   \item
     Use features weights to evaluate value of board states
   \item
-    15 weights for each piece position (based on 8-way symmetry)
+    15 weights for each piece position
+	\begin{itemize}
+		\item based on (naieve) 8-way symmetry
+		\item in actuality, only a 4-way symmetry exists. However, in practice this doesn't make a lot of difference.
+		% Include picture showing the difference?
+	\end{itemize}
   \item
     Weight for mobility - number of moves if it was our turn
   \item
@@ -137,7 +142,7 @@
 \begin{frame}{Piece Stability}
     \begin{itemize}
   \item
-  Stability is the inability for a piece to ever be taken
+  Stability is the inability for a piece to ever be flipped. For example, corners are always stable.
   \item
    All 4 lines must be stable in one direction
   \item
@@ -154,14 +159,25 @@ Stable positions for white
 \begin{frame}{Piece Internality}
     \begin{itemize}
   \item
-  A piece is internal if it has no neighbours
+  A piece is internal if it has no empty neighbours
   \item
    Harder to dislodge, can result in higher mobility
   \end{itemize}
 \end{frame}
 
 \begin{frame}{Temporal Difference Learning}
-Josh to talk about this.
+   \begin{itemize}
+  \item
+  	Used a fairly standard TD($\lambda$) policy.
+  \item
+	Play whole game, recieve reward 1/0/-1 for win/draw/loss.
+  \item
+	For each board $b_k$ position in the game, find the direction to adjust the weight in, based on making a small change and seeing if it improves/worsens the result.
+ \item
+	Then run through all of it is successors, and calculate the weighted difference between it's value and the successor's.
+  \item
+	$\Sum_{t=k}^T \lambda^t \left ( V(b_t) - V(b_k) + feedback \right)$
+  \end{itemize}
 \end{frame}
 
 \begin{frame}{Learning Strategies}
