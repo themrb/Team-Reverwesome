@@ -15,33 +15,16 @@ package body MinMax is
       best : Place;
       Set : FeatureSet;
    begin
-      case state.state.Current_Phase is
-         when PEarlyGame =>
-            Set := EarlyGame;
-         when PMidGame =>
-            Set := MidGame;
-         when PLateGame =>
-            Set := LateGame;
-      end case;
+
+      Set := PhaseToSet(state.state.Current_Phase);
+
       if (Player = Blocked or state.state.justWent = Blocked) then
          Put_Line("BAD");
       end if;
 
-      if (Terminal(state.state.current_state)) then
+      outValue := TerminalCheck(state.state.current_state, Player);
+      if(outValue /= 0.0) then
          bestMove := (0,0);
-         --outValue := EndBoardValue(Player,state.state.current_state, 0, Set);
-
-         --if we win, take it. if we lose, avoid like the plague!
-         declare
-            WinningPlayer : BoardPoint;
-         begin
-            Winner(state.state.current_state,WinningPlayer);
-            if WinningPlayer = Player then
-               outValue := BoardValue(5000);
-            else
-               outValue := BoardValue(-5000);
-            end if;
-         end;
          return;
       end if;
 
@@ -54,7 +37,8 @@ package body MinMax is
 
       if (depth = 0) then
          bestMove := (0,0);
-         outValue := EndBoardValue(Player,state.state, successors.branching, Set)-EndBoardValue(NextPlayer(Player),state.state, successors.branching, Set);
+         outValue := EndBoardValue(Player,state.state, successors.branching, Set)
+           -EndBoardValue(NextPlayer(Player),state.state, successors.branching, Set);
          return;
       end if;
 
@@ -91,7 +75,42 @@ package body MinMax is
       end loop;
 
       outValue := value;
-
    end NegaMax;
+
+   function PhaseToSet(phase : Game_Phase) return FeatureSet is
+      Set : FeatureSet;
+   begin
+      case phase is
+         when PEarlyGame =>
+            Set := EarlyGame;
+         when PMidGame =>
+            Set := MidGame;
+         when PLateGame =>
+            Set := LateGame;
+      end case;
+
+      return Set;
+   end PhaseToSet;
+
+   function TerminalCheck(state : GameBoard; Player : BoardPoint) return BoardValue is
+      outValue : BoardValue := 0.0;
+   begin
+      if (Terminal(state)) then
+         --outValue := EndBoardValue(Player,state.state.current_state, 0, Set);
+
+         --if we win, take it. if we lose, avoid like the plague!
+         declare
+            WinningPlayer : BoardPoint;
+         begin
+            Winner(state,WinningPlayer);
+            if WinningPlayer = Player then
+               outValue := BoardValue(5000);
+            else
+               outValue := BoardValue(-5000);
+            end if;
+         end;
+      end if;
+      return outValue;
+   end TerminalCheck;
 
 end MinMax;
