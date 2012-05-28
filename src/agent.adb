@@ -102,26 +102,26 @@ package body Agent is
                   History.History(History.Index) := treeroot;
                   History.Index := History.Index + 1;
 
-                  toExplore.Initialise(treeroot);
-                  toExplore.GetResult(move);
-
                   Configure.depth := 4;
---                    if TimeLeft < 5.0 then
---                       Configure.depth := 2;
---                    elsif TimeLeft < 15.0 then
---                       Configure.depth := 4;
---                    elsif (turnsleft < 13) then
---                       Configure.depth := 12;
---                    elsif TimeLeft < 30.0 or (PrevTimeLeft - TimeLeft) > 5.0 then
---                       Configure.depth := 5;
---                       BumpedDown := True;
---                    elsif PrevTimeLeft - TimeLeft < 3.0 and not BumpedDown and TimeLeft > 50.0 then
---                       Configure.depth := 8;
---                    else
---                       Configure.depth := 7;
---                    end if;
+                  if TimeLeft < 5.0 then
+                     Configure.depth := 2;
+                  elsif TimeLeft < 15.0 then
+                     Configure.depth := 4;
+                  elsif (turnsleft < 13) then
+                     Configure.depth := 12;
+                  elsif TimeLeft < 30.0 or (PrevTimeLeft - TimeLeft) > 5.0 then
+                     Configure.depth := 5;
+                     BumpedDown := True;
+                  elsif PrevTimeLeft - TimeLeft < 3.0 and not BumpedDown and TimeLeft > 50.0 then
+                     Configure.depth := 8;
+                  else
+                     Configure.depth := 7;
+                  end if;
                   PrevTimeLeft := TimeLeft;
                   Put_Line("Depth at " & Configure.depth'Img);
+
+                  toExplore.Initialise(treeroot);
+                  toExplore.GetResult(move);
 
                   declare
                      temppieces : Natural := ValidMove(my_player, currentstate, move(x), move(y));
@@ -168,9 +168,9 @@ package body Agent is
                      feedback := -1.0;
                   end if;
 
-                  Put_Line("Feedback : " & feedback'Img);
-                  TD(History, my_player, feedback);
-                  StoreWeights;
+                  --Put_Line("Feedback : " & feedback'Img);
+                  --TD(History, my_player, feedback);
+                  --StoreWeights;
                end;
 
                for i in workers'Range loop
