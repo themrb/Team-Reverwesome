@@ -142,7 +142,7 @@ package body Agent is
                   if (turnsleft < 13) then
                      NegaMax(my_player, treeroot, 12, value, BoardValue'First, BoardValue'Last, move);
                   else
-                     NegaMax(my_player, treeroot, 6, value, BoardValue'First, BoardValue'Last, move);
+                     NegaMax(my_player, treeroot, 4, value, BoardValue'First, BoardValue'Last, move);
                   end if;
 
                   declare
@@ -175,26 +175,25 @@ package body Agent is
                   Board : GameBoard := History.History(History.Index - 1).state.current_state;
                   GameWinner : Players;
                begin
-                  if(my_player = White) then
-                     if (cwinner = 1) then
-                        GameWinner := White;
-                     elsif (cwinner = 2) then
-                        GameWinner := Black;
-                     end if;
 
-                     if(GameWinner = my_player) then
-                        feedback := 1.0;
-                     elsif (GameWinner = NextPlayer(my_player)) then
-                        feedback := -1.0;
-                     end if;
-
-                     Put_Line(cwinner'Img);
-                     Put_Line(my_player'Img);
-
-                     Put_Line("Feedback : " & feedback'Img);
-                     TD(History, my_player, feedback);
-                     StoreWeights;
+                  if (cwinner = 1) then
+                     GameWinner := White;
+                  elsif (cwinner = 2) then
+                     GameWinner := Black;
                   end if;
+
+                  if(GameWinner = my_player) then
+                     feedback := 1.0;
+                  elsif (GameWinner = NextPlayer(my_player)) then
+                     feedback := -1.0;
+                  end if;
+
+                  Put_Line(cwinner'Img);
+                  Put_Line(my_player'Img);
+
+                  Put_Line("Feedback : " & feedback'Img);
+                  TD(History, my_player, feedback);
+                  StoreWeights;
                end;
             end GameEnd;
             exit Main_Loop;
