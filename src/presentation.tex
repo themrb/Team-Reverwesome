@@ -170,13 +170,13 @@ Stable positions for white
   \item
   	Used a fairly standard TD($\lambda$) policy.
   \item
-	Play whole game, recieve reward 1/0/-1 for win/draw/loss.
+	Play whole game, recieve reward $r\in \left\{1,0,-1 \right\}$ for win/draw/loss.
   \item
 	For each board $b_k$ position in the game, find the direction to adjust the weight in, based on making a small change and seeing if it improves/worsens the result.
  \item
 	Then run through all of it is successors, and calculate the weighted difference between it's value and the successor's.
   \item
-	$\Sum_{t=k}^T \lambda^t \left ( V(b_t) - V(b_k) + feedback \right)$
+	$\sum_{t=k}^T \lambda^t \left ( V(b_t) - V(b_k) + feedback \right)$
   \end{itemize}
 \end{frame}
 
@@ -217,7 +217,17 @@ E-greedy policy 0.15\\
 \begin{frame}{Concurrency}
     \begin{itemize}
   \item
-    Everyone loves concurrency. Concurrency has everyone's children.
+	Use concurrency to distribute MinMax search across multiple CPUs, thereby (hopefully) reducing the time taken for a search.
+ \item
+	Have to find a model of parallelism which balances putting processing time where it's needed vs overhead in communication between threads.
+ \item
+	We settled for a simplistic model - give each thread one of the 'top-level' MinMax nodes to search through. When it's done, give it another one.
+ \item
+	Has the downside that $\alpha \beta$ pruning data does not get updated until a thread finishes its node.
+ \item
+	Initial nodes can take more time than they otherwise might have.
+ \item
+	But still end up with an $O(n)$ speed up, where $n$ is the number of cores.
   \end{itemize}
 \end{frame}
 
