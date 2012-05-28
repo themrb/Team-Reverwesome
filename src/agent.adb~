@@ -142,7 +142,7 @@ package body Agent is
                   if (turnsleft < 13) then
                      NegaMax(my_player, treeroot, 12, value, BoardValue'First, BoardValue'Last, move);
                   else
-                     NegaMax(my_player, treeroot, 6, value, BoardValue'First, BoardValue'Last, move);
+                     NegaMax(my_player, treeroot, 5, value, BoardValue'First, BoardValue'Last, move);
                   end if;
 
                   declare
