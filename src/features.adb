@@ -16,11 +16,11 @@ package body Features is
             if board(i,j) = player then
                if stabmatrix(i,j) then
                   StablePieces := StablePieces + 1;
-               else
-                  if (CheckStability((i,j),player,board)) then
---                       stabmatrix(i,j) := True;
-                     StablePieces := StablePieces + 1;
-                  end if;
+--                 else
+--                    if (CheckStability((i,j),player,board)) then
+--  --                       stabmatrix(i,j) := True;
+--                       StablePieces := StablePieces + 1;
+--                    end if;
                end if;
             end if;
          end loop;
