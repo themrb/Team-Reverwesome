@@ -50,12 +50,6 @@ package body Agent is
 
          toExplore.OneOffInit;
 
-      exception
-         when E : others =>
-            Show_Exception (E);
-            CloseFile;
-            LoadWeights;
-
          --Put_Line("not weights or players");
          -- spawn explorer tasks as required
          -- this is basically our set up to be ready to play the game.
@@ -111,7 +105,7 @@ package body Agent is
                   toExplore.Initialise(treeroot);
                   toExplore.GetResult(move);
 
-                  Configure.depth := 2;
+                  Configure.depth := 4;
 --                    if TimeLeft < 5.0 then
 --                       Configure.depth := 2;
 --                    elsif TimeLeft < 15.0 then
