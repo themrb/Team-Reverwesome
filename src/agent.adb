@@ -98,12 +98,16 @@ package body Agent is
                   elsif CurrentGamePhase = PMidGame then
                      CurrentCorners := 0;
                      if currentstate(Dimension'First, Dimension'First) = Black or currentstate(Dimension'First, Dimension'First) = White then
+                        Put("corner here");
                         CurrentCorners := CurrentCorners + 1;
                      elsif currentstate(Dimension'Last, Dimension'Last) = Black or currentstate(Dimension'Last, Dimension'Last) = White then
+                        Put("corner here");
                         CurrentCorners := CurrentCorners + 1;
                      elsif currentstate(Dimension'First, Dimension'Last) = Black or currentstate(Dimension'First, Dimension'Last) = White then
+                        Put("corner here");
                         CurrentCorners := CurrentCorners + 1;
                      elsif currentstate(Dimension'Last, Dimension'First) = Black or currentstate(Dimension'Last, Dimension'First) = White then
+                        Put("corner here");
                         CurrentCorners := CurrentCorners + 1;
                      end if;
                      if CurrentCorners >= 2 then
