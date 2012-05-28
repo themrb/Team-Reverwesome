@@ -37,6 +37,7 @@ int prevmovex;
 int prevmovey;
 int cwinner;
 int playercolour;
+double timeleft;
 
 int main(int argc, char *argv[])
 {
@@ -153,7 +154,7 @@ int main(int argc, char *argv[])
 			
 			prevmovex = messageIn.x;
 			prevmovey = messageIn.y;
-
+			timeleft = messageIn.timeRemaining;
 			//Ask ada for move
 			  ada_subroutine();
 			
