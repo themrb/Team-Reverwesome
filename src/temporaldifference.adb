@@ -134,42 +134,42 @@ package body TemporalDifference is
       Current, Updated : BoardValue;
    begin
       Current := EndBoardValue(Player, Board,
-                               NumMoves(Board.current_state, Player), OldSet);
+                                OldSet);
       Updated := EndBoardValue(Player, Board,
-                               NumMoves(Board.current_state, Player), NewSet);
+                                NewSet);
       return (Updated - Current)/Step;
    end;
 
-   function EndBoardValue(Player : Players; State : State_Type; Moves : TurnsNo;
+   function EndBoardValue(Player : Players; State : State_Type;
                           Set : FeatureSet) return BoardValue is
       Score : BoardValue;
    begin
       Score := TokenScore(State.current_state, Player, Set.piece);
       -- Weighting on the number of available moves
-      Score := Score + (FeatureWeight(Moves) * Set.mobility);
+      Score := Score + (FeatureWeight(NumMoves(State.current_state, Player) - NumMoves(State.current_state, NextPlayer(Player))) * Set.mobility);
       if State.Current_Phase /= PEarlyGame then
          declare
             StablePieces : Integer;
+            StablePiecesTheirs : Integer;
+            StabilityMatrix : InfoMatrix := State.StableNodes;
          begin
-            CountStabilityFull(Player, State.current_state, State.StableNodes, StablePieces);
-            Score := Score + (FeatureWeight(StablePieces) * Set.stability);
+            FindStability(Player, State.current_state, StabilityMatrix, StablePieces);
+            FindStability(NextPlayer(Player), State.current_state, StabilityMatrix, StablePiecesTheirs);
+            Score := Score + (FeatureWeight(StablePieces - StablePiecesTheirs) * Set.stability);
          end;
       end if;
       declare
          InternalPieces : Integer;
+         InternalPiecesTheirs : Integer;
       begin
          CountInternals(Player, State.current_state, State.InternalNodes, InternalPieces);
-         Score := Score + (FeatureWeight(InternalPieces) * Set.internal);
+         CountInternals(NextPlayer(Player), State.current_state, State.InternalNodes, InternalPiecesTheirs);
+         Score := Score + (FeatureWeight(InternalPieces-InternalPiecesTheirs) * Set.internal);
       end;
 
       -- use own disc count
 
       return Score;
-   end EndBoardValue;
-
-   function EndBoardValue(Player : Players; State : State_Type; Set: FeatureSet) return BoardValue is
-   begin
-      return EndBoardValue(Player, State, NumMoves(State.current_state, Player), Set);
    end EndBoardValue;
 
    function TokenScore(State : in GameBoard; Player: in BoardPoint;

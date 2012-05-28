@@ -92,36 +92,48 @@ package body Agent is
                   treeroot.state.InternalNodes := EmptyMatrix;
                   treeroot.state.Current_Phase := CurrentGamePhase;
 
-                  for i in Dimension'Range loop
-                     for j in Dimension'Range loop
-                        if (CheckStability((i,j),my_player,currentstate)) then
-                           treeroot.state.StableNodes(i,j) := True;
-                        end if;
-                        if (CheckInternal((i,j),currentstate)) then
-                           treeroot.state.InternalNodes(i,j) := True;
-                        end if;
-                     end loop;
-                  end loop;
+                  --if our move is forced
+                  if NumMoves(currentstate, my_player) = 1 then
+                     declare
+                        Children : ExpandedChildren := Expand(treeroot);
+                     begin
+                        Put_Line("forced move");
+                        move := Children.children(0).state.spot;
+                     end;
 
-                  History.History(History.Index) := treeroot;
-                  History.Index := History.Index + 1;
-
-                  toExplore.Initialise(treeroot);
-                  toExplore.GetResult(move);
-
-                  if TimeLeft < 15.0 then
-                     Configure.depth := 2;
-                  elsif (turnsleft < 13) then
-                     Configure.depth := 12;
-                  elsif TimeLeft < 30.0 or (PrevTimeLeft - TimeLeft) > 5.0 then
-                     Configure.depth := 5;
-                     BumpedDown := True;
-                  elsif PrevTimeLeft - TimeLeft < 1.5 and not BumpedDown then
-                     Configure.depth := 8;
                   else
-                     Configure.depth := 7;
+                     for i in Dimension'Range loop
+                        for j in Dimension'Range loop
+                           if (CheckStability((i,j),my_player,currentstate)) then
+                              treeroot.state.StableNodes(i,j) := True;
+                           end if;
+                           if (CheckInternal((i,j),currentstate)) then
+                              treeroot.state.InternalNodes(i,j) := True;
+                           end if;
+                        end loop;
+                     end loop;
+
+                     History.History(History.Index) := treeroot;
+                     History.Index := History.Index + 1;
+
+                     toExplore.Initialise(treeroot);
+                     toExplore.GetResult(move);
+
+                     if TimeLeft < 15.0 then
+                        Configure.depth := 2;
+                     elsif (turnsleft < 13) then
+                        Configure.depth := 12;
+                     elsif TimeLeft < 30.0 or (PrevTimeLeft - TimeLeft) > 5.0 then
+                        Configure.depth := 5;
+                        BumpedDown := True;
+                     elsif PrevTimeLeft - TimeLeft < 1.5 and not BumpedDown and TimeLeft < 45.0 then
+                        Configure.depth := 8;
+                     else
+                        Configure.depth := 7;
+                     end if;
+                     PrevTimeLeft := TimeLeft;
+
                   end if;
-                  PrevTimeLeft := TimeLeft;
 
                   declare
                      temppieces : Natural := ValidMove(my_player, currentstate, move(x), move(y));
