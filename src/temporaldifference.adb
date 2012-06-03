@@ -153,8 +153,8 @@ package body TemporalDifference is
             StablePiecesTheirs : Integer;
             StabilityMatrix : InfoMatrix := State.StableNodes;
          begin
-            FindStability(Player, State.current_state, StabilityMatrix, StablePieces);
-            FindStability(NextPlayer(Player), State.current_state, StabilityMatrix, StablePiecesTheirs);
+            CountStability(Player, State.current_state, StabilityMatrix, StablePieces);
+            CountStability(NextPlayer(Player), State.current_state, StabilityMatrix, StablePiecesTheirs);
             Score := Score + (FeatureWeight(StablePieces - StablePiecesTheirs) * Set.stability);
          end;
       end if;

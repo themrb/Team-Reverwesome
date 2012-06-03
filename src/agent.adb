@@ -84,39 +84,51 @@ package body Agent is
                   treeroot.state.current_state := currentstate;
                   treeroot.state.turnsleft := turnsleft;
 
-                  treeroot.state.StableNodes := EmptyMatrix;
-                  treeroot.state.InternalNodes := EmptyMatrix;
-                  treeroot.state.Current_Phase := CurrentGamePhase;
+                  -- Find initial stability
+                  Put_Line("Finding stability");
+                  BuildStability(currentstate, treeroot.state.StableNodes);
 
+                  --stability debug print
+--                    for i in Dimension'Range loop
+--                       for j in Dimension'Range loop
+--                          if treeroot.state.StableNodes(i,j) then
+--                             Put_Line("Position " & i'Img &","&j'Img & " stable");
+--                          end if;
+--                       end loop;
+--                    end loop;
+
+                  -- Find initial internality
+                  treeroot.state.InternalNodes := EmptyMatrix;
                   for i in Dimension'Range loop
                      for j in Dimension'Range loop
-                        if (CheckStability((i,j),my_player,currentstate)) then
-                           treeroot.state.StableNodes(i,j) := True;
-                        end if;
                         if (CheckInternal((i,j),currentstate)) then
                            treeroot.state.InternalNodes(i,j) := True;
                         end if;
                      end loop;
                   end loop;
 
+                  --Set game phase
+                  treeroot.state.Current_Phase := CurrentGamePhase;
+
+                  --Save the state we're in
                   History.History(History.Index) := treeroot;
                   History.Index := History.Index + 1;
 
-                  Configure.depth := 4;
-                  if TimeLeft < 5.0 then
-                     Configure.depth := 2;
-                  elsif TimeLeft < 15.0 then
-                     Configure.depth := 4;
-                  elsif (turnsleft < 13) then
-                     Configure.depth := 12;
-                  elsif TimeLeft < 30.0 or (PrevTimeLeft - TimeLeft) > 5.0 then
-                     Configure.depth := 5;
-                     BumpedDown := True;
-                  elsif PrevTimeLeft - TimeLeft < 3.0 and not BumpedDown and TimeLeft > 50.0 then
-                     Configure.depth := 8;
-                  else
-                     Configure.depth := 7;
-                  end if;
+                  Configure.depth := 6;
+--                    if TimeLeft < 5.0 then
+--                       Configure.depth := 2;
+--                    elsif TimeLeft < 15.0 then
+--                       Configure.depth := 4;
+--                    elsif (turnsleft < 13) then
+--                       Configure.depth := 12;
+--                    elsif TimeLeft < 30.0 or (PrevTimeLeft - TimeLeft) > 5.0 then
+--                       Configure.depth := 5;
+--                       BumpedDown := True;
+--                    elsif PrevTimeLeft - TimeLeft < 3.0 and not BumpedDown and TimeLeft > 50.0 then
+--                       Configure.depth := 8;
+--                    else
+--                       Configure.depth := 7;
+--                    end if;
                   PrevTimeLeft := TimeLeft;
                   Put_Line("Depth at " & Configure.depth'Img);
 
@@ -168,9 +180,9 @@ package body Agent is
                      feedback := -1.0;
                   end if;
 
-                  --Put_Line("Feedback : " & feedback'Img);
-                  --TD(History, my_player, feedback);
-                  --StoreWeights;
+                  Put_Line("Feedback : " & feedback'Img);
+                  TD(History, my_player, feedback);
+                  StoreWeights;
                end;
 
                for i in workers'Range loop
