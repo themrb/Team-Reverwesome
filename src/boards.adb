@@ -81,7 +81,7 @@ package body Boards is
       --straight left
       HitOpponent := False;
       pieces := 0;
-      for xpoint in Dimension range 1 .. (movex-1) loop
+      for xpoint in Dimension range 1 .. (movex) loop
          --Put_Line("xpoint at " & Dimension'Image(xpoint) & " for " & player'Img & " at " & Dimension'Image(movex) & Dimension'Image(movey));
          y := movey;
          x := movex - xpoint;
@@ -321,7 +321,7 @@ package body Boards is
       --straight left
       HitOpponent := False;
       Left_Loop :
-      for xpoint in Dimension range 1 .. (movex-1) loop
+      for xpoint in Dimension range 1 .. (movex) loop
          y := movey;
          x := movex - xpoint;
          if board(x,y) = Empty then
@@ -331,7 +331,7 @@ package body Boards is
          elsif board(x,y) = player then
             if (HitOpponent) then
                --Put("Straight left " & movex'Img &movey'Img);
-      for xpoint in Dimension range 1 .. (movex-1) loop
+      for xpoint in Dimension range 1 .. (movex) loop
          y := movey;
          x := movex - xpoint;
                   if board(x,y) = Opponent then
@@ -376,7 +376,7 @@ package body Boards is
       --straight down
       HitOpponent := False;
       Down_Loop :
-      for ypoint in Dimension range 1 .. (movey-1) loop
+      for ypoint in Dimension range 1 .. (movey) loop
          y := movey - ypoint;
          x := movex;
          if board(x,y) = Empty then
@@ -386,7 +386,7 @@ package body Boards is
          elsif board(x,y) = player then
             if (HitOpponent) then
                --Put("Straight down " & x'Img &y'Img);
-      for ypoint in Dimension range 1 .. (movey-1) loop
+      for ypoint in Dimension range 1 .. (movey) loop
          y := movey - ypoint;
          x := movex;
                   if board(x,y) = Opponent then
@@ -556,8 +556,8 @@ package body Boards is
    begin
       temp := temp & "[" & BoardPoint'Image(state.justWent) & "," & Image(state.spot)
         & "," & Natural'Image(state.turnsleft) & "]";
-      for I in Dimension'Range loop
-         for J in Dimension'Range loop
+      for J in Dimension'Range loop
+         for I in Dimension'Range loop
             case state.current_state(I,J) is
             when Empty =>
                temp := temp & " .";
@@ -587,8 +587,8 @@ package body Boards is
    function Image(board : GameBoard) return String is
       temp : Unbounded_String;
    begin
-      for I in Dimension'Range loop
-         for J in Dimension'Range loop
+      for J in Dimension'Range loop
+         for I in Dimension'Range loop
             --Put_Line(Dimension'Image(I) & " " & Dimension'Image(J));
             case board(I,J) is
             when Empty =>
