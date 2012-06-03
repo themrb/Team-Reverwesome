@@ -10,13 +10,22 @@ with Workers; use Workers;
 
 package body Agent is
 
+   -- Shared memory for C++ and Ada
+   -- Imported using compiler directives
+
+   -- C++ array of the board
    ccurrentstate : CBoardState;
+   -- Our colour
    cplayercolour : Integer;
+   -- Instruct C++ which move to make next
    cnextmovey : Integer;
    cnextmovex : Integer;
+   -- Previous move made (given from server message)
    cprevmovey : Integer;
    cprevmovex : Integer;
+   -- The winner of a game
    cwinner : Integer;
+   -- Timing constraints
    TimeLeft : Long_Float;
    PrevTimeLeft : Long_Float;
    pragma import(cpp, ccurrentstate, "currentcstate");
@@ -28,6 +37,7 @@ package body Agent is
    pragma import(cpp, cwinner, "cwinner");
    pragma import(cpp, TimeLeft, "timeleft");
 
+   -- Ada representation of board state and next move choice
    currentstate : GameBoard;
    move : Place;
 
@@ -35,27 +45,29 @@ package body Agent is
       History : HistoryType;
       toExplore : aliased BeingExplored;
       workers : array(Natural range 1..Configure.workerTasks) of Explorer(toExplore'Access);
+      -- Whether time has been previously restricted
       BumpedDown : Boolean := False;
    begin
       accept Initialise  do
+         -- Essentially free time to 'boot up' Ada's systems
 
+         -- Initialise Game Phase
          CurrentGamePhase := PEarlyGame;
+         -- Load feature weights
          LoadWeights;
 
+         -- Set player colour
          if (cplayercolour = 1) then
             my_player := White;
          elsif (cplayercolour = 2) then
             my_player := Black;
          end if;
 
+         -- Initialise explorers
          toExplore.OneOffInit;
-
-         --Put_Line("not weights or players");
-         -- spawn explorer tasks as required
-         -- this is basically our set up to be ready to play the game.
-         -- the clock hasn't started yet - free time
       end Initialise;
 
+      -- Selectively accept either NewMove or EndGame in a loop
       Main_Loop:
       loop
          select
@@ -64,6 +76,9 @@ package body Agent is
                   treeroot : GameTree_Type;
                   turnsleft : TurnsNo := 0;
                begin
+                  -- Asked to choose a new move
+
+                  -- Print timing information
                   Put_Line("We have " & TimeLeft'Img & " seconds left");
                   -- Read in CPP values for the board
                   for I in Dimension'Range loop
@@ -75,8 +90,10 @@ package body Agent is
                      end loop;
                   end loop;
 
+                  -- Print current board state
                   Put_Line(Image(currentstate));
 
+                  -- Check game state and transition if required
                   PhaseTransition(CurrentGamePhase, currentstate, CurrentCorners);
 
                   -- Initialise game tree
@@ -87,15 +104,6 @@ package body Agent is
                   -- Find initial stability
                   Put_Line("Finding stability");
                   BuildStability(currentstate, treeroot.state.StableNodes);
-
-                  --stability debug print
---                    for i in Dimension'Range loop
---                       for j in Dimension'Range loop
---                          if treeroot.state.StableNodes(i,j) then
---                             Put_Line("Position " & i'Img &","&j'Img & " stable");
---                          end if;
---                       end loop;
---                    end loop;
 
                   -- Find initial internality
                   treeroot.state.InternalNodes := EmptyMatrix;
@@ -129,28 +137,39 @@ package body Agent is
 --                    else
 --                       Configure.depth := 7;
 --                    end if;
+
+                  -- Print depth information
                   PrevTimeLeft := TimeLeft;
                   Put_Line("Depth at " & Configure.depth'Img);
 
+                  -- Send explorer tasks in
                   toExplore.Initialise(treeroot);
                   toExplore.GetResult(move);
 
+                  -- Evaluate greediness of current move and print choice
                   declare
                      temppieces : Natural := ValidMove(my_player, currentstate, move(x), move(y));
                   begin
                      Put_Line("We'll get " & TurnsNo'Image(temppieces) & "for moving at" & Dimension'Image(move(x)) & "," & Dimension'Image(move(y)));
                   end;
+                  -- Pass back next move values to C++
                   cnextmovey := Integer(move(x));
                   cnextmovex := Integer(move(y));
                end;
+
+               -- Print out board from after the move is made
                AdvanceMove(my_player, currentstate, move(x), move(y));
                Put_Line("After moving:");
                Put_Line(Image(currentstate));
+
+               -- Transition the game phase if our last move just pushed us over
                if CurrentGamePhase = PEarlyGame then
+                  -- If an edge has been taken, transition to midgame
                   if move(x) = Dimension'First or move(x) = Dimension'Last or move(y) = Dimension'Last or move(y) = Dimension'First then
                      CurrentGamePhase := PMidGame;
                   end if;
                elsif CurrentGamePhase = PMidGame then
+                  -- If two corners have been taken, transition to endgame
                   if (move(x) = Dimension'First and move(y) = Dimension'First) or (move(x) = Dimension'First and move(y) = Dimension'Last)
                     or (move(x) = Dimension'Last and move(y) = Dimension'First) or (move(x) = Dimension'Last and move(y) = Dimension'Last) then
                      CurrentCorners := CurrentCorners + 1;
@@ -162,18 +181,21 @@ package body Agent is
             end NewMove;
          or
             accept GameEnd  do
+               -- Learn from the game history
                declare
                   feedback : Float := 0.0;
                   Board : GameBoard := History.History(History.Index - 1).state.current_state;
                   GameWinner : Players;
                begin
 
+                  -- Check who won
                   if (cwinner = 1) then
                      GameWinner := White;
                   elsif (cwinner = 2) then
                      GameWinner := Black;
                   end if;
 
+                  -- Decide if we won
                   if(GameWinner = my_player) then
                      feedback := 1.0;
                   elsif (GameWinner = NextPlayer(my_player)) then
@@ -181,27 +203,34 @@ package body Agent is
                   end if;
 
                   Put_Line("Feedback : " & feedback'Img);
+                  -- Call learning algorithm
                   TD(History, my_player, feedback);
+                  -- Store our updated weights
                   StoreWeights;
                end;
 
+               -- Shut down the workers
                for i in workers'Range loop
                   abort workers(i);
                end loop;
             end GameEnd;
             exit Main_Loop;
+            -- Exit main loop, terminating the task
          end select;
       end loop Main_Loop;
    end Main;
 
    procedure StartUp is
    begin
+      -- Boot up task on the heap
       MainTask := new Main;
+      -- Ask main to initialise
       MainTask.Initialise;
    end StartUp;
 
    procedure Ada_Subroutine is
    begin
+      -- Ask to make new move
       MainTask.NewMove;
 
    exception
@@ -211,18 +240,17 @@ package body Agent is
 
    procedure GameEnd is
    begin
+      -- Ask to terminate
       MainTask.GameEnd;
    end GameEnd;
 
-   procedure GreedyMove(board : in GameBoard; xmove : out Dimension; ymove : out Dimension) is
-   begin
-      null;
-   end GreedyMove;
-
+   -- Check game state and transition if required
+   -- Comprehensive state check rather than using last move
    procedure PhaseTransition(CurrentGamePhase : in out Game_Phase; State : in GameBoard;
                              Corners : in out Natural) is
    begin
       if CurrentGamePhase = PEarlyGame then
+         -- If an edge has been taken, transition to midgame
          for x in Dimension'Range loop
             if State(x,Dimension'First) = Black or State(x,Dimension'First) = White
               or State(x,Dimension'Last) = Black or State(x,Dimension'Last) = White
@@ -232,6 +260,7 @@ package body Agent is
             end if;
          end loop;
       elsif CurrentGamePhase = PMidGame then
+         -- If two corners have been taken, transition to endgame
          Corners := 0;
          if ((State(Dimension'First, Dimension'First) = Black) or (State(Dimension'First, Dimension'First) = White)) then
             Corners := Corners + 1;

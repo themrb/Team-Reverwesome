@@ -44,11 +44,7 @@ package body GameTree is
                temp.state.StableNodes := state.state.StableNodes;
                UpdateStability((i,j), state.state.current_state, temp.state.StableNodes);
 
---                 if CheckStability((i,j), toPlay, state.state.current_state) then
---                    temp.state.StableNodes(i,j):= True;
---                 end if;
-
-               --copy and update estimated internality
+               --copy and fill out internality
                temp.state.InternalNodes := state.state.InternalNodes;
                if CheckInternal((i,j), state.state.current_state) then
                   temp.state.InternalNodes(i,j) := True;
@@ -56,7 +52,6 @@ package body GameTree is
 
 
                Children.children(Counter) := temp;
-               Configure.count := Configure.count + 1;
                Counter := Counter + 1;
             end if;
          end loop;
@@ -65,10 +60,13 @@ package body GameTree is
       Children.branching := Counter;
 
       if (Counter = 0) then
-         --Put_Line("We don't have any moves :(");
+         -- This play doesn't have any moves
+         -- Legal play switches player
          temp := state;
+         -- Switch player and expand
          temp.state.justWent := NextPlayer(state.state.justWent);
          Children := Expand(temp);
+         -- Set flag that the switch happened
          Children.nomove := True;
       end if;
       return Children;
@@ -92,16 +90,17 @@ package body GameTree is
       return count;
    end NumMoves;
 
+   -- Check if a given board state is terminal
    function Terminal(board : in GameBoard) return Boolean is
    begin
       for i in Dimension'Range loop
          for j in Dimension'Range loop
-               if (ValidMove(White,board, i,j) > 0 or ValidMove(Black,board, i,j) > 0) then
-                  return False;
-               end if;
+            -- If either player ever has a move, then the board is not terminal
+            if (ValidMove(White,board, i,j) > 0 or ValidMove(Black,board, i,j) > 0) then
+               return False;
+            end if;
          end loop;
       end loop;
-      --Put_Line("This looks pretty terminal to terminal function.");
       return True;
    end Terminal;
 end GameTree;

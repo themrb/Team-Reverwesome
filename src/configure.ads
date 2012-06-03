@@ -1,13 +1,14 @@
 with Boards; use Boards;
 
 package Configure is
+   -- Player colour
+   my_player : BoardPoint;
    -- Total depth to search to
    depth : TurnsNo := 6;
    -- Number of worker tasks: Warning, should be set to one less than number of available cores
    workerTasks : Natural := 4;
-   count : Natural := 0;
+   -- Initialisation of worker tasks
    initialised : Boolean := False;
-
-   epsilon : Float := 0.15; -- For epsilon-greedy move selection;
-   my_player : BoardPoint;
+   -- For epsilon-greedy move selection;
+   epsilon : Float := 0.15;
 end Configure;

@@ -12,15 +12,15 @@ package body Features is
    begin
       StabMatrix := EmptyMatrix;
       -- While loop while we are still finding stability changes
-      -- (This is because stability can depend on stability of neighbouring nodes)
+      -- This is because stability can depend on stability of neighbouring nodes
       while StabilityChanged loop
-         Put_Line("Looping!");
          StabilityChanged := False;
          for i in Dimension'Range loop
             for j in Dimension'Range loop
                -- Don't evaluate for empty, blocked or if we already know is stable
                if board(i,j) /= Empty and board(i,j) /= Blocked
                  and not StabMatrix(i,j) then
+                  -- Check stability of unknown tile
                   if CheckStability((i,j),board(i,j),board, StabMatrix) then
                      StabMatrix(i,j) := True;
                      StabilityChanged := True;
@@ -47,25 +47,8 @@ package body Features is
       end loop;
    end CountStability;
 
-   procedure CountInternals(player : Players; board : GameBoard; internalmatrix : in InfoMatrix; InternalPieces: out Integer) is
-   begin
-      InternalPieces := 0;
-      for i in Dimension'Range loop
-         for j in Dimension'Range loop
-            if board(i,j) = player then
-               if internalmatrix(i,j) then
-                  InternalPieces := InternalPieces + 1;
-               else
-                  if (CheckInternal((i,j),board)) then
---                       internalmatrix(i,j) := True;
-                     InternalPieces := InternalPieces + 1;
-                  end if;
-               end if;
-            end if;
-         end loop;
-      end loop;
-   end CountInternals;
-
+   -- Update stability matrix given a move (evaluate effect of new move on stability)
+   -- NOTE: This is not watertight, there will be occasional false negatives. Please see the report.
    procedure UpdateStability(move : Place; board : GameBoard; StabMatrix : in out InfoMatrix) is
       columnfull : Boolean := True;
       rowfull : Boolean := True;
@@ -603,38 +586,73 @@ package body Features is
       return columnfull and rowfull and SWNEfull and NWSEfull;
    end CheckStability;
 
+   -- Count the number of internal pieces a player owns
+   procedure CountInternals(player : Players; board : GameBoard; internalmatrix : in InfoMatrix; InternalPieces: out Integer) is
+   begin
+      InternalPieces := 0;
+      for i in Dimension'Range loop
+         for j in Dimension'Range loop
+            if board(i,j) = player then
+               if internalmatrix(i,j) then
+                  -- If we know its internal, add it up
+                  InternalPieces := InternalPieces + 1;
+               else
+                  -- Check if internal anyway
+                  -- (internalmatrix only partial memory)
+                  if (CheckInternal((i,j),board)) then
+                     InternalPieces := InternalPieces + 1;
+                  end if;
+               end if;
+            end if;
+         end loop;
+      end loop;
+   end CountInternals;
+
    function CheckInternal(move : Place; board : GameBoard) return Boolean is
    begin
+      -- The Basic Idea:
+      -- Check if there isa piece or a blocked square in all 8 lines
+      -- The bulk of this code is case checking for corners and edges, in which case we check less lines
       if move(x) = Dimension'Last then
+         -- We are on the side of the board
          if move(y) = Dimension'Last then
+            -- We are on a corner, only 3 lines
             return (board(move(x)-1,move(y)) /= Empty and board(move(x)-1,move(y)-1) /= Empty and board(move(x),move(y)-1) /= Empty);
          elsif move(y) = Dimension'First then
+            -- We are on a corner, only 3 lines
             return (board(move(x)-1,move(y)) /= Empty and board(move(x)-1,move(y)+1) /= Empty and
                       board(move(x),move(y)+1) /= Empty);
          else
+            -- We are on an edge, only 5 lines
             return (board(move(x)-1,move(y)) /= Empty and board(move(x)-1,move(y)-1) /= Empty and board(move(x)-1,move(y)+1) /= Empty and board(move(x),move(y)-1) /= Empty and
                       board(move(x),move(y)+1) /= Empty);
          end if;
       elsif move(x) = Dimension'First then
+         -- We are on the side of the board
          if move(y) = Dimension'Last then
-                  return (board(move(x),move(y)-1) /= Empty and
-                board(move(x)+1,move(y)) /= Empty and board(move(x)+1,move(y)-1) /= Empty);
+            -- We are on a corner, only 3 lines
+            return (board(move(x),move(y)-1) /= Empty and
+                      board(move(x)+1,move(y)) /= Empty and board(move(x)+1,move(y)-1) /= Empty);
          elsif move(y) = Dimension'First then
-                  return (board(move(x),move(y)+1) /= Empty and board(move(x)+1,move(y)) /= Empty and board(move(x)+1,move(y)+1) /= Empty);
+            -- We are on a corner, only 3 lines
+            return (board(move(x),move(y)+1) /= Empty and board(move(x)+1,move(y)) /= Empty and board(move(x)+1,move(y)+1) /= Empty);
          else
+         -- We are on an edge, only 5 lines
             return (board(move(x),move(y)-1) /= Empty and
                       board(move(x),move(y)+1) /= Empty and board(move(x)+1,move(y)) /= Empty and board(move(x)+1,move(y)-1) /= Empty and board(move(x)+1,move(y)+1) /= Empty);
          end if;
       elsif move(y) = Dimension'First then
+         -- We are on an edge, only 5 lines
          return (board(move(x)-1,move(y)) /= Empty and board(move(x)-1,move(y)+1) /= Empty and
                    board(move(x),move(y)+1) /= Empty and board(move(x)+1,move(y)) /= Empty and board(move(x)+1,move(y)+1) /= Empty);
       elsif move(y) = Dimension'Last then
+         -- We are on an edge, only 5 lines
          return (board(move(x)-1,move(y)) /= Empty and board(move(x)-1,move(y)-1) /= Empty and board(move(x),move(y)-1) /= Empty and
                    board(move(x)+1,move(y)) /= Empty and board(move(x)+1,move(y)-1) /= Empty);
       else
-         --Put_Line(move(x)'Img & "," & move(y)'Img);
+         -- Return status of 8 lines
          return (board(move(x)-1,move(y)) /= Empty and board(move(x)-1,move(y)-1) /= Empty and board(move(x)-1,move(y)+1) /= Empty and board(move(x),move(y)-1) /= Empty and
-                board(move(x),move(y)+1) /= Empty and board(move(x)+1,move(y)) /= Empty and board(move(x)+1,move(y)-1) /= Empty and board(move(x)+1,move(y)+1) /= Empty);
+                   board(move(x),move(y)+1) /= Empty and board(move(x)+1,move(y)) /= Empty and board(move(x)+1,move(y)-1) /= Empty and board(move(x)+1,move(y)+1) /= Empty);
       end if;
    end CheckInternal;
 
