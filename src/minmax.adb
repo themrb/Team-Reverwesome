@@ -28,9 +28,9 @@ package body MinMax is
       -- Choose the feature set from the state we're currently in
       Set := PhaseToSet(state.state.Current_Phase);
 
-      -- If the state is terminal, take absolute board values -inf or inf
-      outValue := TerminalCheck(state.state.current_state, Player);
-      if(outValue /= 0.0) then
+      -- If the state is terminal, take terminal value
+      if (Terminal(state.state.current_state)) then
+         outValue := TerminalValue(state.state.current_state, Player);
          bestMove := (0,0);
          return;
       end if;
@@ -112,27 +112,26 @@ package body MinMax is
       return Set;
    end PhaseToSet;
 
-   -- Check if a board state is terminal and return appropriate value for if we won or lost
+   -- Board evaluation for terminals - return appropriate value for if we won or lost
    -- Note this completely ignores / overrides normal board evaluation function
    -- This means we will take a win or loss as absolute
-   function TerminalCheck(state : GameBoard; Player : BoardPoint) return BoardValue is
+   function TerminalValue(state : GameBoard; Player : BoardPoint) return BoardValue is
       outValue : BoardValue := 0.0;
    begin
-      if (Terminal(state)) then
-
-         --If we win, take it (best possible outcome). If we lose, avoid like the plague!
-         declare
-            WinningPlayer : BoardPoint;
-         begin
-            Winner(state,WinningPlayer);
-            if WinningPlayer = Player then
-               outValue := BoardValue'Last - 1.0;
-            else
-               outValue := BoardValue'First + 1.0;
-            end if;
-         end;
-      end if;
+      --If we win, take it (best possible outcome). If we lose, avoid like the plague!
+      declare
+         WinningPlayer : BoardPoint;
+      begin
+         Winner(state,WinningPlayer);
+         if WinningPlayer = Player then
+            outValue := BoardValue'Last - 1.0;
+         else
+            outValue := BoardValue'First + 1.0;
+         end if;
+         -- Note these values are slightly higher than -inf and lower than inf
+         -- so that alpha and beta get set appropriately
+      end;
       return outValue;
-   end TerminalCheck;
+   end TerminalValue;
 
 end MinMax;
