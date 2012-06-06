@@ -48,7 +48,7 @@ package body Features is
    end CountStability;
 
    -- Update stability matrix given a move (evaluate effect of new move on stability)
-   -- NOTE: This is not watertight, there will be occasional false negatives. Please see the report.
+   -- NOTE: This is an estimate, not watertight, there will be occasional false negatives. Please see the report.
    procedure UpdateStability(move : Place; board : GameBoard; StabMatrix : in out InfoMatrix) is
       columnfull : Boolean := True;
       rowfull : Boolean := True;
@@ -63,9 +63,12 @@ package body Features is
       x : Dimension;
       y : Dimension;
    begin
+      -- A particular move can have an effect on the stability of pieces in the same line
       -- Check all 8 lines on 4 different directions, to see if we filled them
       -- We only need to check the new status of the stability in the place we just moved
       -- or a direction, if we filled a direction
+
+      -- This does not cover every single case of stability, but is a good, computationally cheaper estimate
 
       if CheckStability(move, board(movex,movey), board, StabMatrix) then
          StabMatrix(movex,movey) := True;
@@ -220,6 +223,7 @@ package body Features is
       end if;
 
       -- If any direction is now full, check the stability of all its members
+
       if rowfull then
          --straight right
          y := movey;
@@ -384,6 +388,17 @@ package body Features is
       y : Dimension;
    begin
 
+      -- -- The Basic Idea -- --
+
+      -- There are 8 lines going left, right, up, down, NE, SW, NW, SE
+      -- There are 4 directions going back and fourth on these lines
+      -- A direction is stable if a. the line is full
+      -- or b. in one direction the next piece is stable and friendly
+      -- (or blocked / outside the board)
+      -- A piece is stable if all 4 directions are stable
+
+      -- To find piece stability, check all 4 directions for stability
+
       -- ROW direction stable check
       if (movex = Dimension'Last or movex = Dimension'First) then
          -- Edge neighbour, this line is stable
@@ -393,26 +408,29 @@ package body Features is
         or (board(movex-1,movey) = Blocked)
         or (board(movex+1,movey) = Blocked)then
          -- Stable node next to us of our colour, we're stable on this direction
+         -- (blocked is always stable)
          null;
       else
 
-         --straight right
+         --straight right full check
          y := movey;
 
          Right_Loop :
          for xpoint in Dimension range 1 .. (Dimension'Last - movex) loop
+            -- Go to the end of the board (if we reach the end without hitting empty, is full
             x := movex + xpoint;
             if board(x,y) = Empty then
+               -- Empty slot in this row, can't be full
                rowfull := False;
                exit Right_Loop;
             elsif board(x,y) = Blocked then
-               --direction is full, we hit blocked first
+               -- Line is full, we hit blocked first
                exit Right_Loop;
             end if;
          end loop Right_Loop;
 
          if rowfull then
-            --straight left, only if required
+            --Straight left full check, only if we haven't hit empty going right
             Left_Loop :
             for xpoint in Dimension range 1 .. (movex-1) loop
                x := movex - xpoint;
@@ -420,7 +438,6 @@ package body Features is
                   rowfull := False;
                   exit Left_Loop;
                elsif board(x,y) = Blocked then
-                  --direction is full, we hit blocked first
                   exit Left_Loop;
                end if;
             end loop Left_Loop;
@@ -429,16 +446,14 @@ package body Features is
 
 
       if (movey = Dimension'Last or movey = Dimension'First) then
-         -- Edge neighbour, this line is stable
          null;
       elsif (StabMatrix(movex,movey-1) and board(movex,movey-1) = player)
         or (StabMatrix(movex,movey+1) and board(movex,movey+1) = player)
         or (board(movex,movey-1) = Blocked)
         or (board(movex,movey+1) = Blocked) then
-         -- Stable node next to us of our colour, we're stable on this direction
          null;
       else
-         --straight up
+         --straight up full check
          x := movex;
          Up_Loop :
          for ypoint in Dimension range 1 .. (Dimension'Last - movey)       loop
@@ -447,13 +462,12 @@ package body Features is
                columnfull := False;
                exit Up_Loop;
             elsif board(x,y) = Blocked then
-               --direction is full, we hit blocked first
                exit Up_Loop;
             end if;
          end loop Up_Loop;
 
          if columnfull then
-            --straight down if needed
+            --straight down full check
             Down_Loop :
             for ypoint in Dimension range 1 .. (movey) loop
                y := movey - ypoint;
@@ -480,11 +494,13 @@ package body Features is
            or (board(movex+1,movey-1) = Blocked)
            or (board(movex-1,movey+1) = Blocked) then
             -- Stable node next to us of our colour, we're stable on this direction
+            -- (or blocked node, which is always stable)
             null;
          else
-            --straight NE
+            --straight NE full check
             yroom := Dimension'Last - movey;
             xroom := Dimension'Last - movex;
+            -- Check how much room we have to move in this direction
             if (yroom > xroom) then
                moveroom := xroom;
             else
@@ -499,13 +515,12 @@ package body Features is
                   SWNEfull := False;
                   exit NE_Loop;
                elsif board(x,y) = Blocked then
-                  --direction is full, we hit blocked first
                   exit NE_Loop;
                end if;
             end loop NE_Loop;
 
             if SWNEfull then
-               --straight SW
+               --straight SW full check
                yroom := movey;
                xroom := movex;
                if (yroom > xroom) then
@@ -521,7 +536,6 @@ package body Features is
                      SWNEfull := False;
                      exit SW_Loop;
                   elsif board(x,y) = Blocked then
-                     --direction is full, we hit blocked first
                      exit SW_Loop;
                   end if;
                end loop SW_Loop;
@@ -536,7 +550,7 @@ package body Features is
             -- Stable node next to us of our colour, we're stable on this direction
             null;
          else
-            --straight NW
+            --straight NW full check
             yroom := Dimension'Last - movey;
             xroom := movex;
             if (yroom > xroom) then
@@ -552,13 +566,12 @@ package body Features is
                   NWSEfull := False;
                   exit NW_Loop;
                elsif board(x,y) = Blocked then
-                  --direction is full, we hit blocked first
                   exit NW_Loop;
                end if;
             end loop NW_Loop;
 
             if NWSEfull then
-               --straight SE
+               --straight SE full check
                yroom := movey;
                xroom := Dimension'Last - movex;
                if (yroom > xroom) then
@@ -574,7 +587,6 @@ package body Features is
                      NWSEfull := False;
                      exit SE_Loop;
                   elsif board(x,y) = Blocked then
-                     --direction is full, we hit blocked first
                      exit SE_Loop;
                   end if;
                end loop SE_Loop;
@@ -583,6 +595,7 @@ package body Features is
 
       end if;
 
+      -- if they're all full or stable, return True
       return columnfull and rowfull and SWNEfull and NWSEfull;
    end CheckStability;
 
