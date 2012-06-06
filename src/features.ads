@@ -8,6 +8,7 @@ package Features is
    procedure CountStability(player : Players; board : GameBoard; stabmatrix : InfoMatrix; StablePieces : out Integer);
    -- Update stability matrix given a move (evaluate effect of new move on stability)
    procedure UpdateStability(move : Place; board : GameBoard; StabMatrix : in out InfoMatrix);
+   -- Check the stability of a particular place for a given player
    function CheckStability(move : Place; player : BoardPoint; board : GameBoard; StabMatrix : InfoMatrix) return Boolean;
 
    -- Count the number of internal nodes
