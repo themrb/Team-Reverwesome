@@ -10,7 +10,7 @@ package MinMax is
    -- Pick out feature set given game phase
    function PhaseToSet(phase : Game_Phase) return FeatureSet;
 
-   -- Check if state is terminal, and if so, how good it is for the given player
-   function TerminalCheck(state : GameBoard; Player : BoardPoint) return BoardValue;
+   -- Board evaluation for terminals - returns -inf or inf
+   function TerminalValue(state : GameBoard; Player : BoardPoint) return BoardValue;
 
 end MinMax;

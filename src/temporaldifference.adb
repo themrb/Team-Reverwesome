@@ -140,19 +140,25 @@ package body TemporalDifference is
       return (Updated - Current)/Step;
    end;
 
+   -- Static evaluation function for a game board
    function EndBoardValue(Player : Players; State : State_Type;
                           Set : FeatureSet) return BoardValue is
       Score : BoardValue;
    begin
+      -- Find the score of all the player's tokens, minus the opponent's score
       Score := TokenScore(State.current_state, Player, Set.piece);
-      -- Weighting on the number of available moves
+      -- Consider score from the difference in number of moves, multiplied by mobility weight
       Score := Score + (FeatureWeight(NumMoves(State.current_state, Player) - NumMoves(State.current_state, NextPlayer(Player))) * Set.mobility);
+
+      -- Consider stability score but not in early game
+      -- (in early game, no edges have been taken yet)
       if State.Current_Phase /= PEarlyGame then
          declare
             StablePieces : Integer;
             StablePiecesTheirs : Integer;
             StabilityMatrix : InfoMatrix := State.StableNodes;
          begin
+            -- Count the number of our stable nodes minux theirs, multiply by stability weight
             CountStability(Player, State.current_state, StabilityMatrix, StablePieces);
             CountStability(NextPlayer(Player), State.current_state, StabilityMatrix, StablePiecesTheirs);
             Score := Score + (FeatureWeight(StablePieces - StablePiecesTheirs) * Set.stability);
@@ -162,25 +168,29 @@ package body TemporalDifference is
          InternalPieces : Integer;
          InternalPiecesTheirs : Integer;
       begin
+         -- Count the number of our internal nodes minux theirs, multiply by internality weight
          CountInternals(Player, State.current_state, State.InternalNodes, InternalPieces);
          CountInternals(NextPlayer(Player), State.current_state, State.InternalNodes, InternalPiecesTheirs);
          Score := Score + (FeatureWeight(InternalPieces-InternalPiecesTheirs) * Set.internal);
       end;
 
-      -- use own disc count
-
+      -- Return overall score tally
       return Score;
    end EndBoardValue;
 
+   -- Return token score of a player
    function TokenScore(State : in GameBoard; Player: in BoardPoint;
                         Weights : BoardPositionWeights) return BoardValue is
       Score : BoardValue := 0.0;
    begin
+      -- Loop through all positions
       for I in Dimension'Range loop
          for J in Dimension'Range loop
             if State(I,J) = Player then
+               -- If we own it, add its weight to our score
                Score := Score + Weights(I,J);
             elsif State(I,J) = NextPlayer(Player) then
+               -- If opponent owns it, subtract its weight from our score
                Score := Score - Weights(I,J);
             end if;
          end loop;
@@ -188,11 +198,13 @@ package body TemporalDifference is
       return Score;
    end TokenScore;
 
+   -- Count of raw tokens for bot players
    procedure TokenCount(State : in GameBoard; WhiteTokens, BlackTokens : out TurnsNo) is
    begin
       BlackTokens := 0;
       WhiteTokens := 0;
-        for I in Dimension'Range loop
+      -- Check all positions and add as appropriate
+      for I in Dimension'Range loop
          for J in Dimension'Range loop
             case State(I,J) is
             when White =>
@@ -203,12 +215,14 @@ package body TemporalDifference is
                null;
             end case;
          end loop;
-   end loop;
+      end loop;
    end TokenCount;
 
+   -- Find how many tiles a given player owns
    function OwnDiscs(Player : Players; State : in GameBoard) return TurnsNo is
       Discs : TurnsNo := 0;
    begin
+      -- Check all positions, add if we own it
       for I in Dimension'Range loop
          for J in Dimension'Range loop
             if (State(I,J) = Player) then
@@ -219,6 +233,10 @@ package body TemporalDifference is
       return Discs;
    end OwnDiscs;
 
+   -- Monte Carlo Predictor
+   -- Returns the probability of a particular player winning from a given state
+   -- For a given number of iterations, makes random moves for both players until terminal
+   -- Returns the percentage of iterations the player won
    function MonteCarlo (Player : BoardPoint; state : GameTree_Type; iterations : Positive) return Probability is
       Whitewins : Natural := 0;
       Blackwins : Natural := 0;
@@ -227,21 +245,29 @@ package body TemporalDifference is
       tempChildren : ExpandedChildren;
       tempWinner : BoardPoint;
       Children : ExpandedChildren := Expand(state);
-      --random imports
-      type Rand_Range is range 0..91;
+      --Import types from random package
+      -- 99991 is a large prime number, this decreases the loss or randomness
+      type Rand_Range is range 0..99991;
       package Rand_Int is new Ada.Numerics.Discrete_Random(Rand_Range);
       seed : Rand_Int.Generator;
 
       Next_Int : Integer;
+      -- End predictor
       endprobability : Probability;
    begin
+      -- Random seed initialisation
       Rand_Int.Reset(seed);
+
+      -- Perform 'iteration' number of games
       for I in 1..iterations loop
+         -- Pick random next child
          Next_Int := Integer(Rand_Int.Random(seed));
          temp := Children.children(Next_Int mod Children.branching);
 
          Single_Iteration:
          loop
+            -- Keep picking a child until we hit a terminal state
+            -- Then tally up the winner
             if (Terminal(temp.state.current_state)) then
                Winner(temp.state.current_state,tempWinner);
                if (tempWinner = White) then
@@ -250,8 +276,6 @@ package body TemporalDifference is
                   Blackwins := Blackwins + 1;
                else Ties := Ties + 1;
                end if;
-               --Put_Line(Image(temp.state));
-               --Put_Line(tempWinner'Img & " wins");
                exit Single_Iteration;
             end if;
 
@@ -261,11 +285,13 @@ package body TemporalDifference is
          end loop Single_Iteration;
       end loop;
 
+      -- Debug print
       Put_Line(Player'Img & "'s turn: Black wins " & Blackwins'Img & " times and white wins " & Whitewins'Img & "times");
       if Whitewins = 0 and Blackwins = 0 then
-         -- we only saw ties
+         -- If we only saw ties, we 'half' won
          return 0.5;
       end if;
+      -- Return the % of times the given player won
       if (Player = White) then
          endprobability := Long_Float(Whitewins) / Long_Float(Whitewins+Blackwins);
 
@@ -275,9 +301,11 @@ package body TemporalDifference is
 
          return endprobability;
       end if;
+
       return 0.0;
    end MonteCarlo;
 
+   -- IO Operations for loading/storing weights
    CSV_File : File_Type;
 
    procedure CloseFile is
@@ -285,13 +313,17 @@ package body TemporalDifference is
       Close(CSV_File);
    end CloseFile;
 
+   -- Load weights procedure
    procedure LoadWeights is
       Filename : constant String := "data.csv";
    begin
       Open(CSV_File, In_File, Filename);
+
+      -- Load each set one by one
       LoadWeightSet(EarlyGame);
       LoadWeightSet(MidGame);
       LoadWeightSet(LateGame);
+
       Close(CSV_File);
    end LoadWeights;
 
@@ -304,7 +336,7 @@ package body TemporalDifference is
          declare
             Line : String := Get_Line(CSV_File);
          begin
-            --Put_Line(Line);
+            -- Split the lines by ',' and store weights in between
             GNAT.String_Split.Create(Subs, Line, ",");
             for i in 1..(Slice_Count(Subs)-1) loop
                declare
@@ -335,7 +367,7 @@ package body TemporalDifference is
          Weights.internal := Float'Value(Line);
       end;
 
-      --Spread out piece weights
+      --Spread out piece weights to full board mapping
       for i in Dimension'Range loop
          for j in Dimension'Range loop
             if (Weights.piece(WeightMapping(i), WeightMapping(j)) = 0.0) then
@@ -353,6 +385,7 @@ package body TemporalDifference is
       Filename : constant String := "data.csv";
    begin
       Create(CSV_File, Out_File, Filename);
+      -- Store weight sets one by one
       StoreWeightSet(EarlyGame);
       StoreWeightSet(MidGame);
       StoreWeightSet(LateGame);
@@ -364,22 +397,27 @@ package body TemporalDifference is
       Subs : Slice_Set;
       Next_Line : Unbounded_String;
       weightaverage : Float;
+      -- number of corner symmetries
       divBy : Float := 4.0;
    begin
       --Line for each pieceweight line
       for i in Dimension range 0.. (Dimension'Last/2) loop
          Next_Line := To_Unbounded_String("");
          for j in Dimension range 0..i loop
+            -- Condense board by taking average along 4 symmetries, or 8 if non corner
             weightaverage := Weights.piece(i,j)+Weights.piece(Dimension'Last-i,j)
                  +Weights.piece(Dimension'Last-i,Dimension'Last-j)+Weights.piece(i,Dimension'Last-j);
             if (i /= j) then
                weightaverage := weightaverage + Weights.piece(j,i) + Weights.piece(Dimension'Last-j,i)
                  +Weights.piece(Dimension'Last-j,Dimension'Last-i)+Weights.piece(j,Dimension'Last-i);
+               -- 4+4 = number of symmetries of non corner pieces
                divBy := divBy + 4.0;
             end if;
             weightaverage := weightaverage / divBy;
+            -- Add ',' in between each
             Next_Line := Next_Line & To_Unbounded_String(Float'Image(weightaverage)) & ',';
          end loop;
+         -- Write to file
          Unbounded_IO.Put_Line(CSV_File, Next_Line);
       end loop;
 
@@ -389,6 +427,7 @@ package body TemporalDifference is
       Unbounded_IO.Put_Line(CSV_File, To_Unbounded_String(Float'Image(Weights.internal)));
    end StoreWeightSet;
 
+   -- Map to mirror reflection of board - basically fold coordinates in half
    function WeightMapping(i : Dimension) return Dimension is
    begin
       if(i > 4) then
