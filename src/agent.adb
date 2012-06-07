@@ -122,7 +122,7 @@ package body Agent is
                   History.History(History.Index) := treeroot;
                   History.Index := History.Index + 1;
 
-                  Configure.depth := 6;
+--                    Configure.depth := 6;
 --                    if TimeLeft < 5.0 then
 --                       Configure.depth := 2;
 --                    elsif TimeLeft < 15.0 then
@@ -197,16 +197,23 @@ package body Agent is
 
                   -- Decide if we won
                   if(GameWinner = my_player) then
-                     feedback := 1.0;
-                  elsif (GameWinner = NextPlayer(my_player)) then
-                     feedback := -1.0;
-                  end if;
+                     declare
+                        WhiteCount, BlackCount : TurnsNo;
+                     begin
+                        TokenCount(Board, WhiteCount, BlackCount);
+                        if(GameWinner = my_player) then
+                           feedback := abs(Float(WhiteCount - BlackCount));
+                        elsif (GameWinner = NextPlayer(my_player)) then
+                           feedback := -abs(Float(WhiteCount - BlackCount));
+                        end if;
+                     end;
 
-                  Put_Line("Feedback : " & feedback'Img);
-                  -- Call learning algorithm
-                  TD(History, my_player, feedback);
-                  -- Store our updated weights
-                  StoreWeights;
+                     Put_Line("Feedback : " & feedback'Img);
+                     -- Call learning algorithm
+                     TD(History, my_player, feedback);
+                     -- Store our updated weights
+                     StoreWeights;
+                  end if;
                end;
 
                -- Shut down the workers

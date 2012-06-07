@@ -9,12 +9,12 @@ package TemporalDifference is
    -- Array for weight on each board position
    type BoardPositionWeights is array(Dimension, Dimension) of FeatureWeight;
 
+   type IndependentWeights is (Mobility, Stability, Internal);
+   type IndependentArray is array(IndependentWeights) of FeatureWeight;
    -- Set of feature weights
    type FeatureSet is record
       piece : BoardPositionWeights;
-      mobility : FeatureWeight;
-      stability : FeatureWeight;
-      internal : FeatureWeight;
+      independent : IndependentArray;
    end record;
 
    -- Number of non-position weights the program has
@@ -66,5 +66,7 @@ package TemporalDifference is
    EarlyGame : FeatureSet;
    MidGame : FeatureSet;
    LateGame : FeatureSet;
+
+   function PhaseToSet(phase : Game_Phase) return FeatureSet;
 
 end TemporalDifference;
