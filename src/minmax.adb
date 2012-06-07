@@ -96,22 +96,6 @@ package body MinMax is
       outValue := value;
    end NegaMax;
 
-   -- Pick out a feature set from the game phase
-   function PhaseToSet(phase : Game_Phase) return FeatureSet is
-      Set : FeatureSet;
-   begin
-      case phase is
-         when PEarlyGame =>
-            Set := EarlyGame;
-         when PMidGame =>
-            Set := MidGame;
-         when PLateGame =>
-            Set := LateGame;
-      end case;
-
-      return Set;
-   end PhaseToSet;
-
    -- Board evaluation for terminals - return appropriate value for if we won or lost
    -- Note this completely ignores / overrides normal board evaluation function
    -- This means we will take a win or loss as absolute

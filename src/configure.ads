@@ -6,7 +6,7 @@ package Configure is
    -- Total depth to search to
    depth : TurnsNo := 6;
    -- Number of worker tasks: Warning, should be set to one less than number of available cores
-   workerTasks : Natural := 4;
+   workerTasks : Natural := 1;
    -- Initialisation of worker tasks
    initialised : Boolean := False;
    -- For epsilon-greedy move selection;
