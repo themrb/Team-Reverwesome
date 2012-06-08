@@ -34,7 +34,7 @@
 \section*{\emph{Design Problem}}
 \hrule
 
-The problem was to design and implement an artificial intelligent agent to play a variant of Othello in a tournament run via network communications.
+The problem was to design and implement an artificial intelligent agent to play a variant of Othello$^{[1]}$ in a tournament run via network communications.
 
 The variant of Othello has a 10x10 board rather than the traditional 8x8, and contains 4 randomly 'removed' squares where pieces cannot be placed. The variant adds both complexity (in the form of significantly increased game tree size) and stochasticity to the domain - two consecutive games are unlikely to have the same board configuration.
 
@@ -44,7 +44,7 @@ A server handles incoming network messages from the agents (initial message, and
 
 The Reverwesome Agent uses negamax with alpha beta pruning and a depth cutoff, with a static evaluation function used to estimate the value of board states, as a backbone for game play.
 
-Core to the static evaluation function are a set of features (functions of a board position) and corresponding feature weights, learnt by the agent using a modified TD($\lambda$) temporal difference learning algorithm via repeated self-play.
+Core to the static evaluation function are a set of features (functions of a board position) and corresponding feature weights, learnt by the agent using a modified TD($\lambda$) temporal difference learning algorithm$^{[2]}$ via repeated self-play.
 
 The agent also uses a simple time management system to deal with time constraints and concurrent game tree searching in order to utilise maximum computer performance.
 
@@ -82,7 +82,7 @@ The red area shows the 8-way symmetric region. The red and yellow region togethe
 
 A given board tile is stable if it is impossible for it to ever be taken. This is very important as it reduces opponent's opportunities to flip tiles and puts the player in a good position to influence the board. Stability is especially important in this Othello variant as the blocked squares can significantly increase the number of stable tiles. 
 
-A piece position is stable if the 4 directional axes (North-South, East-West, NW-SE, NE-SW) are all stable. A directional axis is stable if
+A piece position is stable if the 4 directional axes (North-South, East-West, NW-SE, NE-SW) are all stable. A directional axis is stable if$^{[3]}$
     \begin{itemize}
 \item The axis is 'full' - travelling along the lines on this axis on both sides of the piece position, we hit the end or a blocked square before finding any empty slots.
 \item One of the neighbouring squares along each axist is stable and the same colour.
@@ -180,9 +180,9 @@ To try and balance the exploration vs exploitation problem that is so frequently
 Feature weight learning over 2300 games of self-learning
 \end{center}
 
-We can see from the above graph that the weights learnt are clearly not converging. This is most likely due to the fact that the weights are not independant of each other: stability, mobility and internality all affect each other to a degree, and as their important adjusts, and boards utilising these features become more prominent, it causes the importance of other weights to adjust as well. The stochasticity of the domain (random blocked squares) also impedes convergence.
+We can see from the above graph that the weights learnt are clearly not converging. This is most likely due to the fact that the weights are not independant of each other: stability, mobility and internality all affect each other to a degree, and as their importance adjusts, and boards utilising these features become more prominent, it causes the importance of other weights to adjust as well. The stochasticity of the domain (random blocked squares) together with the $\epsilon$-greedy algorithm used in TD also impede convergence.
 
-The learning seems to oscillate between calmer areas where the weights settle down, then the weights take off as they find new ideas. The calm areas are likely to respond to the more considered strategies, such as the weights learned at about game 850 or game 2070.
+The learning seems to oscillate between calmer areas where the are only minor changes to the weights, followed by brief periods with a high degree of volatility in the weights. The 'calm' areas are likely to respond to the more considered strategies, such as the weights learned at about game 850 or game 2070.
 
 The above graph is slightly misleading, as because the feature weights are all relative, direct comparisons between early, mid and late game weights should not be made, but comparisons about the relative importance of weights within each set can be made.
 
@@ -190,18 +190,18 @@ The weights at game 2070 are as follows:
 \section*{\emph{\textmd{Early Game}}}
 \begin{tabular}{| l | l | l | l | l | }
 \hline
- 0.00000E+0&&&&\\
+ 0&&&&\\
 \hline
- 0.00000E+0& 7.48E-6&&&\\
+ 0& 7.48E-6&&&\\
 \hline
- 0.00000E+0& 2.18E-5&-1.70E-4&&\\
+ 0& 2.18E-5&-1.70E-4&&\\
 \hline
- 0.00000E+0& 1.11E-5&-2.67E-4&-1.60E-4&\\
+ 0& 1.11E-5&-2.67E-4&-1.60E-4&\\
 \hline
- 0.00000E+0&-4.56E-5& 1.21E-4& 1.64E-4& 2.00E-4\\
+ 0&-4.56E-5& 1.21E-4& 1.64E-4& 2.00E-4\\
 \hline
 \end{tabular}
-~\\
+\medskip{}\\
 Mobility Weight: 3.16E-1\\
 Stability Weight: 0.00000E+0\\
 Internality Weight: -4.00E-1
@@ -219,7 +219,7 @@ Internality Weight: -4.00E-1
  1.14E-3&-5.52E-4& 4.10E-4& 7.66E-4& 2.00E-4\\
 \hline
 \end{tabular}
-~\\
+\medskip{}\\
 Mobility Weight: 3.79E-1\\
 Stability Weight: 2.33893E+00\\
 Internality Weight: -3.51E-1
@@ -237,14 +237,14 @@ Internality Weight: -3.51E-1
  5.14E-4& 2.86E-4&-7.56E-5& 1.22E-4& 2.55E-6\\
 \hline
 \end{tabular}
-~\\
+\medskip{}\\
 Mobility Weight: 5.12E-1\\
 Stability Weight: 1.45929E+0\\
 Internality Weight: -2.81E-1
 \section*{\emph{Negamax with alpha beta pruning}}
 \hrule
 
-Negamax is an adversarial search algorithm which expands the game tree in a depth first search in order to maximise game value, under the assumption that the opponent, who makes the same assumptions about game value, is trying to minimise that value. This is achieved in a simple recursive fashion by recursively calling negamax and negating the values at each step.
+Negamax is an adversarial search algorithm which expands the game tree in a depth first search in order to maximise game value, under the assumption that the opponent, who makes the same assumptions about game value, is trying to minimise that value. This is achieved in a simple recursive fashion by recursively calling negamax and negating the values at each step.$^{[4]}$
 
 The alpha-beta pruning extension allows us to disregard branches of the game tree that a player would not give the opponent a chance to play (because it is too good for their opponent), significantly reducing the size of the game tree that needs exploring.
 
@@ -314,14 +314,16 @@ The main function in C++ was used to facilitate network communications, from the
 
 \section*{\emph{Other ideas (Monte Carlo)}}
 \hrule
-    \begin{itemize}
-  \item
-    	Use monte carlo prediction as a substitute for reward to help with learning of mid-game states
-  \item
-	Tends to make the algorithm learn more quickly, and on-the-fly
-  \item
-	Can also be used as a predictor of how good a board state is.
-  \end{itemize}
+A Monte Carlo function may be used to predict the likelyhood of wining, based on a random sampling of possible end board states arising from the one being currently evaluated. This has a number of practical uses in the Othello problem:
+
+Firstly, it can be utilised in conjunction with MinMax in order to differentiate moves which are likely to be good. The process would involve selecting (for example) the 10 best boards from a MinMax search to some fixed depth, and then performing Monte Carlo sampling of the end-boards from each of these positions. This would provide a probability of winning from each of those board positions, which we could then use to weight the values returned for each board by the static evaluation function, giving us a final value.
+
+The advantage of this technique is that it provides a concrete approximation to the likelyhood of winning from a given board position. Indeed, given a large enough level of sampling, Monte Carlo could potentially replace MinMax altogether.
+
+The other potential use for Monte Carlo is as an approximation to the reward used in the temporal difference learning algorithm. Here we again sample the end board states that arise from a given board state, and use this probability of winning as the reward value for a particular state. This allows us to get around the problem we encounter in Othello (and other similar board games) in that we only know the outcome of the game at the very end, thus alowing us to learn on-the-fly, instead of at the end of every game. This presumably would allow us to learn accurate feature weights more quickly.
+
+At one point in the development of our agent, we had implemented parts of both of these ideas. However, Monte Carlo was re-replaced with MinMax for our search function, as it was not performing particularly well (at least not for the sample sizes we were using), and it's use as a reward approximator was removed, as at that time the temporal difference learning function was not behaving as desired, and it was neccessary to try and remove any points of possible error.
+
 \section*{\emph{Other ideas (NegaMax)}}
 \hrule
 
@@ -349,11 +351,29 @@ A variable search depth, based on the branching factor and volatility of the sta
 	Essentially still doing gradient decent. Can be used as a substitute for an $\epsilon$-greedy policy.
   \end{itemize}
   
-\section*{\emph{Other ideas (Evolutionary Algorithm)}}
+\section*{\emph{References)}}
 \hrule
+
+[1]
+Stephen Gould\\
+\emph{Othello Project (Handout $\#$3)} (s2012)\\
   
-[1] C. Qazaz, C. Williams and C. Bishop (1997).\\
-\emph{An upper bound on the Bayesian error bars for generalized linear regression.}\\
-(pp. 295-299 \underline{Mathematics of Neural Networks: Models, Algorithms and Applications},\\ S. Ellacott, J. Mason and I. Anderson, Kluwer)
+[2] Yasuhiro OSAKI, Kazutomo, SHIBAHARA, Yasuhiro TAJIMA, Yoshiyuki KOTANI\\
+\emph{An Othello Evaluation Function Based on Temporal Difference Learning using Probability of Winning} (2008)\\
+$<$http://www.csse.uwa.edu.au/cig08/Proceedings/papers/8010.pdf$>$
+
+[3]
+Amy S. Biermann\\
+Stability, \emph{Othello implementation} (1994)\\
+$<$http://www.pressibus.org/ataxx/autre/minimax/node3.html$>$
+
+[4]
+Wikipedia\\
+\emph{Negascout} (2012)\\
+$<$http://en.wikipedia.org/wiki/Negascout$>$
 \end{multicols}
+<<<<<<< HEAD
+\end{document}
+=======
 \end{document} 
+>>>>>>> d4c81559d4e3eb7cddc74defdb7ba873de7bb41d

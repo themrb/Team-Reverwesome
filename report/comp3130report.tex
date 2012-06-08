@@ -180,9 +180,9 @@ To try and balance the exploration vs exploitation problem that is so frequently
 Feature weight learning over 2300 games of self-learning
 \end{center}
 
-We can see from the above graph that the weights learnt are clearly not converging. This is most likely due to the fact that the weights are not independant of each other: stability, mobility and internality all affect each other to a degree, and as their important adjusts, and boards utilising these features become more prominent, it causes the importance of other weights to adjust as well. The stochasticity of the domain (random blocked squares) also impedes convergence.
+We can see from the above graph that the weights learnt are clearly not converging. This is most likely due to the fact that the weights are not independant of each other: stability, mobility and internality all affect each other to a degree, and as their importance adjusts, and boards utilising these features become more prominent, it causes the importance of other weights to adjust as well. The stochasticity of the domain (random blocked squares) together with the $\epsilon$-greedy algorithm used in TD also impede convergence.
 
-The learning seems to oscillate between calmer areas where the weights settle down, then the weights take off as they find new ideas. The calm areas are likely to respond to the more considered strategies, such as the weights learned at about game 850 or game 2070.
+The learning seems to oscillate between calmer areas where the are only minor changes to the weights, followed by brief periods with a high degree of volatility in the weights. The 'calm' areas are likely to respond to the more considered strategies, such as the weights learned at about game 850 or game 2070.
 
 The above graph is slightly misleading, as because the feature weights are all relative, direct comparisons between early, mid and late game weights should not be made, but comparisons about the relative importance of weights within each set can be made.
 
@@ -190,18 +190,18 @@ The weights at game 2070 are as follows:
 \section*{\emph{\textmd{Early Game}}}
 \begin{tabular}{| l | l | l | l | l | }
 \hline
- 0.00000E+0&&&&\\
+ 0&&&&\\
 \hline
- 0.00000E+0& 7.48E-6&&&\\
+ 0& 7.48E-6&&&\\
 \hline
- 0.00000E+0& 2.18E-5&-1.70E-4&&\\
+ 0& 2.18E-5&-1.70E-4&&\\
 \hline
- 0.00000E+0& 1.11E-5&-2.67E-4&-1.60E-4&\\
+ 0& 1.11E-5&-2.67E-4&-1.60E-4&\\
 \hline
- 0.00000E+0&-4.56E-5& 1.21E-4& 1.64E-4& 2.00E-4\\
+ 0&-4.56E-5& 1.21E-4& 1.64E-4& 2.00E-4\\
 \hline
 \end{tabular}
-~\\
+\medskip{}\\
 Mobility Weight: 3.16E-1\\
 Stability Weight: 0.00000E+0\\
 Internality Weight: -4.00E-1
@@ -219,7 +219,7 @@ Internality Weight: -4.00E-1
  1.14E-3&-5.52E-4& 4.10E-4& 7.66E-4& 2.00E-4\\
 \hline
 \end{tabular}
-~\\
+\medskip{}\\
 Mobility Weight: 3.79E-1\\
 Stability Weight: 2.33893E+00\\
 Internality Weight: -3.51E-1
@@ -237,7 +237,7 @@ Internality Weight: -3.51E-1
  5.14E-4& 2.86E-4&-7.56E-5& 1.22E-4& 2.55E-6\\
 \hline
 \end{tabular}
-~\\
+\medskip{}\\
 Mobility Weight: 5.12E-1\\
 Stability Weight: 1.45929E+0\\
 Internality Weight: -2.81E-1
@@ -314,14 +314,16 @@ The main function in C++ was used to facilitate network communications, from the
 
 \section*{\emph{Other ideas (Monte Carlo)}}
 \hrule
-    \begin{itemize}
-  \item
-    	Use monte carlo prediction as a substitute for reward to help with learning of mid-game states
-  \item
-	Tends to make the algorithm learn more quickly, and on-the-fly
-  \item
-	Can also be used as a predictor of how good a board state is.
-  \end{itemize}
+A Monte Carlo function may be used to predict the likelyhood of wining, based on a random sampling of possible end board states arising from the one being currently evaluated. This has a number of practical uses in the Othello problem:
+
+Firstly, it can be utilised in conjunction with MinMax in order to differentiate moves which are likely to be good. The process would involve selecting (for example) the 10 best boards from a MinMax search to some fixed depth, and then performing Monte Carlo sampling of the end-boards from each of these positions. This would provide a probability of winning from each of those board positions, which we could then use to weight the values returned for each board by the static evaluation function, giving us a final value.
+
+The advantage of this technique is that it provides a concrete approximation to the likelyhood of winning from a given board position. Indeed, given a large enough level of sampling, Monte Carlo could potentially replace MinMax altogether.
+
+The other potential use for Monte Carlo is as an approximation to the reward used in the temporal difference learning algorithm. Here we again sample the end board states that arise from a given board state, and use this probability of winning as the reward value for a particular state. This allows us to get around the problem we encounter in Othello (and other similar board games) in that we only know the outcome of the game at the very end, thus alowing us to learn on-the-fly, instead of at the end of every game. This presumably would allow us to learn accurate feature weights more quickly.
+
+At one point in the development of our agent, we had implemented parts of both of these ideas. However, Monte Carlo was re-replaced with MinMax for our search function, as it was not performing particularly well (at least not for the sample sizes we were using), and it's use as a reward approximator was removed, as at that time the temporal difference learning function was not behaving as desired, and it was neccessary to try and remove any points of possible error.
+
 \section*{\emph{Other ideas (NegaMax)}}
 \hrule
 
@@ -370,4 +372,4 @@ Wikipedia\\
 \emph{Negascout} (2012)\\
 $<$http://en.wikipedia.org/wiki/Negascout$>$
 \end{multicols}
-\end{document}
+\end{document} 
