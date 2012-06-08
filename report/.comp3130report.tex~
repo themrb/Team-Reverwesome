@@ -29,9 +29,6 @@
 \author{Josh Godsiff, Jarrah Bloomfield}
 \maketitle
 
-\setlength{\columnsep}{22.0pt}
-\begin{multicols}{2}
-
 \section*{\emph{Problem Outline}}
 \hrule
     \begin{itemize}
@@ -117,7 +114,7 @@ It should be noted that this method is not complete, only a largely accurate est
 To fix this, we could test all pieces in all directions of a move, and then if we find any stable positions, retest all the directions from the stable positions. However, the increased computation required would outweigh the benefits of the gain in accuracy.
 
 \begin{center}
-\includegraphics[scale=0.6]{falsepos.PNG}\\
+%\includegraphics[scale=0.6]{falsepos.PNG}\\
 If white moves in position A, the algorithm will detect that B is stable\\ but will fail to test the stability of C as it is not on a full line.
 \end{center}
 
@@ -143,7 +140,7 @@ A piece is internal if it has no empty neighbours. This can be a useful indicato
 This is computationally cheap to check. Exploiting the fact internal pieces stay internal even if they are flipped, partial memory of internality was also used (internality checked and remembered for every new move).
 
 \begin{center}
-\includegraphics[scale=0.50]{internality.PNG}\\
+%\includegraphics[scale=0.50]{internality.PNG}\\
 The centre piece is an internal node.
 \end{center}
 
@@ -332,5 +329,4 @@ The main function in C++ was used to facilitate network communications, from the
 	Ada would be very well positioned to perform this task
   \end{itemize}
 
-\end{multicols}
 \end{document} 
