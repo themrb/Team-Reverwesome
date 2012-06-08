@@ -238,7 +238,7 @@ Mobility Weight: 5.12E-1\\
 Stability Weight: 1.45929E+0\\
 Internality Weight: -2.81E-1
 
-The feature weights learnt here slightly favoured edge pieces and greatly favoured corners. Notice that the agent learns that the position on the diagonal from the corner is either not a very good place or a bad place to play, but learns that the edge piece next to the corner is a good place to play. This is a drawback of our implementation of TD($\lambda$) on this domain, because if you own the corner, you most likely own the edge piece next to it as well.
+The feature weights learnt here slightly favoured edge pieces and greatly favoured corners. Notice that the agent learns that the position on the diagonal from the corner is either not a very good place or a bad place to play, but learns that the edge piece next to the corner is a good place to play, although domain knowledge tells us this play would likely give the opponent the corner. This is a drawback of our implementation of TD($\lambda$) on this domain, because if you own the corner, you most likely own the edge piece next to it as well, so the position is learnt to be favourable.
 
 In early game, the agent learnt that mobility is a factor of 100 times more important than anything else, and learnt a strategy that avoids owning internal pieces.
 
