@@ -122,7 +122,6 @@ Mobility is the number of moves a player has in a given board state. High mobili
 Mobility tends to be the strongest predictor of a good position during the early game. In the mid and late game, it is less favoured than stability and control of the corners, but otherwise is still a strong predictor of the value of a position.
 
 It also has the unfortunate side effect of increasing the branching factor in the MinMax search, to the point where the increased number of available moves can mean we have to search to a lesser depth.
-
 \section*{\emph{\textmd{Piece Internality}}}
 \hrule
 
@@ -239,7 +238,6 @@ Internality Weight: -3.51E-1
 Mobility Weight: 5.12E-1\\
 Stability Weight: 1.45929E+0\\
 Internality Weight: -2.81E-1
-
 \section*{\emph{Negamax with alpha beta pruning}}
 \hrule
 
@@ -250,7 +248,6 @@ The alpha-beta pruning extension allows us to disregard branches of the game tre
 Negamax is very useful as it emulates a game play environment, where while we moving the board into a good state for us, the opponent is actively trying to move to make the board a worse state for us.
 
 The major disadvantage of Negamax is the assumption that the opponent values each board exactly the same way as we do. This is especially problematic with alpha beta pruning - we may prune states which very good moves based on the assumption that the opponent will never let us play those moves, but in real play, the opponent might let us play those moves if they don't see the value.
-
 \section*{\emph{\textmd{Negamax Implementation}}}
 \hrule
 
@@ -263,7 +260,6 @@ At terminal states, the board is evaluated to be -$\infty$ if we lose, or +$\inf
 The advantages are that we will take a guaranteed opportunity to wipe out the opponent early, or at the end of the game, move towards a safe guaranteed win rather than trying for a win with the most pieces. However the disadvantage is if we see that a perfect opponent would cause us to lose no matter how well we play, the agent surrenders and plays the first move it sees, rather than attempting to minimise the loss margin in the hope that the opponent makes a mistake and allows our victory.
 
 In normal play, the agent searched to a depth of 7 in the game tree (see Time Management). Once the end of the game was within sight (12 moves left on the board), the depth was increased to allow the entire game tree to be evaluated. This allowed us to make perfect play (and at this point, we could determine whether we would win or lose to a perfect player).
-
 \section*{\emph{Concurrency}}
 \hrule
 
@@ -285,7 +281,6 @@ This model has the advantage of having very little overhead in terms of communic
 One issue that does arise with this model is that the first node (or first set of nodes) evaluated almost always takes the longest amount of time, when compared with the other nodes. This appears to be true regardless of the number of workers assigned to the task. Our theory as to the reason behind this is that, for the first nodes, we do not have accurate $\alpha\beta$ values when exploring the tree, so much more will tend to be explored than is strictly necessary. Once at least one of the initial nodes returns, and its information aggreated into the central data structure, all subsequent nodes will be evaluated with at least the $\alpha\beta$ values of that first node, allowing for much more efficient pruning.
 
 The results of our parallelism is an $O(n)$ speed-up in computation time, where $n$ is the number of cores we are using. In practice, this gave us an extra one to two levels of MinMax search, running on a 4-core machine.
-
 \section*{\emph{Time management}}
 \hrule
 
@@ -302,7 +297,6 @@ Otherwise, the agent defaulted to the normal depth of 7.
 This system was simple yet able to respond to different scenarios without forfeiting on time, whilst utilising most of the time available.
 
 However, the downside of such a simple system is that the agent did not respond to time constraints mid-search. In an extreme scenario, with 31 seconds left, the agent may attempt its normal search depth on a board with a huge branching factor and take longer than the remaining time. This could be avoided by checking the timing mid-computation and breaking off to employ emergency mechanisms if required.
-
 \section*{\emph{C++ and Ada}}
 \hrule
 A mix of C++ and Ada code was used for the agent. C++ listened for and recorded server messages, and Ada was used for the main computation. This was effective in playing to the advantages of both languages. C++ was able to handle the server messages on a bit level, whereas this is more difficult for Ada as it is very strongly typed. On the other hand, Ada is very well suited for concurrent computation and this was used in order to fully utilise available hardware (see \emph{Concurrency}.
@@ -325,7 +319,6 @@ The main function in C++ was used to facilitate network communications, from the
   \item
 	Can also be used as a predictor of how good a board state is.
   \end{itemize}
-
 \section*{\emph{Other ideas (NegaMax)}}
 \hrule
 
@@ -336,7 +329,6 @@ By optimising the order in which we explored nodes to search the most promising 
 A considerable amount of time could be saved by storing the results of searches in between moves, and continuing on from the results of previous computations (after pruning the now irrelevant game trees considered). An approach achieving a similar function would be to store a transition table of states previously considered.
 
 A variable search depth, based on the branching factor and volatility of the state (possibly corresponding to a really good move) could also have improved the search considerably.
-
 \section*{\emph{Other ideas (Evolutionary Algorithm)}}
 \hrule
     \begin{itemize}
@@ -353,7 +345,6 @@ A variable search depth, based on the branching factor and volatility of the sta
   \item
 	Essentially still doing gradient decent. Can be used as a substitute for an $\epsilon$-greedy policy.
   \end{itemize}
-
 \section*{\emph{Other ideas (Utilising opponent time)}}
 \hrule
     \begin{itemize}
