@@ -82,12 +82,15 @@ package body MinMax is
             end if;
          end;
 
-         if(value >= b) then -- Min sees no way of avoiding max's win
+         if(value >= b) then
+            -- This is better than a branch the opponent could force us to take
+            -- We can prune this
             outValue := value;
             bestMove := move.state.spot;
             return;
          end if;
          if (value > a) then
+            -- This is the best move we've seen in this branch so far
             a := value;
             bestMove := move.state.spot;
          end if;
