@@ -298,7 +298,7 @@ As emergency mechanisms, if the agent had 15 seconds left, it searched to depth 
 
 If there was less than 30 seconds available, or the previous move took a long time to compute (likely indicating a large branching factor), the agent searched to depth 5 to conserve time.
 
-If there was more than 50 seconds available, and the previous move took a short time to compute (indicating a lower branching factor that we can search deeper into), the agent searched to depth 5.
+If there was more than 50 seconds available, and the previous move took a short time to compute (indicating a lower branching factor that we can search deeper into), the agent searched to depth 8.
 
 Otherwise, the agent defaulted to the normal depth of 7.
 
