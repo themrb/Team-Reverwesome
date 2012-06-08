@@ -348,20 +348,12 @@ A variable search depth, based on the branching factor and volatility of the sta
   \item
 	Essentially still doing gradient decent. Can be used as a substitute for an $\epsilon$-greedy policy.
   \end{itemize}
-\section*{\emph{Other ideas (Utilising opponent time)}}
+  
+\section*{\emph{Other ideas (Evolutionary Algorithm)}}
 \hrule
-
-
-    \begin{itemize}
-  \item
-   	Compute further down the game tree while the opponent is thinking
-  \item
-	Could allow significantly greater search depths to be reached
-  \item
-	Required memory management and large data structures
-  \item
-	Ada would be very well positioned to perform this task
-  \end{itemize}
-
+  
+[1] C. Qazaz, C. Williams and C. Bishop (1997).\\
+\emph{An upper bound on the Bayesian error bars for generalized linear regression.}\\
+(pp. 295-299 \underline{Mathematics of Neural Networks: Models, Algorithms and Applications},\\ S. Ellacott, J. Mason and I. Anderson, Kluwer)
 \end{multicols}
 \end{document} 
