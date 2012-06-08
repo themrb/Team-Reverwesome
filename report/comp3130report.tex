@@ -110,10 +110,6 @@ To fix this, we could test all pieces in all directions of a move, and then if w
 If white moves in position A, the algorithm will detect that B is stable\\ but will fail to test the stability of C as it is not on a full line.
 \end{center}
 
-    \begin{itemize}
-  \item
-    Importance gets diluted in late game because in late game, EVERYTHING is stable. this is a consequence of only using 3 phases
-  \end{itemize}
 \section*{\emph{\textmd{Mobility}}}
 \hrule
 
@@ -125,7 +121,7 @@ It also has the unfortunate side effect of increasing the branching factor in th
 \section*{\emph{\textmd{Piece Internality}}}
 \hrule
 
-A piece is internal if it has no empty neighbours. This can be a useful indicator of a player's position on the board. While it can be useful sometimes, as internal pieces can also be harder to dislodge, the strategy learnt by the agent favoured less internal pieces and imposed a penalty on them.
+A piece is internal if it has no empty neighbours. This can be a useful indicator of a player's position on the board. While internal pieces can be favourable sometimes, as internal pieces can also be harder to dislodge, the strategy learnt by the agent favoured less internal pieces and imposed a penalty on them.
 
 This is computationally cheap to check. Exploiting the fact internal pieces stay internal even if they are flipped, partial memory of internality was also used (internality checked and remembered for every new move).
 
@@ -241,6 +237,15 @@ Internality Weight: -3.51E-1
 Mobility Weight: 5.12E-1\\
 Stability Weight: 1.45929E+0\\
 Internality Weight: -2.81E-1
+
+The feature weights learnt here slightly favoured edge pieces and greatly favoured corners. Notice that the agent learns that the position on the diagonal from the corner is either not a very good place or a bad place to play, but learns that the edge piece next to the corner is a good place to play. This is a drawback of our implementation of TD($\lambda$) on this domain, because if you own the corner, you most likely own the edge piece next to it as well.
+
+In early game, the agent learnt that mobility is a factor of 100 times more important than anything else, and learnt a strategy that avoids owning internal pieces.
+
+In mid game, the mobility was less important relative to stability, which was almost as important as owning a corner. There was still a sizeable penalty for owning internal pieces.
+
+In late game, the agent came to similar conclusions as in mid game, but stability was worth slightly less relative to mobility (giving slightly more priority to late game options) and corners were weighted very highly relative to the rest of the board.
+
 \section*{\emph{Negamax with alpha beta pruning}}
 \hrule
 
@@ -293,7 +298,7 @@ As emergency mechanisms, if the agent had 15 seconds left, it searched to depth 
 
 If there was less than 30 seconds available, or the previous move took a long time to compute (likely indicating a large branching factor), the agent searched to depth 5 to conserve time.
 
-If there was more than 50 seconds available, and the previous move took a short time to compute (indicating a lower branching factor that we can search deeper into), the agent searched to depth 5.
+If there was more than 50 seconds available, and the previous move took a short time to compute (indicating a lower branching factor that we can search deeper into), the agent searched to depth 8.
 
 Otherwise, the agent defaulted to the normal depth of 7.
 
