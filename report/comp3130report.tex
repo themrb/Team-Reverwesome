@@ -161,10 +161,10 @@ We then run through each successor $b_t$ of $b_k$, and calculate the difference 
 Finally, the value of the feedback is also added in, weighted by the distance from $b_k$ to the terminal board $b_K$.
 
 More formally, we calculate 
-\[
-	W_f \leftarrow W_f 
-	+ \alpha \frac{\Delta V(b_k)}{\Delta W_f} \left(\gamma^{K-k}r + \sum_{t=k+1}^K \gamma^{t-k}\left(V(b_t) - V(b_k)\right)\right)
-\]
+\begin{eqnarray}
+	W_f  & \leftarrow & W_f + \alpha \frac{\Delta V(b_k)}{\Delta W_f} \nonumber  \\
+	&&  \times \left(\gamma^{K-k}r + \sum_{t=k+1}^K \gamma^{t-k}\left(V(b_t) - V(b_k)\right)\right) \nonumber
+\end{eqnarray}
 
 Where
    \begin{itemize}
@@ -202,7 +202,7 @@ The major disadvantage of Negamax is the assumption that the opponent values eac
 
 Because the entire game tree isn't computable, our negamax has a depth cutoff. A small (but useful) optimisation to this process is increasing the search depth by 1 if we explore along a forced move - both because there is no branching that would increase computation cost, and this is an interesting board that we should explore further.
 
-At the cutoff, the agent uses the static evaluation function in order to determine how far in our favour a board state is.
+At the cutoff, the agent uses the static evaluation function in order to determine the degree to which the board state is (or is not) in our favour.
 
 At terminal states, the board is evaluated to be -$\infty$ if we lose, or +$\infty$ if we win. This encodes the fact that any win is equal, regardless of the piece margin, and we should prioritise an outright win, and also that any loss is equal and should be avoided at all costs.
 
@@ -222,7 +222,7 @@ The first model considered was one in which the root node of the MinMax search t
 We therefore settled on a second, more straightforward method of parallelising the computation. In this model, the worker threads poll a central data structure in order to recieve a node to evaluate. This node corresponds to one of the Min nodes which are direct successors of the root Max node in the MinMax search tree. The node is then evaluated in full (to the specified fixed depth) and without communication with either the other workers or the central data structure. Once evaluated, the results (i.e the value of that move) are reported to the central data structure, which aggregates the results. The worker then requests a new node to evaluate, and the process repeats.
 
 \begin{center}
-\includegraphics[scale=0.35]{concurrency.png}
+\includegraphics[scale=0.31]{concurrency.png}
 \\Concurrency model
 \end{center}
 
