@@ -32,39 +32,24 @@
 \setlength{\columnsep}{22.0pt}
 \begin{multicols}{2}
 
-\section*{\emph{Problem Outline}}
+\section*{\emph{Design Problem}}
 \hrule
-    \begin{itemize}
-  \item
-    Modified Othello Game
-  \item
-    4 randomly removed squares
-  \item
-    10x10 board rather than the traditional 8x8
-  \item
-    Network communication with server
-  \item
-    150 seconds total time per player
-  \item
-    Design an agent to play intelligently
-  \end{itemize}
 
-\section*{\emph{Solution Outline}}
-\hrule
-    \begin{itemize}
-  \item
-    Static evaluation function based on feature weights
-  \item
-    Temporal Difference Learning
-  \item
-    Negamax search with alpha beta pruning
-  \item
-    Concurrent searching
-  \item
-    Time management
-  \item
-    C++ and Ada interfacing
-  \end{itemize}
+The problem is to design and implement an intelligent agent to play a variant of Othello in a tournament, through network communications.
+
+The variant of Othello has a 10x10 board rather than the traditional 8x8, and contains 4 randomly 'removed' squares that cannot be moved on. This adds complexity to the domain (significantly increased game tree size) and a stochasticity to the domain - two consecutive games are unlikely to have the same board configuration.
+
+A server handles incoming network messages from the client (initial message, and move choice) and sends outgoing messages (updated board state and move request, end of game). The server allocates 150 seconds time over the whole game to each side, and calls a forfeit if any side runs out of time.
+
+\section*{\emph{Design Solution}}
+
+The Reverwesome Agent uses negamax with alpha beta pruning and a depth cutoff, with a static evaluation fuction for board states, as a backbone for game play.
+
+Core to the static evaluation function is the Temporal Different learning algorithm TD($\lambda$) in order to learn good weights for features used in static evaluation.
+
+The agent also uses a simple time management system to deal with time constraints and concurrent game tree searching in order to utilise maximum computer performance.
+
+The project uses C++ to implement network communications with the server and interfaces with Ada for the main game computation.
 
 \section*{\emph{Static Evaluation}}
 \hrule
