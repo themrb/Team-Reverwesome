@@ -43,13 +43,13 @@ A server handles incoming network messages from the agents (initial message, and
 \section*{\emph{Design Solution}}
 \hrule
 
-The Reverwesome Agent uses negamax with alpha beta pruning and a depth cutoff, with a static evaluation function used to estimate the value of board states, as a backbone for game play.
+The Reverwesome Agent uses negamax search with alpha beta pruning and a depth cutoff, with a static evaluation function used to estimate the value of board states, as a backbone for game play.
 
-Core to the static evaluation function are a set of features (functions of a board position) and corresponding feature weights, learnt by the agent using a modified TD($\lambda$) temporal difference learning algorithm$^{[2]}$ via repeated self-play.
+Core to the static evaluation function are a set of features (functions of a board position) and corresponding feature weights, learnt by the agent using a modified TD($\lambda$) temporal difference learning algorithm$^{[2]}$ via repeated self-play. Three sets of features were used: a set for early game, mid game and late game.
 
 The agent also uses a simple time management system to deal with time constraints and concurrent game tree searching in order to make maximum use of the time available.
 
-The project uses C++ to implement network communications with the server and interfaces with Ada for the main computational part of the agent.
+The project uses C++ to implement network communications with the server and interfaces with Ada for the main computational part of the agent and concurrent searching.
 \section*{\emph{Static Evaluation}}
 \hrule
 The static evaluation function is a simple linear combination of our feature functions, each weighted by their respective feature weight:
@@ -58,7 +58,7 @@ The static evaluation function is a simple linear combination of our feature fun
 \]
 Where $F_i$ is the $i$\textsuperscript{th} feature function, $W_i$ is the corresponding feature weight, $p$ is the player (with $\neg p$ corresponding to the other player), and $b$ is the board state.
 
-Our evaluation function uses 103 different features. These features can be broken down as:
+Our evaluation function uses three sets of 103 different features. These features can be broken down as:
     \begin{itemize}
   \item
     Mobility: number of moves the player would have if it was their turn.
@@ -70,8 +70,21 @@ Our evaluation function uses 103 different features. These features can be broke
     Control: 100 features, corresponding to control of each of the 100 squares on the board.
   \end{itemize}
 
+The feature sets are used as follows:
+    \begin{itemize}
+  \item
+    Early Game: From the start of the game until the first edge is taken
+  \item
+   Mid Game: From the first edge being taken until two corners have been taken
+  \item
+   End Game: From two corners being taken to the end of the game
+  \item
+    Control: 100 features, corresponding to control of each of the 100 squares on the board.
+  \end{itemize}
+
 In practice, only 15 of the weights for control are stored, corresponding to an 8-way symmetric subregion of the board. These weights are then mirrored out to the other 7 symmetric regions. When updated weights are stored, we take the average of each of the corresponding 4 or 8 symmetric squares as the new value.
 
+\newpage
 It is notable that in principle there is actually only a 4-way symmetry to the Othello board, due to the difference in starting positions. However, it is unlikely that the difference between using the actual 4-way symmetry versus approximating it with an 8-way symmetry would be significant enough to warrant the extra overhead.
 
 \begin{center}
@@ -173,7 +186,7 @@ To try and balance the exploration vs exploitation problem that is so frequently
 \hrule
 
 \begin{center}
-\includegraphics[scale=0.40]{longgraph.png}\\
+\includegraphics[scale=0.35]{longgraph.png}\\
 \includegraphics[scale=0.50]{legend.PNG}\\
 Feature weight learning over 2300 games of self-learning
 \end{center}
@@ -258,6 +271,7 @@ The alpha-beta pruning extension allows us to disregard branches of the game tre
 Negamax is useful as it emulates a game play environment, where while we are trying to make moves which put the board into a good state for us, the opponent is actively trying to worsen the state (from our perspective).
 
 The major disadvantage of Negamax is the assumption that the opponent values each board exactly the same way as we do. This is especially problematic with alpha beta pruning - we may prune states which very good moves based on the assumption that the opponent will never let us play those moves, but in real play, the opponent might let us play those moves if they don't see the value.
+\columnbreak
 \section*{\emph{\textmd{Negamax Implementation}}}
 \hrule
 
@@ -340,24 +354,7 @@ By optimising the order in which we explored nodes to search the most promising 
 
 A considerable amount of time could be saved by storing the results of searches in between moves, and continuing on from the results of previous computations (after pruning the now irrelevant game trees considered). An approach achieving a similar function would be to store a transition table of states previously considered. Additionally, a considerable amount of computation time could be gained by utilising time while the opponent is thinking. However all of these possibilities would have required extra memory management and data structures and the extra complication would have made concurrency more difficult.
 
-A variable search depth, based on the branching factor and volatility of the state (possibly corresponding to a really good move) could also have improved the search considerably.
-\section*{\emph{Other ideas (Evolutionary Algorithm)}}
-\hrule
-    \begin{itemize}
-  \item
-   	Use an evolutionary algorithm strategy to play agents off against each other.
-  \item
-	Use feature values as 'genes'.
-  \item
-	'Breeding' via exchanging features. Don't need a heuristic for which to exchange, as features tend to be relatively independent.
-  \item
-	Mutation via small random change to a feature.
-	\\ e.g. from a uniform distribution around (-1,1), or
-	\\ Normal distribution with mean 0.
-  \item
-	Essentially still doing gradient decent. Can be used as a substitute for an $\epsilon$-greedy policy.
-  \end{itemize}
-  
+A variable search depth, based on the branching factor and volatility of the state (possibly corresponding to a really good move) could also have improved the search considerably. 
 \end{multicols}
 \newpage
 \section*{\emph{References}}
