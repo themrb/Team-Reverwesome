@@ -256,14 +256,15 @@ The main function in C++ was used to facilitate network communications, from the
 
 \section*{\emph{Other ideas (Monte Carlo)}}
 \hrule
-    \begin{itemize}
-  \item
-    	Use monte carlo prediction as a substitute for reward to help with learning of mid-game states
-  \item
-	Tends to make the algorithm learn more quickly, and on-the-fly
-  \item
-	Can also be used as a predictor of how good a board state is.
-  \end{itemize}
+A Monte Carlo function may be used to predict the likelyhood of wining, based on a random sampling of possible end board states arising from the one being currently evaluated. This has a number of practical uses in the Othello problem:
+
+Firstly, it can be utilised in conjunction with MinMax in order to differentiate moves which are likely to be good. The process would involve selecting (for example) the 10 best boards from a MinMax search to some fixed depth, and then performing Monte Carlo sampling of the end-boards from each of these positions. This would provide a probability of winning from each of those board positions, which we could then use to weight the values returned for each board by the static evaluation function, giving us a final value.
+
+The advantage of this technique is that it provides a concrete approximation to the likelyhood of winning from a given board position. Indeed, given a large enough level of sampling, Monte Carlo could potentially replace MinMax altogether.
+
+The other potential use for Monte Carlo is as an approximation to the reward used in the temporal difference learning algorithm. Here we again sample the end board states that arise from a given board state, and use this probability of winning as the reward value for a particular state. This allows us to get around the problem we encounter in Othello (and other similar board games) in that we only know the outcome of the game at the very end, thus alowing us to learn on-the-fly, instead of at the end of every game. This presumably would allow us to learn accurate feature weights more quickly.
+
+At one point in the development of our agent, we had implemented parts of both of these ideas. However, Monte Carlo was re-replaced with MinMax for our search function, as it was not performing particularly well (at least not for the sample sizes we were using), and it's use as a reward approximator was removed, as at that time the temporal difference learning function was not behaving as desired, and it was neccessary to try and remove any points of possible error.
 
 \section*{\emph{Other ideas (NegaMax)}}
 \hrule
