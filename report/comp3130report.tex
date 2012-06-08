@@ -220,51 +220,32 @@ The results of our parallelism is an $O(n)$ speed-up in computation time, where 
 
 \section*{\emph{Time management}}
 \hrule
-    \begin{itemize}
-  \item
-    Vary the search depth depending on time left and how long the previous move took
-  \item
-     Below 5 seconds, drop to depth 2  
-  \item
-    Below 15 seconds, drop to depth 4
-  \item
-    If we have extra time, increase to 8
-  \item
-    If we have less time, decrease to 5
-  \item
-    Default to 7
-  \end{itemize}
+
+A simple rule system was used to manage the time limitations imposed. The depth of the search was adjusted according to how much time we had left, how difficult the previous move was to compute, and how far we had until the end of the game.
+
+As emergency mechanisms, if the agent had 15 seconds left, it searched to depth 4. If the agent had only 5 seconds left, it searched to depth 2.
+
+If there was less than 30 seconds available, or the previous move took a long time to compute (likely indicating a large branching factor), the agent searched to depth 5 to conserve time.
+
+If there was more than 50 seconds available, and the previous move took a short time to compute (indicating a lower branching factor that we can search deeper into), the agent searched to depth 5.
+
+Otherwise, the agent defaulted to the normal depth of 7.
+
+This system was simple yet able to respond to different scenarios without forfeiting on time, whilst utilising most of the time available.
+
+However, the downside of such a simple system is that the agent did not respond to time constraints mid-search. In an extreme scenario, with 31 seconds left, the agent may attempt its normal search depth on a board with a huge branching factor and take longer than the remaining time. This could be avoided by checking the timing mid-computation and breaking off to employ emergency mechanisms if required.
 
 \section*{\emph{C++ and Ada}}
 \hrule
-The main function in C++ was used to facilitate network communications, from the sample client code. C++ then called the appropriate functions in Ada to 
-    \begin{itemize}
-  \item
-    We took the C++ sample client code and used it to call procedures in Ada
-  \item
-    C++ client listened for new messages and saved them
-  \item
-   C++ called Ada procedures
-  \item
-   Procedures called entries on Ada's Main Task
-  \item
-   Messages and information passed using direct edits to shared memory
-  \end{itemize}
+A mix of C++ and Ada code was used for the agent. C++ listened for and recorded server messages, and Ada was used for the main computation. This was effective in playing to the advantages of both languages. C++ was able to handle the server messages on a bit level, whereas this is more difficult for Ada as it is very strongly typed. On the other hand, Ada is very well suited for concurrent computation and this was used in order to fully utilise available hardware (see \emph{Concurrency}.
 
-\section*{\emph{\textmd{C++ and Ada Experiences}}}
-\hrule
-    \begin{itemize}
-  \item
-    Make the communication as simple as possible
-  \item
-   Don't call entries or complex data structures
-  \item
-   C++ decapitalises everything
-  \item
-   Avoid C++ and Ada running computation concurrently near shared data
-  \item
-   C++ and Ada store arrays in different fashions
-  \end{itemize}
+At all times there were at least two threads. The main function in C++ listened for server messages, and a persistent task in Ada waited for instructions from C++.
+
+C++ called three Ada procedures, which in turn called entries (synchronisation constructs) on Ada's main task. Initialise set the initial player colour and loaded weights, NextMove asked Ada to choose a move and EndGame asked Ada to learn then terminate.
+
+Shared memory structures were used to pass information between C++ and Ada. Contention was avoided by ensuring either C++ or Ada was blocked at all times, which guaranteed mutual exclusion.
+
+The main function in C++ was used to facilitate network communications, from the sample client code. C++ then called the appropriate functions in Ada.
 
 \section*{\emph{Other ideas (Monte Carlo)}}
 \hrule
