@@ -175,7 +175,7 @@ To try and balance the exploration vs exploitation problem that is so frequently
 \hrule
 
 \begin{center}
-\includegraphics[scale=0.50]{longgraph.png}\\
+\includegraphics[scale=0.40]{longgraph.png}\\
 \includegraphics[scale=0.50]{legend.PNG}\\
 Feature weight learning over 2300 games of self-learning
 \end{center}
@@ -200,7 +200,8 @@ The weights at game 2070 are as follows:
 \hline
  0.00000E+0&-4.56E-5& 1.21E-4& 1.64E-4& 2.00E-4\\
 \hline
-\end{tabular}\\
+\end{tabular}
+~\\
 Mobility Weight: 3.16E-1\\
 Stability Weight: 0.00000E+0\\
 Internality Weight: -4.00E-1
@@ -217,7 +218,8 @@ Internality Weight: -4.00E-1
 \hline
  1.14E-3&-5.52E-4& 4.10E-4& 7.66E-4& 2.00E-4\\
 \hline
-\end{tabular}\\
+\end{tabular}
+~\\
 Mobility Weight: 3.79E-1\\
 Stability Weight: 2.33893E+00\\
 Internality Weight: -3.51E-1
@@ -234,7 +236,8 @@ Internality Weight: -3.51E-1
 \hline
  5.14E-4& 2.86E-4&-7.56E-5& 1.22E-4& 2.55E-6\\
 \hline
-\end{tabular}\\
+\end{tabular}
+~\\
 Mobility Weight: 5.12E-1\\
 Stability Weight: 1.45929E+0\\
 Internality Weight: -2.81E-1
@@ -326,7 +329,7 @@ Several possible further optimisations to negamax searching were considered.
 
 By optimising the order in which we explored nodes to search the most promising boards first, we could have greatly increased the amount of pruning. This can also be difficult as the ordering needs to be simple, otherwise the benefit of the optimised ordering becomes outweighed by cost to compute the ordering.
 
-A considerable amount of time could be saved by storing the results of searches in between moves, and continuing on from the results of previous computations (after pruning the now irrelevant game trees considered). An approach achieving a similar function would be to store a transition table of states previously considered.
+A considerable amount of time could be saved by storing the results of searches in between moves, and continuing on from the results of previous computations (after pruning the now irrelevant game trees considered). An approach achieving a similar function would be to store a transition table of states previously considered. Additionally, a considerable amount of computation time could be gained by utilising time while the opponent is thinking. However all of these possibilities would have required extra memory management and data structures and the extra complication would have made concurrency more difficult.
 
 A variable search depth, based on the branching factor and volatility of the state (possibly corresponding to a really good move) could also have improved the search considerably.
 \section*{\emph{Other ideas (Evolutionary Algorithm)}}
@@ -347,6 +350,8 @@ A variable search depth, based on the branching factor and volatility of the sta
   \end{itemize}
 \section*{\emph{Other ideas (Utilising opponent time)}}
 \hrule
+
+
     \begin{itemize}
   \item
    	Compute further down the game tree while the opponent is thinking
