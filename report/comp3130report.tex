@@ -34,7 +34,7 @@
 \section*{\emph{Design Problem}}
 \hrule
 
-The problem was to design and implement an artificial intelligent agent to play a variant of Othello in a tournament run via network communications.
+The problem was to design and implement an artificial intelligent agent to play a variant of Othello$^{[1]}$ in a tournament run via network communications.
 
 The variant of Othello has a 10x10 board rather than the traditional 8x8, and contains 4 randomly 'removed' squares where pieces cannot be placed. The variant adds both complexity (in the form of significantly increased game tree size) and stochasticity to the domain - two consecutive games are unlikely to have the same board configuration.
 
@@ -44,7 +44,7 @@ A server handles incoming network messages from the agents (initial message, and
 
 The Reverwesome Agent uses negamax with alpha beta pruning and a depth cutoff, with a static evaluation function used to estimate the value of board states, as a backbone for game play.
 
-Core to the static evaluation function are a set of features (functions of a board position) and corresponding feature weights, learnt by the agent using a modified TD($\lambda$) temporal difference learning algorithm via repeated self-play.
+Core to the static evaluation function are a set of features (functions of a board position) and corresponding feature weights, learnt by the agent using a modified TD($\lambda$) temporal difference learning algorithm$^{[2]}$ via repeated self-play.
 
 The agent also uses a simple time management system to deal with time constraints and concurrent game tree searching in order to utilise maximum computer performance.
 
@@ -82,7 +82,7 @@ The red area shows the 8-way symmetric region. The red and yellow region togethe
 
 A given board tile is stable if it is impossible for it to ever be taken. This is very important as it reduces opponent's opportunities to flip tiles and puts the player in a good position to influence the board. Stability is especially important in this Othello variant as the blocked squares can significantly increase the number of stable tiles. 
 
-A piece position is stable if the 4 directional axes (North-South, East-West, NW-SE, NE-SW) are all stable. A directional axis is stable if
+A piece position is stable if the 4 directional axes (North-South, East-West, NW-SE, NE-SW) are all stable. A directional axis is stable if$^{[3]}$
     \begin{itemize}
 \item The axis is 'full' - travelling along the lines on this axis on both sides of the piece position, we hit the end or a blocked square before finding any empty slots.
 \item One of the neighbouring squares along each axist is stable and the same colour.
@@ -244,7 +244,7 @@ Internality Weight: -2.81E-1
 \section*{\emph{Negamax with alpha beta pruning}}
 \hrule
 
-Negamax is an adversarial search algorithm which expands the game tree in a depth first search in order to maximise game value, under the assumption that the opponent, who makes the same assumptions about game value, is trying to minimise that value. This is achieved in a simple recursive fashion by recursively calling negamax and negating the values at each step.
+Negamax is an adversarial search algorithm which expands the game tree in a depth first search in order to maximise game value, under the assumption that the opponent, who makes the same assumptions about game value, is trying to minimise that value. This is achieved in a simple recursive fashion by recursively calling negamax and negating the values at each step.$^{[4]}$
 
 The alpha-beta pruning extension allows us to disregard branches of the game tree that a player would not give the opponent a chance to play (because it is too good for their opponent), significantly reducing the size of the game tree that needs exploring.
 
@@ -349,5 +349,25 @@ A variable search depth, based on the branching factor and volatility of the sta
 	Essentially still doing gradient decent. Can be used as a substitute for an $\epsilon$-greedy policy.
   \end{itemize}
   
+\section*{\emph{References)}}
+\hrule
+
+[1]
+Stephen Gould\\
+\emph{Othello Project (Handout $\#$3)} (s2012)\\
+  
+[2] Yasuhiro OSAKI, Kazutomo, SHIBAHARA, Yasuhiro TAJIMA, Yoshiyuki KOTANI\\
+\emph{An Othello Evaluation Function Based on Temporal Difference Learning using Probability of Winning} (2008)\\
+$<$http://www.csse.uwa.edu.au/cig08/Proceedings/papers/8010.pdf$>$
+
+[3]
+Amy S. Biermann\\
+Stability, \emph{Othello implementation} (1994)\\
+$<$http://www.pressibus.org/ataxx/autre/minimax/node3.html$>$
+
+[4]
+Wikipedia\\
+\emph{Negascout} (2012)\\
+$<$http://en.wikipedia.org/wiki/Negascout$>$
 \end{multicols}
-\end{document} 
+\end{document}
