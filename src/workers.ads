@@ -22,7 +22,9 @@ package Workers is
       -- Initialise the set to explore. Note that we do this for every turn.
       procedure Initialise (parent : in GameTree_Type);
 
+      -- Things we need to do only once, when the protected object is created.
       procedure OneOffInit;
+
    private
       root : GameTree_Type;
       best : Place;
@@ -35,7 +37,7 @@ package Workers is
       fSeed : Ada.Numerics.Float_Random.Generator;
       iSeed : RandInt.Generator;
 
-      procedure Preprocessing;         -- Look ahead to see if we have any terminals.
+      procedure Preprocessing;
    end BeingExplored;
 
    -- Task which actually explores the game-tree.
