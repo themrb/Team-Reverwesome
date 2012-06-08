@@ -196,24 +196,22 @@ package body Agent is
                   end if;
 
                   -- Decide if we won
-                  if(GameWinner = my_player) then
-                     declare
-                        WhiteCount, BlackCount : TurnsNo;
-                     begin
-                        TokenCount(Board, WhiteCount, BlackCount);
-                        if(GameWinner = my_player) then
-                           feedback := abs(Float(WhiteCount - BlackCount));
-                        elsif (GameWinner = NextPlayer(my_player)) then
-                           feedback := -abs(Float(WhiteCount - BlackCount));
-                        end if;
-                     end;
+                  declare
+                     WhiteCount, BlackCount : TurnsNo;
+                  begin
+                     TokenCount(Board, WhiteCount, BlackCount);
+                     if(GameWinner = my_player) then
+                        feedback := abs(Float(WhiteCount - BlackCount));
+                     elsif (GameWinner = NextPlayer(my_player)) then
+                        feedback := -abs(Float(WhiteCount - BlackCount));
+                     end if;
+                  end;
 
-                     Put_Line("Feedback : " & feedback'Img);
-                     -- Call learning algorithm
-                     TD(History, my_player, feedback);
-                     -- Store our updated weights
-                     StoreWeights;
-                  end if;
+                  Put_Line("Feedback : " & feedback'Img);
+                  -- Call learning algorithm
+                  TD(History, my_player, feedback);
+                  -- Store our updated weights
+                  StoreWeights;
                end;
 
                -- Shut down the workers
