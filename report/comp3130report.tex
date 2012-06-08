@@ -331,7 +331,7 @@ Several possible further optimisations to negamax searching were considered.
 
 By optimising the order in which we explored nodes to search the most promising boards first, we could have greatly increased the amount of pruning. This can also be difficult as the ordering needs to be simple, otherwise the benefit of the optimised ordering becomes outweighed by cost to compute the ordering.
 
-A considerable amount of time could be saved by storing the results of searches in between moves, and continuing on from the results of previous computations (after pruning the now irrelevant game trees considered). An approach achieving a similar function would be to store a transition table of states previously considered.
+A considerable amount of time could be saved by storing the results of searches in between moves, and continuing on from the results of previous computations (after pruning the now irrelevant game trees considered). An approach achieving a similar function would be to store a transition table of states previously considered. Additionally, a considerable amount of computation time could be gained by utilising time while the opponent is thinking. However all of these possibilities would have required extra memory management and data structures and the extra complication would have made concurrency more difficult.
 
 A variable search depth, based on the branching factor and volatility of the state (possibly corresponding to a really good move) could also have improved the search considerably.
 \section*{\emph{Other ideas (Evolutionary Algorithm)}}
@@ -350,18 +350,6 @@ A variable search depth, based on the branching factor and volatility of the sta
   \item
 	Essentially still doing gradient decent. Can be used as a substitute for an $\epsilon$-greedy policy.
   \end{itemize}
-\section*{\emph{Other ideas (Utilising opponent time)}}
-\hrule
-    \begin{itemize}
-  \item
-   	Compute further down the game tree while the opponent is thinking
-  \item
-	Could allow significantly greater search depths to be reached
-  \item
-	Required memory management and large data structures
-  \item
-	Ada would be very well positioned to perform this task
-  \end{itemize}
-
+  
 \end{multicols}
 \end{document} 
