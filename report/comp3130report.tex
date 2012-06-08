@@ -35,17 +35,18 @@
 \section*{\emph{Design Problem}}
 \hrule
 
-The problem is to design and implement an intelligent agent to play a variant of Othello in a tournament, through network communications.
+The problem was to design and implement an artificial intelligent agent to play a variant of Othello in a tournament run via network communications.
 
-The variant of Othello has a 10x10 board rather than the traditional 8x8, and contains 4 randomly 'removed' squares that cannot be moved on. This adds complexity to the domain (significantly increased game tree size) and a stochasticity to the domain - two consecutive games are unlikely to have the same board configuration.
+The variant of Othello has a 10x10 board rather than the traditional 8x8, and contains 4 randomly 'removed' squares where pieces cannot be placed. The variant adds both complexity (in the form of significantly increased game tree size) and stochasticity to the domain - two consecutive games are unlikely to have the same board configuration.
 
-A server handles incoming network messages from the client (initial message, and move choice) and sends outgoing messages (updated board state and move request, end of game). The server allocates 150 seconds time over the whole game to each side, and calls a forfeit if any side runs out of time.
+A server handles incoming network messages from the agents (initial message, and move choice) and sends outgoing messages (updated board state and move request, end of game). The server allocates 150 seconds time over the whole game to each player, and calls a forfeit if any side runs out of time.
 
 \section*{\emph{Design Solution}}
+\hrule
 
-The Reverwesome Agent uses negamax with alpha beta pruning and a depth cutoff, with a static evaluation fuction for board states, as a backbone for game play.
+The Reverwesome Agent uses negamax with alpha beta pruning and a depth cutoff, with a static evaluation function used to estimate the value of board states, as a backbone for game play.
 
-Core to the static evaluation function is the Temporal Different learning algorithm TD($\lambda$) in order to learn good weights for features used in static evaluation.
+Core to the static evaluation function are a set of features (functions of a board position) and corresponding feature weights, learnt by the agent using a modified TD($\lambda$) temporal difference learning algorithm via repeated self-play.
 
 The agent also uses a simple time management system to deal with time constraints and concurrent game tree searching in order to utilise maximum computer performance.
 
@@ -53,25 +54,25 @@ The project uses C++ to implement network communications with the server and int
 
 \section*{\emph{Static Evaluation}}
 \hrule
+The static evaluation function is a simple linear combination of our feature functions, each weighted by their respective feature weight:
+\[
+	\sum_{i=1}^N W_i \left(F_i(p,b) -F_i(\neg p,b) \right)
+\]
+Where $F_i$ is the $i$\textsuperscript{th} feature function, $W_i$ is the corresponding feature weight, $p$ is the player (with $\neg p$ corresponding to the other player), and $b$ is the board state.
+
+Our evaluation function in principle uses 103 different features. However, these features can be broken down as:
     \begin{itemize}
   \item
-    Use features weights to evaluate value of board states
+    Mobility: number of moves the player would have if it was their turn.
   \item
-    3 different feature sets - mention transitions
+   Stability:  The number of stable (uncapturable) pieces the player owns.
   \item
-    15 weights for each piece position
-	\begin{itemize}
-		\item based on (naive) 8-way symmetry
-		\item in actuality, only a 4-way symmetry exists. However, in practice this doesn't make a lot of difference.
-		% Include picture showing the difference?
-	\end{itemize}
+   Internality: The number of internal pieces the player owns
   \item
-    Weight for mobility - number of moves if it was our turn
-  \item
-   Weight for stability - number of stable pieces we own
-  \item
-   Weight for internals - number of internal pieces we own
+    Control: 100 features, corresponding to control of each of the 100 squares on the board.
   \end{itemize}
+
+In practice, only 15 of the weights for control of the board are stored, corresponding to an 8-way symmetric subregion of the board. These weights are then mirrored out to the other 7 symmetric regions.
 
 \section*{\emph{\textmd{Piece Stability}}}
 \hrule
