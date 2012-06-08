@@ -134,7 +134,7 @@ The centre piece is an internal node.
 \section*{\emph{Temporal Difference Learning}}
 \hrule
 
-Our learning algorithm is based on TD($\lambda$), although we do not implement that algorithm exactly.
+Our learning algorithm is based on TD($\lambda$)$^{[3]}$, although we do not implement that algorithm exactly.
 
 When learning is enabled, we play through the entirity of a game, storing each board position. At the end, we recieve a reward equal to the difference in the number of pieces for each player in the terminal state.
 
@@ -365,7 +365,7 @@ A variable search depth, based on the branching factor and volatility of the sta
 
 [1]
 Stephen Gould\\
-\emph{Othello Project (Handout $\#$3)} (s2012)
+\emph{Othello Project (Handout $\#$3)} (2012)
   
 [2] Yasuhiro OSAKI, Kazutomo, SHIBAHARA, Yasuhiro TAJIMA, Yoshiyuki KOTANI\\
 \emph{An Othello Evaluation Function Based on Temporal Difference Learning using Probability of Winning} (2008)\\
@@ -391,4 +391,6 @@ $<$http://en.wikipedia.org/wiki/Negascout$>$
 \vspace{0.4cm}
 
 Uwe Zimmer for use of his exception creation and handling code in Ada.
+
+Tim, Andrew and Josh's group, from which we drew "creative inspiration" for the TD($\lambda$) code, as ours was not entirely working at that point.
 \end{document}
