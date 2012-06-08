@@ -34,6 +34,7 @@ package GameTree is
    -- Expand possible next moves from a game state
    function Expand(state : in GameTree_Type) return ExpandedChildren;
 
+   -- Check number of moves from a given board
    function NumMoves(Board : GameBoard; Player : Players) return Natural;
 
    -- Check if a given board state is terminal

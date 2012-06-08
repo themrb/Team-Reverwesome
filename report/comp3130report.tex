@@ -34,7 +34,7 @@
 \section*{\emph{Design Problem}}
 \hrule
 
-The problem was to design and implement an artificial intelligent agent to play a variant of Othello in a tournament run via network communication.
+The problem was to design and implement an artificial intelligent agent to play a variant of Othello$^{[1]}$ in a tournament run via network communications.
 
 The variant of Othello has a 10x10 board rather than the traditional 8x8, and contains 4 randomly 'removed' squares where pieces cannot be placed. The variant adds both complexity (in the form of significantly increased game tree size) and stochasticity to the domain - two consecutive games are unlikely to have the same board configuration.
 
@@ -44,7 +44,7 @@ A server handles incoming network messages from the agents (initial message, and
 
 The Reverwesome Agent uses negamax with alpha beta pruning and a depth cutoff, with a static evaluation function used to estimate the value of board states, as a backbone for game play.
 
-Core to the static evaluation function are a set of features (functions of a board position) and corresponding feature weights, learnt by the agent using a modified TD($\lambda$) temporal difference learning algorithm via repeated self-play.
+Core to the static evaluation function are a set of features (functions of a board position) and corresponding feature weights, learnt by the agent using a modified TD($\lambda$) temporal difference learning algorithm$^{[2]}$ via repeated self-play.
 
 The agent also uses a simple time management system to deal with time constraints and concurrent game tree searching in order to make maximum use of the time available.
 
@@ -82,7 +82,7 @@ The red area shows the 8-way symmetric region. The red and yellow region togethe
 
 A given board tile is stable if it is impossible for it to ever be taken. This is important as it reduces opponent's opportunities to flip tiles and puts the player in a strong position to influence the board. Stability is especially important in this Othello variant as the blocked squares can significantly increase the number of stable tiles. 
 
-A piece position is stable if the 4 directional axes (North-South, East-West, NW-SE, NE-SW) are all stable. A directional axis is stable if
+A piece position is stable if the 4 directional axes (North-South, East-West, NW-SE, NE-SW) are all stable. A directional axis is stable if$^{[3]}$
     \begin{itemize}
 \item The axis is 'full' - travelling along the lines on this axis on both sides of the piece position, we hit the end or a blocked square before finding any empty slots.
 \item One of the neighbouring squares along each axis is stable and of the same colour.
@@ -110,7 +110,6 @@ To fix this, we could test all pieces in all directions of a move, and then if w
 If white moves in position A, the algorithm will detect that B is stable\\ but will fail to test the stability of C as it is not on a full line.
 \end{center}
 
-
 The importance of stability becomes diluted in late game because at that point most of the squares are stable. This is a consequence of only using 3 phases.
 \section*{\emph{\textmd{Mobility}}}
 \hrule
@@ -123,7 +122,7 @@ It also has the unfortunate side effect of increasing the branching factor in th
 \section*{\emph{\textmd{Piece Internality}}}
 \hrule
 
-A piece is internal if it has no empty neighbours. This can be a useful indicator of a player's position on the board. While it can be useful sometimes, as internal pieces can also be harder to dislodge, the strategy learnt by the agent favoured less internal pieces and imposed a penalty on them.
+A piece is internal if it has no empty neighbours. This can be a useful indicator of a player's position on the board. While internal pieces can be favourable sometimes, as internal pieces can also be harder to dislodge, the strategy learnt by the agent favoured less internal pieces and imposed a penalty on them.
 
 This is computationally cheap to check. Exploiting the fact internal pieces stay internal even if they are flipped, partial memory of internality was also used (internality checked and remembered for every new move).
 
@@ -239,10 +238,19 @@ Internality Weight: -3.51E-1
 Mobility Weight: 5.12E-1\\
 Stability Weight: 1.45929E+0\\
 Internality Weight: -2.81E-1
+
+The feature weights learnt here slightly favoured edge pieces and greatly favoured corners. Notice that the agent learns that the position on the diagonal from the corner is either not a very good place or a bad place to play, but learns that the edge piece next to the corner is a good place to play, although domain knowledge tells us this play would likely give the opponent the corner. This is a drawback of our implementation of TD($\lambda$) on this domain, because if you own the corner, you most likely own the edge piece next to it as well, so the position is learnt to be favourable.
+
+In early game, the agent learnt that mobility is a factor of 100 times more important than anything else, and learnt a strategy that avoids owning internal pieces.
+
+In mid game, the mobility was less important relative to stability, which was almost as important as owning a corner. There was still a sizeable penalty for owning internal pieces.
+
+In late game, the agent came to similar conclusions as in mid game, but stability was worth slightly less relative to mobility (giving slightly more priority to late game options) and corners were weighted very highly relative to the rest of the board.
+
 \section*{\emph{Negamax with alpha beta pruning}}
 \hrule
 
-Negamax is an adversarial search algorithm which expands the game tree in a depth first search in order to maximise game value, under the assumption that the opponent, who makes the same assumptions about game value, is trying to minimise that value. This is achieved in a simple recursive fashion by recursively calling negamax and negating the values at each step.
+Negamax is an adversarial search algorithm which expands the game tree in a depth first search in order to maximise game value, under the assumption that the opponent, who makes the same assumptions about game value, is trying to minimise that value. This is achieved in a simple recursive fashion by recursively calling negamax and negating the values at each step.$^{[4]}$
 
 The alpha-beta pruning extension allows us to disregard branches of the game tree that a player would not give the opponent a chance to play (because it is too good for their opponent), significantly reducing the size of the game tree that needs exploring.
 
@@ -291,7 +299,7 @@ As emergency mechanisms, if the agent had 15 seconds left, it searched to depth 
 
 If there was less than 30 seconds available, or the previous move took a long time to compute (likely indicating a large branching factor), the agent searched to depth 5 to conserve time.
 
-If there was more than 50 seconds available, and the previous move took a short time to compute (indicating a lower branching factor that we can search deeper into), the agent searched to depth 5.
+If there was more than 50 seconds available, and the previous move took a short time to compute (indicating a lower branching factor that we can search deeper into), the agent searched to depth 8.
 
 Otherwise, the agent defaulted to the normal depth of 7.
 
@@ -349,5 +357,31 @@ A variable search depth, based on the branching factor and volatility of the sta
 	Essentially still doing gradient decent. Can be used as a substitute for an $\epsilon$-greedy policy.
   \end{itemize}
   
+\section*{\emph{References}}
+\hrule
+
+[1]
+Stephen Gould\\
+\emph{Othello Project (Handout $\#$3)} (s2012)\\
+  
+[2] Yasuhiro OSAKI, Kazutomo, SHIBAHARA, Yasuhiro TAJIMA, Yoshiyuki KOTANI\\
+\emph{An Othello Evaluation Function Based on Temporal Difference Learning using Probability of Winning} (2008)\\
+$<$http://www.csse.uwa.edu.au/cig08/Proceedings/papers/8010.pdf$>$
+
+[3]
+Amy S. Biermann\\
+Stability, \emph{Othello implementation} (1994)\\
+$<$http://www.pressibus.org/ataxx/autre/minimax/node3.html$>$
+
+[4]
+Wikipedia\\
+\emph{Negascout} (2012)\\
+$<$http://en.wikipedia.org/wiki/Negascout$>$
+
+\section*{\emph{\textmd{Acknowledgements}}}
+\hrule
+\vspace{0.4cm}
+
+Uwe Zimmer for use of his exception creation and handling code in Ada.
 \end{multicols}
-\end{document} 
+\end{document}
