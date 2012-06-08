@@ -31,7 +31,6 @@
 
 \setlength{\columnsep}{22.0pt}
 \begin{multicols}{2}
-
 \section*{\emph{Design Problem}}
 \hrule
 
@@ -40,7 +39,6 @@ The problem was to design and implement an artificial intelligent agent to play 
 The variant of Othello has a 10x10 board rather than the traditional 8x8, and contains 4 randomly 'removed' squares where pieces cannot be placed. The variant adds both complexity (in the form of significantly increased game tree size) and stochasticity to the domain - two consecutive games are unlikely to have the same board configuration.
 
 A server handles incoming network messages from the agents (initial message, and move choice) and sends outgoing messages (updated board state and move request, end of game). The server allocates 150 seconds time over the whole game to each player, and calls a forfeit if any side runs out of time.
-
 \section*{\emph{Design Solution}}
 \hrule
 
@@ -51,7 +49,6 @@ Core to the static evaluation function are a set of features (functions of a boa
 The agent also uses a simple time management system to deal with time constraints and concurrent game tree searching in order to utilise maximum computer performance.
 
 The project uses C++ to implement network communications with the server and interfaces with Ada for the main game computation.
-
 \section*{\emph{Static Evaluation}}
 \hrule
 The static evaluation function is a simple linear combination of our feature functions, each weighted by their respective feature weight:
@@ -80,7 +77,6 @@ It is notable that in principle there is actually only a 4-way symmetry to the O
 \includegraphics[scale=0.25]{symmetries.png}\\
 The red area shows the 8-way symmetric region. The red and yellow region together constitute the 4-way symmetric region.
 \end{center}
-
 \section*{\emph{\textmd{Piece Stability}}}
 \hrule
 
@@ -118,7 +114,6 @@ If white moves in position A, the algorithm will detect that B is stable\\ but w
   \item
     Importance gets diluted in late game because in late game, EVERYTHING is stable. this is a consequence of only using 3 phases
   \end{itemize}
-
 \section*{\emph{\textmd{Mobility}}}
 \hrule
 
@@ -127,11 +122,10 @@ Mobility is the number of moves a player has in a given board state. High mobili
 Mobility tends to be the strongest predictor of a good position during the early game. In the mid and late game, it is less favoured than stability and control of the corners, but otherwise is still a strong predictor of the value of a position.
 
 It also has the unfortunate side effect of increasing the branching factor in the MinMax search, to the point where the increased number of available moves can mean we have to search to a lesser depth.
-
 \section*{\emph{\textmd{Piece Internality}}}
 \hrule
 
-A piece is internal if it has no empty neighbours. This can be a useful indicator of a player's position as it increases their maneuverability in the early and mid game as the middle becomes mostly full and possible moves are expansions to the outer edges. Internal pieces can also be harder to dislodge.
+A piece is internal if it has no empty neighbours. This can be a useful indicator of a player's position on the board. While it can be useful sometimes, as internal pieces can also be harder to dislodge, the strategy learnt by the agent favoured less internal pieces and imposed a penalty on them.
 
 This is computationally cheap to check. Exploiting the fact internal pieces stay internal even if they are flipped, partial memory of internality was also used (internality checked and remembered for every new move).
 
@@ -139,7 +133,6 @@ This is computationally cheap to check. Exploiting the fact internal pieces stay
 \includegraphics[scale=0.50]{internality.PNG}\\
 The centre piece is an internal node.
 \end{center}
-
 \section*{\emph{Temporal Difference Learning}}
 \hrule
 
@@ -178,7 +171,74 @@ Where
 Values of $alpha = 0.0001$ and $\gamma = 0.9$ were used during our learning process.
 
 To try and balance the exploration vs exploitation problem that is so frequently found in temporal difference learning, we utilised an $\epsilon$-greedy policy, whereby the agent would select a random move 15\% of the time, and an optimal (in the sense of its estimate of the value of a board state) move 85\% of the time.
+\section*{\emph{\textmd{Learning Results}}}
+\hrule
 
+\begin{center}
+\includegraphics[scale=0.50]{longgraph.png}\\
+\includegraphics[scale=0.50]{legend.PNG}\\
+Feature weight learning over 2300 games of self-learning
+\end{center}
+
+We can see from the above graph that the weights learnt are clearly not converging. This is most likely due to the fact that the weights are not independant of each other: stability, mobility and internality all affect each other to a degree, and as their important adjusts, and boards utilising these features become more prominent, it causes the importance of other weights to adjust as well. The stochasticity of the domain (random blocked squares) also impedes convergence.
+
+The learning seems to oscillate between calmer areas where the weights settle down, then the weights take off as they find new ideas. The calm areas are likely to respond to the more considered strategies, such as the weights learned at about game 850 or game 2070.
+
+The above graph is slightly misleading, as because the feature weights are all relative, direct comparisons between early, mid and late game weights should not be made, but comparisons about the relative importance of weights within each set can be made.
+
+The weights at game 2070 are as follows:
+\section*{\emph{\textmd{Early Game}}}
+\begin{tabular}{| l | l | l | l | l | }
+\hline
+ 0&&&&\\
+\hline
+ 0& 7.48E-6&&&\\
+\hline
+ 0& 2.18E-5&-1.70E-4&&\\
+\hline
+ 0& 1.11E-5&-2.67E-4&-1.60E-4&\\
+\hline
+ 0&-4.56E-5& 1.21E-4& 1.64E-4& 2.00E-4\\
+\hline
+\end{tabular}\\
+Mobility Weight: 3.16E-1\\
+Stability Weight: 0.00000E+0\\
+Internality Weight: -4.00E-1
+\section*{\emph{\textmd{Mid Game}}}
+\begin{tabular}{| l | l | l | l | l | }
+\hline
+ 2.80513E+0&&&&\\
+\hline
+ 3.73E-1&-2.56E-3&&&\\
+\hline
+ 3.20E-3&-1.56E-4& 1.27E-3&&\\
+\hline
+-1.00E-5&-5.23E-4&-1.56E-3& 4.79E-4&\\
+\hline
+ 1.14E-3&-5.52E-4& 4.10E-4& 7.66E-4& 2.00E-4\\
+\hline
+\end{tabular}\\
+Mobility Weight: 3.79E-1\\
+Stability Weight: 2.33893E+00\\
+Internality Weight: -3.51E-1
+\section*{\emph{\textmd{End Game}}}
+\begin{tabular}{| l | l | l | l | l | }
+\hline
+ 2.25830E+0&&&&\\
+\hline
+ 1.12976E+0& 2.20E-4&&&\\
+\hline
+-2.79E-4&-3.39E-4& 7.21E-4&&\\
+\hline
+ 4.53E-4& 3.78E-4&-3.29E-4& 1.89E-4&\\
+\hline
+ 5.14E-4& 2.86E-4&-7.56E-5& 1.22E-4& 2.55E-6\\
+\hline
+\end{tabular}\\
+\medskip{}
+Mobility Weight: 5.12E-1\\
+Stability Weight: 1.45929E+0\\
+Internality Weight: -2.81E-1
 \section*{\emph{Negamax with alpha beta pruning}}
 \hrule
 
@@ -189,7 +249,6 @@ The alpha-beta pruning extension allows us to disregard branches of the game tre
 Negamax is very useful as it emulates a game play environment, where while we moving the board into a good state for us, the opponent is actively trying to move to make the board a worse state for us.
 
 The major disadvantage of Negamax is the assumption that the opponent values each board exactly the same way as we do. This is especially problematic with alpha beta pruning - we may prune states which very good moves based on the assumption that the opponent will never let us play those moves, but in real play, the opponent might let us play those moves if they don't see the value.
-
 \section*{\emph{\textmd{Negamax Implementation}}}
 \hrule
 
@@ -202,7 +261,6 @@ At terminal states, the board is evaluated to be -$\infty$ if we lose, or +$\inf
 The advantages are that we will take a guaranteed opportunity to wipe out the opponent early, or at the end of the game, move towards a safe guaranteed win rather than trying for a win with the most pieces. However the disadvantage is if we see that a perfect opponent would cause us to lose no matter how well we play, the agent surrenders and plays the first move it sees, rather than attempting to minimise the loss margin in the hope that the opponent makes a mistake and allows our victory.
 
 In normal play, the agent searched to a depth of 7 in the game tree (see Time Management). Once the end of the game was within sight (12 moves left on the board), the depth was increased to allow the entire game tree to be evaluated. This allowed us to make perfect play (and at this point, we could determine whether we would win or lose to a perfect player).
-
 \section*{\emph{Concurrency}}
 \hrule
 
@@ -224,7 +282,6 @@ This model has the advantage of having very little overhead in terms of communic
 One issue that does arise with this model is that the first node (or first set of nodes) evaluated almost always takes the longest amount of time, when compared with the other nodes. This appears to be true regardless of the number of workers assigned to the task. Our theory as to the reason behind this is that, for the first nodes, we do not have accurate $\alpha\beta$ values when exploring the tree, so much more will tend to be explored than is strictly necessary. Once at least one of the initial nodes returns, and its information aggreated into the central data structure, all subsequent nodes will be evaluated with at least the $\alpha\beta$ values of that first node, allowing for much more efficient pruning.
 
 The results of our parallelism is an $O(n)$ speed-up in computation time, where $n$ is the number of cores we are using. In practice, this gave us an extra one to two levels of MinMax search, running on a 4-core machine.
-
 \section*{\emph{Time management}}
 \hrule
 
@@ -241,7 +298,6 @@ Otherwise, the agent defaulted to the normal depth of 7.
 This system was simple yet able to respond to different scenarios without forfeiting on time, whilst utilising most of the time available.
 
 However, the downside of such a simple system is that the agent did not respond to time constraints mid-search. In an extreme scenario, with 31 seconds left, the agent may attempt its normal search depth on a board with a huge branching factor and take longer than the remaining time. This could be avoided by checking the timing mid-computation and breaking off to employ emergency mechanisms if required.
-
 \section*{\emph{C++ and Ada}}
 \hrule
 A mix of C++ and Ada code was used for the agent. C++ listened for and recorded server messages, and Ada was used for the main computation. This was effective in playing to the advantages of both languages. C++ was able to handle the server messages on a bit level, whereas this is more difficult for Ada as it is very strongly typed. On the other hand, Ada is very well suited for concurrent computation and this was used in order to fully utilise available hardware (see \emph{Concurrency}.
@@ -276,7 +332,6 @@ By optimising the order in which we explored nodes to search the most promising 
 A considerable amount of time could be saved by storing the results of searches in between moves, and continuing on from the results of previous computations (after pruning the now irrelevant game trees considered). An approach achieving a similar function would be to store a transition table of states previously considered.
 
 A variable search depth, based on the branching factor and volatility of the state (possibly corresponding to a really good move) could also have improved the search considerably.
-
 \section*{\emph{Other ideas (Evolutionary Algorithm)}}
 \hrule
     \begin{itemize}
@@ -293,7 +348,6 @@ A variable search depth, based on the branching factor and volatility of the sta
   \item
 	Essentially still doing gradient decent. Can be used as a substitute for an $\epsilon$-greedy policy.
   \end{itemize}
-
 \section*{\emph{Other ideas (Utilising opponent time)}}
 \hrule
     \begin{itemize}
