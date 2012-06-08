@@ -2,15 +2,17 @@ with Boards; use Boards;
 with GameTree; use GameTree;
 
 package TemporalDifference is
+   -- Performs temporal difference learning.
    procedure TD(History: HistoryType; Player : Players; Feedback : Float);
 
    -- Numerical weight on features
    subtype FeatureWeight is BoardValue'Base;
-   -- Array for weight on each board position
+   -- Array for weight on each square on the board
    type BoardPositionWeights is array(Dimension, Dimension) of FeatureWeight;
 
    type IndependentWeights is (Mobility, Stability, Internal);
    type IndependentArray is array(IndependentWeights) of FeatureWeight;
+
    -- Set of feature weights
    type FeatureSet is record
       piece : BoardPositionWeights;
@@ -37,7 +39,6 @@ package TemporalDifference is
 
    -- IO operations for loading and storing to csv file
 
-   procedure CloseFile;
    -- Loads all weights
    procedure LoadWeights;
    -- Loads a set of weights (used for each phase)
@@ -59,8 +60,6 @@ package TemporalDifference is
    -- Static values to use in TD lambda algorithm
    lambda : Float := 0.9;
    alpha : Float := 0.00001;
-
-   cease : Boolean := False;
 
    -- Sets of feature weights for each game phase
    EarlyGame : FeatureSet;

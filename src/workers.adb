@@ -5,6 +5,7 @@ with Configure; use Configure;
 
 package body Workers is
 
+
    task body Explorer is
       current, parent : GameTree_Type;
       value, a, b : BoardValue;
@@ -21,14 +22,19 @@ package body Workers is
 
    ----------------------
 
+   -- Central data structure for aggregating Negamax results.
+   -- Essentially functions like the top-level of a Negamax search tree.
    protected body BeingExplored is
 
+      -- Things we need to do only once, when the protected object is created.
       procedure OneOffInit is
       begin
          Ada.Numerics.Float_Random.Reset(fSeed);
          RandInt.Reset(iSeed);
       end;
 
+      -- Need to do this every time we start doing a new search
+      -- (i.e. every move).
       procedure Initialise (parent : in GameTree_Type) is
       begin
          root := parent;
@@ -40,6 +46,7 @@ package body Workers is
          Preprocessing;
       end Initialise;
 
+      -- Allows the agent to get the result of a search.
       entry GetResult(move : out Place) when not more is
       begin
          move := best;
@@ -61,6 +68,7 @@ package body Workers is
 
       end Next;
 
+      -- Allows workers to report the result of a search.
       procedure Report(board, parent : in GameTree_Type; bValue : in BoardValue) is
       begin
          -- This is basically a chunk of the 'Max' part of Minmax
@@ -81,6 +89,7 @@ package body Workers is
          end if;
       end Report;
 
+      -- Preprocess a search to try and save computation time.
       procedure Preprocessing is
       begin
          -- Shouldn't encounter a Terminal state
@@ -110,6 +119,5 @@ package body Workers is
          end;
       end Preprocessing;
    end BeingExplored;
-
 
 end Workers;

@@ -7,8 +7,6 @@ package Configure is
    depth : TurnsNo := 6;
    -- Number of worker tasks: Warning, should be set to one less than number of available cores
    workerTasks : Natural := 1;
-   -- Initialisation of worker tasks
-   initialised : Boolean := False;
    -- For epsilon-greedy move selection;
    epsilon : Float := 0.15;
 end Configure;
